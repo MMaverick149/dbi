@@ -56,15 +56,66 @@
 
         <div class="grid-3" style="grid-template-columns: 1fr 1fr;">
             <div>
-                <label>Právní kvalifikace</label>
-                <select id="legal-qual">
-                    <option>Vražda (§ 140 TZ)</option>
-                    <option>Ublížení na zdraví (§ 146 TZ)</option>
-                    <option>Loupež (§ 173 TZ)</option>
-                    <option>Krádež (§ 205 TZ)</option>
-                    <option>Obchod s drogami</option>
-                </select>
-            </div>
+   <div>
+    <label>Právní kvalifikace (Všechny Trestné činy dle PC SA)</label>
+    <select id="legal-qual" style="font-size: 11px; height: 35px;">
+        <optgroup label="Zločiny v organizaci">
+            <option value="6a">§6 a) Zločin v organizaci (15 let - doživotí)</option>
+            <option value="6b">§6 b) Zločin v organizaci s naplněním (Doživotí)</option>
+        </optgroup>
+
+        <optgroup label="Ublížení na zdraví">
+            <option value="7a">§7 a) Ublížení - neúmyslně zbraní (1-5 let)</option>
+            <option value="7b">§7 b) Ublížení - úmyslně zbraní (1-5 let)</option>
+            <option value="7c">§7 c) Ublížení - úmyslně střelnou zbraní (3-10 let)</option>
+            <option value="7d">§7 d) Ublížení - proti úřední osobě (5-15 let)</option>
+            <option value="7e">§7 e) Ublížení - proti IZS (10-20 let)</option>
+        </optgroup>
+
+        <optgroup label="Vražda a Zabití">
+            <option value="9">§9 Vražda (Doživotí)</option>
+            <option value="11">§11 Pokus o vraždu (20-30 let)</option>
+            <option value="12">§12 Zabití (15-20 let)</option>
+            <option value="13">§13 Napadení se smrtícím účinkem (10-20 let)</option>
+        </optgroup>
+
+        <optgroup label="Osobní svoboda">
+            <option value="14">§14 Únos (10-20 let)</option>
+            <option value="15">§15 Braní rukojmí (15-25 let)</option>
+            <option value="16">§16 Omezování osobní svobody (2-10 let)</option>
+        </optgroup>
+
+        <optgroup label="Majetkové činy">
+            <option value="18">§18 Loupežné přepadení (10-20 let)</option>
+            <option value="19a">§19 a) Krádež vniknutím (5-15 let)</option>
+            <option value="19b">§19 b) Krádež bez vniknutí (2-10 let)</option>
+            <option value="20a">§20 a) Vloupání do obydlí (10-20 let)</option>
+            <option value="20b">§20 b) Vloupání do objektu (5-15 let)</option>
+            <option value="23">§23 Žhářství (10-20 let)</option>
+        </optgroup>
+
+        <optgroup label="Drogy a látky">
+            <option value="28">§28 Držení omamných látek (2-10 let)</option>
+            <option value="29">§29 Výroba a distribuce drog (10-20 let)</option>
+            <option value="30">§30 Přechovávání za účelem prodeje (5-15 let)</option>
+            <option value="31">§31 Navádění k užívání (1-5 let)</option>
+        </optgroup>
+
+        <optgroup label="Zbraně">
+            <option value="34">§34 Nelegální ozbrojování (5-15 let)</option>
+            <option value="36">§36 Obchodování se zbraněmi (15-25 let)</option>
+            <option value="37">§37 Nedovolené ozbrojování skupiny (20-30 let)</option>
+        </optgroup>
+
+        <optgroup label="Stát a úřady">
+            <option value="42">§42 Úplatkářství (5-15 let)</option>
+            <option value="45">§45 Maření spravedlnosti (2-10 let)</option>
+            <option value="50">§50 Útok na úřední osobu (5-15 let)</option>
+            <option value="57">§57 Terorismus (Doživotí)</option>
+            <option value="58">§58 Vlastizrada (Doživotí)</option>
+        </optgroup>
+    </select>
+</div>
             <div>
                 <label>Typ OPP</label>
                 <select id="opp-type">
