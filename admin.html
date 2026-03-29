@@ -5,35 +5,69 @@
     <title>LSPD - Admin Panel</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --bg-dark: #0b0e14; --sidebar-bg: #151921; --card-bg: #1c212b; --accent-blue: #4a9eff; --border: #2d333b; --gold: #d4af37; --danger: #f85149; --success: #2ea043; }
+        :root { 
+            --bg-dark: #0b0e14; 
+            --sidebar-bg: #151921; 
+            --card-bg: #1c212b; 
+            --accent-blue: #4a9eff; 
+            --border: #2d333b; 
+            --gold: #d4af37; 
+            --danger: #f85149; 
+            --success: #2ea043; 
+        }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg-dark); color: white; margin: 0; display: flex; height: 100vh; }
         .sidebar { width: 260px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 15px; display: flex; flex-direction: column; }
         .main { flex-grow: 1; padding: 30px; overflow-y: auto; }
         .card { background: var(--card-bg); border: 1px solid var(--border); padding: 20px; border-radius: 6px; margin-bottom: 25px; }
+        
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th { text-align: left; padding: 10px; color: #9ba3af; border-bottom: 2px solid var(--border); font-size: 11px; }
+        th { text-align: left; padding: 10px; color: #9ba3af; border-bottom: 2px solid var(--border); font-size: 11px; text-transform: uppercase; }
         td { padding: 10px; border-bottom: 1px solid var(--border); font-size: 13px; }
+        
         input, select { background: #0b0e14; border: 1px solid var(--border); color: white; padding: 10px; border-radius: 4px; margin-bottom: 10px; width: 100%; box-sizing: border-box; }
         .btn-add { background: var(--success); border: none; padding: 12px; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%; color: white; }
+        .btn-danger { background: none; border: none; color: var(--danger); cursor: pointer; font-size: 12px; }
+        .btn-status { background: none; border: 1px solid var(--gold); color: var(--gold); padding: 3px 8px; border-radius: 3px; cursor: pointer; font-size: 11px; }
+
         .history-box { background: #0b0e14; padding: 15px; border: 1px solid var(--border); border-radius: 4px; height: 150px; overflow-y: auto; font-family: monospace; font-size: 12px; color: #9ba3af; }
+        h3 { margin-top: 0; display: flex; align-items: center; gap: 10px; color: var(--accent-blue); }
     </style>
 </head>
 <body>
+
 <div class="sidebar">
     <a href="index.html" style="color: var(--accent-blue); text-decoration: none; font-size: 13px;"><i class="fa-solid fa-arrow-left"></i> Zpět do systému</a>
-    <h3 style="color: var(--gold); margin-top: 20px;">COMMAND PANEL</h3>
+    <h2 style="color: var(--gold); margin-top: 20px; font-size: 18px;">COMMAND PANEL</h2>
     <div style="flex-grow: 1;"></div>
     <button onclick="logout()" style="background:none; border:1px solid var(--danger); color:var(--danger); padding:10px; border-radius:4px; cursor:pointer;"><i class="fa-solid fa-power-off"></i> Odhlásit</button>
 </div>
+
 <div class="main">
+    <div class="card">
+        <h3><i class="fa-solid fa-folder-tree"></i> Globální správa spisů</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>NÁZEV</th>
+                    <th>AUTOR</th>
+                    <th>STAV</th>
+                    <th>AKCE</th>
+                </tr>
+            </thead>
+            <tbody id="admin-case-table">
+                </tbody>
+        </table>
+    </div>
+
     <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 20px;">
         <div class="card">
-            <h3>Nový člen</h3>
+            <h3><i class="fa-solid fa-user-plus"></i> Nový člen</h3>
             <label style="font-size:10px; color:var(--gold)">JMÉNO A PŘÍJMENÍ</label>
             <input type="text" id="m-name" placeholder="např. John Doe">
             <label style="font-size:10px; color:var(--gold)">VOLAČKA</label>
             <input type="text" id="m-call" placeholder="např. 1D-01">
-            <label style="font-size:10px; color:var(--gold)">HESLO (PŘÍSTUPOVÝ KLÍČ)</label>
+            <label style="font-size:10px; color:var(--gold)">HESLO</label>
             <input type="text" id="m-pass" placeholder="Zadejte heslo">
             <label style="font-size:10px; color:var(--gold)">RANK</label>
             <select id="m-rank">
@@ -43,51 +77,125 @@
             </select>
             <button class="btn-add" onclick="addMember()">PŘIDAT DO DATABÁZE</button>
         </div>
+
         <div class="card">
-            <h3>Seznam personálu</h3>
+            <h3><i class="fa-solid fa-users"></i> Seznam personálu</h3>
             <table>
-                <thead><tr><th>JMÉNO</th><th>RANK</th><th>HESLO</th><th>AKCE</th></tr></thead>
+                <thead>
+                    <tr>
+                        <th>JMÉNO (VOLAČKA)</th>
+                        <th>RANK</th>
+                        <th>HESLO</th>
+                        <th>AKCE</th>
+                    </tr>
+                </thead>
                 <tbody id="member-table"></tbody>
             </table>
         </div>
     </div>
+
     <div class="card">
-        <h3>Historie logů</h3>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3><i class="fa-solid fa-clock-rotate-left"></i> Historie logů</h3>
+            <button onclick="clearLogs()" class="btn-danger">Smazat historii</button>
+        </div>
         <div id="history-box" class="history-box"></div>
     </div>
 </div>
+
 <script>
-    function render() {
+    function renderAdmin() {
         const members = JSON.parse(localStorage.getItem('lspd_members')) || [];
+        const cases = JSON.parse(localStorage.getItem('lspd_v15_data')) || [];
         const logs = JSON.parse(localStorage.getItem('lspd_history')) || [];
+
+        // Render Spisů
+        document.getElementById('admin-case-table').innerHTML = cases.map((c, i) => `
+            <tr>
+                <td><b>${c.id}</b></td>
+                <td>${c.title}</td>
+                <td>${c.author}</td>
+                <td><span style="color:${c.status === 'UZAVŘENÝ' ? 'var(--success)' : 'var(--gold)'}">${c.status}</span></td>
+                <td style="display:flex; gap:10px;">
+                    <button class="btn-status" onclick="toggleStatus(${i})">Změnit stav</button>
+                    <button class="btn-danger" onclick="deleteCase(${i})"><i class="fa-solid fa-trash"></i></button>
+                </td>
+            </tr>
+        `).join('');
+
+        // Render Členů
         document.getElementById('member-table').innerHTML = members.map((m, i) => `
             <tr>
                 <td>${m.name} (${m.callsign})</td>
                 <td><span style="color:var(--gold)">${m.rank}</span></td>
                 <td style="font-family:monospace">${m.password}</td>
-                <td><button onclick="deleteMember(${i})" style="color:var(--danger); background:none; border:none; cursor:pointer;">Smazat</button></td>
-            </tr>`).join('');
+                <td><button onclick="deleteMember(${i})" class="btn-danger">Odebrat</button></td>
+            </tr>
+        `).join('');
+
+        // Render Logů
         document.getElementById('history-box').innerHTML = logs.map(l => `<div>${l}</div>`).join('');
     }
+
+    // --- FUNKCE PRO SPISY ---
+    function deleteCase(index) {
+        if(!confirm("Opravdu chcete tento spis trvale smazat?")) return;
+        let cases = JSON.parse(localStorage.getItem('lspd_v15_data'));
+        cases.splice(index, 1);
+        localStorage.setItem('lspd_v15_data', JSON.stringify(cases));
+        renderAdmin();
+    }
+
+    function toggleStatus(index) {
+        let cases = JSON.parse(localStorage.getItem('lspd_v15_data'));
+        cases[index].status = cases[index].status === "OTEVŘENÝ" ? "UZAVŘENÝ" : "OTEVŘENÝ";
+        localStorage.setItem('lspd_v15_data', JSON.stringify(cases));
+        renderAdmin();
+    }
+
+    // --- FUNKCE PRO ČLENY ---
     function addMember() {
         const name = document.getElementById('m-name').value;
         const callsign = document.getElementById('m-call').value;
         const password = document.getElementById('m-pass').value;
         const rank = document.getElementById('m-rank').value;
-        if(!name || !password) return alert("Jméno a heslo musí být vyplněno!");
+        if(!name || !password) return alert("Vyplňte jméno a heslo!");
+        
         let members = JSON.parse(localStorage.getItem('lspd_members')) || [];
         members.push({name, callsign, rank, password});
         localStorage.setItem('lspd_members', JSON.stringify(members));
+        
+        // Log
+        addLog(`COMMAND přidal člena ${name}`);
         location.reload();
     }
+
     function deleteMember(i) {
+        if(!confirm("Odebrat člena z databáze?")) return;
         let members = JSON.parse(localStorage.getItem('lspd_members'));
         members.splice(i, 1);
         localStorage.setItem('lspd_members', JSON.stringify(members));
-        render();
+        renderAdmin();
     }
-    function logout() { localStorage.removeItem('lspd_logged_session'); window.location.href = 'login.html'; }
-    render();
+
+    // --- POMOCNÉ FUNKCE ---
+    function addLog(text) {
+        let logs = JSON.parse(localStorage.getItem('lspd_history')) || [];
+        logs.unshift(`[${new Date().toLocaleTimeString()}] ${text}`);
+        localStorage.setItem('lspd_history', JSON.stringify(logs));
+    }
+
+    function clearLogs() {
+        localStorage.setItem('lspd_history', JSON.stringify([]));
+        renderAdmin();
+    }
+
+    function logout() {
+        localStorage.removeItem('lspd_logged_session');
+        window.location.href = 'login.html';
+    }
+
+    renderAdmin();
 </script>
 </body>
 </html>
