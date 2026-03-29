@@ -20,12 +20,12 @@
         .main { flex-grow: 1; padding: 30px; overflow-y: auto; }
         .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
         .stat-card { background: var(--card-bg); border: 1px solid var(--border); padding: 20px; border-radius: 8px; border-bottom: 3px solid var(--accent-blue); }
-        .stat-val { font-size: 32px; font-weight: bold; }
+        .stat-val { font-size: 32px; font-weight: bold; margin-top: 5px; }
         .card { background: var(--card-bg); border: 1px solid var(--border); padding: 20px; border-radius: 6px; margin-bottom: 25px; }
         table { width: 100%; border-collapse: collapse; }
         th { text-align: left; padding: 12px; color: #9ba3af; border-bottom: 2px solid var(--border); font-size: 11px; }
         td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 13px; }
-        .btn-action { padding: 5px 10px; border: none; border-radius: 3px; cursor: pointer; font-size: 11px; font-weight: bold; margin-right: 5px; }
+        .btn-act { padding: 6px 12px; border: none; border-radius: 3px; cursor: pointer; font-size: 11px; font-weight: bold; transition: 0.2s; }
         .nav-back { color: var(--accent-blue); text-decoration: none; display: block; margin-bottom: 30px; }
     </style>
 </head>
@@ -34,7 +34,7 @@
 <div class="sidebar">
     <a href="index.html" class="nav-back"><i class="fa-solid fa-chevron-left"></i> Zpět do Terminálu</a>
     <h3 style="color: var(--gold);">COMMAND PANEL</h3>
-    <div id="adm-user" style="font-size: 13px; font-weight: bold; margin-top: 20px;">--</div>
+    <div id="adm-user" style="font-size: 13px; font-weight: bold; margin-top: 20px; color: var(--gold);">--</div>
 </div>
 
 <div class="main">
@@ -54,34 +54,27 @@
     </div>
 
     <div class="card">
-        <h3>Historie Systémových Akcí</h3>
-        <div id="history-log" style="font-size: 12px; color: #9ba3af; max-height: 200px; overflow-y: auto; line-height: 1.6;"></div>
+        <h3>Historie Aktivity</h3>
+        <div id="history-log" style="font-size: 12px; color: #9ba3af; line-height: 1.8;"></div>
     </div>
 </div>
 
 <script>
-    let cases = JSON.parse(localStorage.getItem('lspd_v15_data')) || [];
-    let members = JSON.parse(localStorage.getItem('lspd_members')) || [];
-    let history = JSON.parse(localStorage.getItem('lspd_history')) || [];
-    let logged = JSON.parse(localStorage.getItem('lspd_logged_session'));
-
-    function logAction(msg) {
-        const time = new Date().toLocaleString('cs-CZ');
-        history.unshift(`[${time}] ${logged.name}: ${msg}`);
-        localStorage.setItem('lspd_history', JSON.stringify(history.slice(0, 50)));
-        render();
-    }
-
     function render() {
+        let cases = JSON.parse(localStorage.getItem('lspd_v15_data')) || [];
+        let members = JSON.parse(localStorage.getItem('lspd_members')) || [];
+        let history = JSON.parse(localStorage.getItem('lspd_history')) || [];
+        let logged = JSON.parse(localStorage.getItem('lspd_logged_session'));
+
         if(logged) document.getElementById('adm-user').innerText = logged.name;
         
-        // Stats
+        // Statistiky
         document.getElementById('st-total').innerText = cases.length;
         document.getElementById('st-users').innerText = members.length;
         document.getElementById('st-work').innerText = cases.filter(c => c.status !== 'UZAVŘENÝ').length;
         document.getElementById('st-done').innerText = cases.filter(c => c.status === 'UZAVŘENÝ').length;
 
-        // Cases Table
+        // Tabulka spisů
         const tbody = document.getElementById('admin-case-table');
         tbody.innerHTML = cases.map((c, i) => `
             <tr>
@@ -90,24 +83,36 @@
                 <td>${c.author}</td>
                 <td><span style="color:${c.status === 'UZAVŘENÝ' ? 'var(--success)' : 'var(--gold)'}">${c.status}</span></td>
                 <td>
-                    <button class="btn-action" style="background:var(--success); color:black;" onclick="closeCase(${i})">UZAVŘÍT</button>
-                    <button class="btn-action" style="background:var(--danger); color:white;" onclick="deleteCase(${i})">SMAZAT</button>
+                    <button class="btn-act" style="background:var(--success); color:black;" onclick="closeCase(${i})">UZAVŘÍT</button>
+                    <button class="btn-act" style="background:var(--danger); color:white; margin-left:5px;" onclick="deleteCase(${i})">SMAZAT</button>
                 </td>
             </tr>
         `).join('');
 
-        // History
-        document.getElementById('history-log').innerHTML = history.map(h => `<div>${h}</div>`).join('');
+        // Historie
+        document.getElementById('history-log').innerHTML = history.slice(0, 15).map(h => `<div>${h}</div>`).join('');
+    }
+
+    function logAction(msg) {
+        let history = JSON.parse(localStorage.getItem('lspd_history')) || [];
+        let logged = JSON.parse(localStorage.getItem('lspd_logged_session'));
+        const time = new Date().toLocaleString('cs-CZ');
+        history.unshift(`[${time}] ${logged.name}: ${msg}`);
+        localStorage.setItem('lspd_history', JSON.stringify(history));
+        render();
     }
 
     function closeCase(i) {
+        let cases = JSON.parse(localStorage.getItem('lspd_v15_data'));
+        const id = cases[i].id;
         cases[i].status = "UZAVŘENÝ";
         localStorage.setItem('lspd_v15_data', JSON.stringify(cases));
-        logAction(`Uzavřel spis ${cases[i].id}`);
+        logAction(`Uzavřel spis ${id}`);
     }
 
     function deleteCase(i) {
-        if(confirm("Opravdu smazat tento spis nenávratně?")) {
+        let cases = JSON.parse(localStorage.getItem('lspd_v15_data'));
+        if(confirm("Opravdu smazat?")) {
             const id = cases[i].id;
             cases.splice(i, 1);
             localStorage.setItem('lspd_v15_data', JSON.stringify(cases));

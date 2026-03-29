@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>LSPD - Case Management System</title>
+    <title>LSPD - Case Management System v16.3</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -29,7 +29,7 @@
         td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 13px; }
         #login-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 5000; display: none; align-items: center; justify-content: center; }
         .login-box { background: var(--sidebar-bg); padding: 30px; border: 1px solid var(--border); border-radius: 8px; width: 350px; text-align: center; }
-        select, input { background: #0b0e14; border: 1px solid var(--border); color: white; padding: 10px; width: 100%; margin-top: 10px; border-radius: 4px; }
+        select { background: #0b0e14; border: 1px solid var(--border); color: white; padding: 10px; width: 100%; margin-top: 10px; border-radius: 4px; }
         .btn-blue { background: var(--accent-blue); color: black; border: none; padding: 12px; border-radius: 4px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 20px; }
     </style>
 </head>
@@ -38,7 +38,6 @@
 <div id="login-overlay">
     <div class="login-box">
         <h2 style="color: var(--gold); margin-bottom: 5px;">LSPD LOGIN</h2>
-        <p style="font-size: 12px; color: var(--text-gray);">Vyberte svůj detektivní profil</p>
         <select id="login-select"></select>
         <button class="btn-blue" onclick="confirmLogin()">PŘIHLÁSIT SE</button>
     </div>
@@ -53,7 +52,7 @@
     <button class="nav-btn active"><i class="fa-solid fa-folder"></i> Evidence Spisů</button>
     
     <div id="admin-link-wrapper" style="margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border); display: none;">
-        <a href="admin.html" class="nav-btn" style="color: var(--gold);">
+        <a href="admin.html" class="nav-btn" style="color: var(--gold); border: 1px solid rgba(212, 175, 55, 0.3);">
             <i class="fa-solid fa-user-shield"></i> ADMINISTRACE
         </a>
     </div>
@@ -71,31 +70,43 @@
 </div>
 
 <script>
-    let members = JSON.parse(localStorage.getItem('lspd_members')) || [];
-    let cases = JSON.parse(localStorage.getItem('lspd_v15_data')) || [];
-    let loggedUser = JSON.parse(localStorage.getItem('lspd_logged_session')) || null;
+    function sync() {
+        let members = JSON.parse(localStorage.getItem('lspd_members')) || [];
+        let dorian = members.find(m => m.name === "Test");
+        if (dorian) {
+            dorian.rank = "COMMAND";
+            localStorage.setItem('lspd_members', JSON.stringify(members));
+        } else if (members.length === 0) {
+            members = [{ name: "Test", callsign: "1D-01", rank: "COMMAND" }];
+            localStorage.setItem('lspd_members', JSON.stringify(members));
+        }
 
-    // Pokud je systém prázdný, vytvoříme automaticky Dorian Hall s právy COMMAND
-    if (members.length === 0) {
-        members = [{ name: "Dorian Hall", callsign: "1D-01", rank: "COMMAND" }];
-        localStorage.setItem('lspd_members', JSON.stringify(members));
+        let logged = JSON.parse(localStorage.getItem('lspd_logged_session'));
+        if (logged) {
+            // Vynucená aktualizace role z databáze členů do session
+            const dbUser = members.find(m => m.name === logged.name);
+            if (dbUser) {
+                localStorage.setItem('lspd_logged_session', JSON.stringify(dbUser));
+            }
+        }
     }
+
+    sync(); // Spustit synchronizaci hned
+
+    let members = JSON.parse(localStorage.getItem('lspd_members'));
+    let cases = JSON.parse(localStorage.getItem('lspd_v15_data')) || [];
+    let loggedUser = JSON.parse(localStorage.getItem('lspd_logged_session'));
 
     function init() {
         if (!loggedUser) {
             document.getElementById('login-overlay').style.display = 'flex';
             document.getElementById('login-select').innerHTML = members.map(m => `<option value="${m.name}">${m.name}</option>`).join('');
         } else {
-            // Kontrola existence uživatele v databázi
-            const freshData = members.find(m => m.name === loggedUser.name);
-            if (!freshData) { logout(); return; }
-            loggedUser = freshData; 
-
             document.getElementById('u-name').innerText = loggedUser.name;
             document.getElementById('u-call').innerText = loggedUser.callsign || "Bez volačky";
             document.getElementById('u-role').innerText = loggedUser.rank;
 
-            // ZOBRAZENÍ ADMINISTRACE
+            // KRITICKÁ KONTROLA: Pokud je rank COMMAND, ukaž tlačítko
             if (loggedUser.rank === "COMMAND") {
                 document.getElementById('admin-link-wrapper').style.display = 'block';
             }
