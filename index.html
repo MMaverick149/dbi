@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>LSPD - Detective Bureau Terminal v8</title>
+    <title>LSPD - Detective Bureau Terminal v9</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
@@ -19,46 +19,23 @@
         }
 
         body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-dark); color: var(--text-white); margin: 0; display: flex; height: 100vh; overflow: hidden; }
-
         .sidebar { width: 260px; background-color: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; }
         .badge-area { text-align: center; padding: 20px 0; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
         .badge-icon { font-size: 40px; color: var(--gold); margin-bottom: 10px; }
-
         .main { flex-grow: 1; padding: 40px; overflow-y: auto; }
-
-        .grid {
-            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;
-            background: var(--card-bg); padding: 30px; border-radius: 4px; border: 1px solid var(--border);
-        }
-
+        .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; background: var(--card-bg); padding: 30px; border-radius: 4px; border: 1px solid var(--border); }
         .field { display: flex; flex-direction: column; gap: 8px; }
         .full { grid-column: span 3; }
         label { color: var(--accent-blue); font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; }
-
-        input, select, textarea {
-            background-color: var(--input-bg); border: 1px solid var(--border);
-            color: var(--text-white); padding: 12px; border-radius: 3px; outline: none; font-size: 13px;
-        }
+        input, select, textarea { background-color: var(--input-bg); border: 1px solid var(--border); color: var(--text-white); padding: 12px; border-radius: 3px; outline: none; font-size: 13px; }
         textarea[readonly] { background-color: #161b22; color: #8b949e; cursor: not-allowed; border-style: dashed; }
-        
         .btn-group { display: flex; justify-content: flex-end; margin-top: 25px; }
-        .btn {
-            padding: 12px 30px; border: none; border-radius: 3px; cursor: pointer;
-            font-weight: bold; text-transform: uppercase; display: flex; align-items: center; gap: 10px; font-size: 12px;
-        }
+        .btn { padding: 12px 30px; border: none; border-radius: 3px; cursor: pointer; font-weight: bold; text-transform: uppercase; display: flex; align-items: center; gap: 10px; font-size: 12px; }
         .btn-blue { background: var(--accent-blue); color: #0b0e14; }
-
         table { width: 100%; border-collapse: collapse; background: var(--card-bg); margin-top: 30px; border: 1px solid var(--border); }
         th { text-align: left; padding: 15px; color: var(--text-gray); border-bottom: 2px solid var(--border); font-size: 11px; text-transform: uppercase; }
         td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 13px; }
-        
-        .action-btns { display: flex; gap: 8px; }
-        .btn-sm { padding: 6px 12px; border-radius: 3px; cursor: pointer; border: 1px solid var(--border); background: #252d38; color: var(--text-white); font-size: 11px; }
-
-        #modal {
-            position: fixed; top:0; left:0; width:100%; height:100%;
-            background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 1000;
-        }
+        #modal { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 1000; }
         .paper { background: #fff; color: #1a1a1a; width: 750px; padding: 50px; position: relative; max-height: 90vh; overflow-y: auto; }
         .paper-header { border-bottom: 3px double #000; margin-bottom: 20px; padding-bottom: 10px; display: flex; justify-content: space-between; }
         .det-label { font-size: 10px; font-weight: 900; text-transform: uppercase; color: #555; }
@@ -70,7 +47,7 @@
 
 <div class="sidebar">
     <div class="badge-area">
-        <div class="badge-icon"><i class="fa-solid fa-user-shield"></i></div>
+        <div class="badge-icon"><i class="fa-solid fa-building-shield"></i></div>
         <div style="font-weight: bold; letter-spacing: 2px;">DETECTIVE BUREAU</div>
         <div style="font-size: 10px; color: var(--text-gray);">LOS SANTOS POLICE DEPT.</div>
     </div>
@@ -81,7 +58,7 @@
     
     <div class="grid">
         <div class="field">
-            <label>Detektiv</label>
+            <label>Vyšetřující Detektiv</label>
             <input type="text" id="officer" placeholder="Jméno Příjmení">
         </div>
         <div class="field">
@@ -108,37 +85,52 @@
         </div>
         <div class="field">
             <label>MDT ID</label>
-            <input type="text" id="mdtid" placeholder="např. 8421">
+            <input type="text" id="mdtid" placeholder="8421">
         </div>
 
         <div class="field full">
-            <label>Právní kvalifikace (Penal Code)</label>
+            <label>Právní kvalifikace (Detailní rozpis)</label>
             <select id="crime">
                 <option value="§10 Zabití">§10 Zabití</option>
                 <option value="§11 Pokus o vraždu">§11 Pokus o vraždu</option>
                 <option value="§12 (A) Vražda - Úmyslná">§12 (A) Vražda - Úmyslná</option>
                 <option value="§12 (B) Vražda - Plánovaná">§12 (B) Vražda - Plánovaná</option>
                 <option value="§13 Obchodování s lidmi">§13 Obchodování s lidmi</option>
-                <option value="§14 (A,B,C) Omezování svobody / Únos">§14 (A,B,C) Omezování svobody / Únos</option>
+                <option value="§14 (A) Omezování svobody (bez přesunu)">§14 (A) Omezování svobody (bez přesunu)</option>
+                <option value="§14 (B) Omezování svobody (s přesunem/Únos)">§14 (B) Omezování svobody (s přesunem/Únos)</option>
+                <option value="§14 (C) Omezování svobody (státní zaměstnanec)">§14 (C) Omezování svobody (státní zaměstnanec)</option>
                 <option value="§15 (B) Vyhrožování (proti úřední osobě)">§15 (B) Vyhrožování (proti úřední osobě)</option>
-                <option value="§16 (B) Vydírání">§16 (B) Vydírání</option>
-                <option value="§17 (B,C) Neoprávněné nakládání s osobními údaji">§17 (B,C) Neoprávněné nakládání s osobními údaji</option>
-                <option value="§18 Zneužití pravomoci">§18 Zneužití pravomoci</option>
+                <option value="§16 Vydírání">§16 Vydírání</option>
+                <option value="§17 (B) Neoprávněné nakládání s os. údaji (Vážná újma)">§17 (B) Neoprávněné nakládání s os. údaji (Vážná újma)</option>
+                <option value="§17 (C) Neoprávněné nakládání s os. údaji (Státní instituce)">§17 (C) Neoprávněné nakládání s os. údaji (Státní instituce)</option>
+                <option value="§18 (A) Zneužití pravomoci">§18 (A) Zneužití pravomoci</option>
+                <option value="§18 (B) Zneužití pravomoci (těžká újma)">§18 (B) Zneužití pravomoci (těžká újma)</option>
                 <option value="§19 (B) Pomluva (pro způsobení tr. stíhání)">§19 (B) Pomluva (pro způsobení tr. stíhání)</option>
-                <option value="§21 (B) Stalking">§21 (B) Stalking</option>
+                <option value="§21 (B) Stalking (vyvolání důvodné obavy)">§21 (B) Stalking (vyvolání důvodné obavy)</option>
                 <option value="§22 Násilí proti skupině obyvatel">§22 Násilí proti skupině obyvatel</option>
-                <option value="§23 (A,B,C,D) Nedovolené sexuální aktivity">§23 (A,B,C,D) Nedovolené sexuální aktivity</option>
-                <option value="§24 Znásilnění">§24 Znásilnění</option>
-                <option value="§25 (B,C,D) Krádež">§25 (B,C,D) Krádež</option>
+                <option value="§23 (A) Incest">§23 (A) Incest</option>
+                <option value="§23 (B) Zoofilie">§23 (B) Zoofilie</option>
+                <option value="§23 (C) Nekrofilie">§23 (C) Nekrofilie</option>
+                <option value="§23 (D) Pedofilní jednání">§23 (D) Pedofilní jednání</option>
+                <option value="§24 (A) Znásilnění">§24 (A) Znásilnění</option>
+                <option value="§24 (B) Znásilnění (těžká újma)">§24 (B) Znásilnění (těžká újma)</option>
+                <option value="§25 (B) Krádež (5k - 50k)">§25 (B) Krádež (5k - 50k)</option>
+                <option value="§25 (C) Krádež (50k - 500k)">§25 (C) Krádež (50k - 500k)</option>
+                <option value="§25 (D) Krádež (nad 500k)">§25 (D) Krádež (nad 500k)</option>
                 <option value="§26 Loupež">§26 Loupež</option>
-                <option value="§28 (B,C,D) Zpronevěra">§28 (B,C,D) Zpronevěra</option>
-                <option value="§30 (B,C,D) Podvod">§30 (B,C,D) Podvod</option>
+                <option value="§28 (B) Zpronevěra (10k - 100k)">§28 (B) Zpronevěra (10k - 100k)</option>
+                <option value="§28 (C) Zpronevěra (100k - 1M)">§28 (C) Zpronevěra (100k - 1M)</option>
+                <option value="§28 (D) Zpronevěra (nad 1M)">§28 (D) Zpronevěra (nad 1M)</option>
+                <option value="§30 (B) Podvod (10k - 100k)">§30 (B) Podvod (10k - 100k)</option>
+                <option value="§30 (C) Podvod (100k - 1M)">§30 (C) Podvod (100k - 1M)</option>
+                <option value="§30 (D) Podvod (nad 1M)">§30 (D) Podvod (nad 1M)</option>
                 <option value="§31 Smluvní podvod">§31 Smluvní podvod</option>
                 <option value="§32 Vandalismus">§32 Vandalismus</option>
                 <option value="§33 Žhářství">§33 Žhářství</option>
-                <option value="§34 (C,D) Zavinění dopravní nehody">§34 (C,D) Zavinění dopravní nehody</option>
+                <option value="§34 (C) Zavinění dopr. nehody (vážné zranění/smrt)">§34 (C) Zavinění dopr. nehody (vážné zranění/smrt)</option>
+                <option value="§34 (D) Ujetí od nehody">§34 (D) Ujetí od nehody</option>
                 <option value="§35 (B) Řízení bez řidičského oprávnění">§35 (B) Řízení bez řidičského oprávnění</option>
-                <option value="§44 (B) Obecné ohrožení">§44 (B) Obecné ohrožení</option>
+                <option value="§44 (B) Obecné ohrožení (smrt/těžká újma)">§44 (B) Obecné ohrožení (smrt/těžká újma)</option>
                 <option value="§45 Neposkytnutí první pomoci">§45 Neposkytnutí první pomoci</option>
                 <option value="§46 Nedovolené ozbrojování">§46 Nedovolené ozbrojování</option>
                 <option value="§48 Výroba drog">§48 Výroba drog</option>
@@ -146,40 +138,46 @@
                 <option value="§50 Držení drog">§50 Držení drog</option>
                 <option value="§52 Dealing a prodej">§52 Dealing a prodej</option>
                 <option value="§53 Korupce">§53 Korupce</option>
-                <option value="§54 Nezaplacení pokuty">§54 Nezaplacení pokuty</option>
+                <option value="§54 (B) Nezaplacení pokuty (10k - 100k)">§54 (B) Nezaplacení pokuty (10k - 100k)</option>
+                <option value="§54 (C) Nezaplacení pokuty (nad 100k)">§54 (C) Nezaplacení pokuty (nad 100k)</option>
                 <option value="§55 Opovrhování soudem">§55 Opovrhování soudem</option>
-                <option value="§56 Maření omezení (Útěk z vazby)">§56 Maření omezení (Útěk z vazby)</option>
-                <option value="§57 Ovlivňování spravedlnosti">§57 Ovlivňování spravedlnosti</option>
-                <option value="§58 Útěk">§58 Útěk</option>
+                <option value="§56 Maření omezení (Útěk z výkonu)">§56 Maření omezení (Útěk z výkonu)</option>
+                <option value="§57 (A) Odpor/maření výkonu úřední osoby">§57 (A) Odpor/maření výkonu úřední osoby</option>
+                <option value="§57 (B) Ovlivňování účastníků řízení">§57 (B) Ovlivňování účastníků řízení</option>
+                <option value="§57 (C) Maření identifikace pachatele">§57 (C) Maření identifikace pachatele</option>
+                <option value="§58 (B) Útěk (v souběhu s trestným činem)">§58 (B) Útěk (v souběhu s trestným činem)</option>
                 <option value="§60 Vyhýbání se spravedlnosti">§60 Vyhýbání se spravedlnosti</option>
-                <option value="§68 (B,D,E) Pytláctví">§68 (B,D,E) Pytláctví</option>
-                <option value="§70 Násilí na zvířatech">§70 Násilí na zvířatech</option>
+                <option value="§68 (B) Pytláctví (nad 5ks lovné zvěře)">§68 (B) Pytláctví (nad 5ks lovné zvěře)</option>
+                <option value="§68 (D) Pytláctví (nad 3ks chráněné zvěře)">§68 (D) Pytláctví (nad 3ks chráněné zvěře)</option>
+                <option value="§70 (A) Ublížení na zdraví zvířete">§70 (A) Ublížení na zdraví zvířete</option>
+                <option value="§70 (B) Týrání/Smrt zvířete">§70 (B) Týrání/Smrt zvířete</option>
+                <option value="§70 (C) Útok na služební zvíře (K9)">§70 (C) Útok na služební zvíře (K9)</option>
                 <option value="§100 Maření voleb">§100 Maření voleb</option>
                 <option value="§102 Terorismus">§102 Terorismus</option>
             </select>
         </div>
 
         <div class="field full">
-            <label>Zjištěné skutečnosti (Systémový záznam)</label>
+            <label>Zjištěné skutečnosti (Uzamčeno)</label>
             <textarea id="fixed-facts" rows="6" readonly>Na základě prvotního ohledání místa činu bylo zjištěno, že došlo k násilnému trestnému činu, při kterém byly nalezeny osoby bez známek života s poraněními odpovídajícími násilnému útoku. V rámci probíhajícího vyšetřování byly zajištěny důkazní materiály a probíhá analýza stop z místa činu.
 
 Za účelem objasnění okolností případu je žádáno o poskytnutí informací o majetku a finančních prostředcích uvedených osob. Tyto informace mohou napomoci k identifikaci možného motivu trestné činnosti, prověření majetkových poměrů obětí a zjištění případných vazeb na další osoby, které by mohly souviset s vyšetřovaným případem.</textarea>
         </div>
         <div class="field full">
-            <label>Doplňující odůvodnění (Vlastní text)</label>
-            <textarea id="custom-reason" rows="4" placeholder="Zde uveďte vaše doplňující odůvodnění (dobrovolné)..."></textarea>
+            <label>Odůvodnění detektiva (Volitelné)</label>
+            <textarea id="custom-reason" rows="4" placeholder="Pokud ponecháte prázdné, tato sekce se v DOJ verzi nezobrazí..."></textarea>
         </div>
     </div>
 
     <div class="btn-group">
-        <button class="btn btn-blue" onclick="saveDetectiveCase()"><i class="fa-solid fa-folder-check"></i> Archivovat a Schválit</button>
+        <button class="btn btn-blue" onclick="saveDetectiveCase()"><i class="fa-solid fa-file-signature"></i> Archivovat Záznam</button>
     </div>
 
     <table>
         <thead>
             <tr>
                 <th>CASE ID</th>
-                <th>SUBJEKT (MDT ID)</th>
+                <th>SUBJEKT (ID)</th>
                 <th>KVALIFIKACE</th>
                 <th>SPRÁVA</th>
             </tr>
@@ -193,7 +191,7 @@ Za účelem objasnění okolností případu je žádáno o poskytnutí informac
         <button style="position:absolute; top:20px; right:20px; border:none; background:none; cursor:pointer;" onclick="document.getElementById('modal').style.display='none'"><i class="fa-solid fa-xmark"></i></button>
         <div class="paper-header">
             <div style="font-weight: 900; font-size: 20px;">REPORT: OPERATIVNÍ PROSTŘEDEK</div>
-            <div style="text-align: right; font-size: 10px;">CONFIDENTIAL | LSPD</div>
+            <div style="text-align: right; font-size: 10px;">LSPD DETECTIVE BUREAU</div>
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
@@ -218,14 +216,14 @@ Za účelem objasnění okolností případu je žádáno o poskytnutí informac
             <div style="text-align: center; border-top: 2px solid #000; width: 250px;">
                 <div class="signature-font" id="v-sign"></div>
                 <div style="font-size: 10px; font-weight: bold;" id="v-rank"></div>
-                <div style="font-size: 8px; color: #777;">Autorizováno skrze zabezpečený terminál</div>
+                <div style="font-size: 8px; color: #777;">Autorizováno digitálním podpisem</div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    let cases = JSON.parse(localStorage.getItem('lspd_db_v9')) || [];
+    let cases = JSON.parse(localStorage.getItem('lspd_db_v10')) || [];
     updateTable();
 
     function saveDetectiveCase() {
@@ -243,18 +241,17 @@ Za účelem objasnění okolností případu je žádáno o poskytnutí informac
             customReason: document.getElementById('custom-reason').value
         };
 
-        if(!data.officer || !data.caseid || !data.subject) return alert("Musíte vyplnit aspoň Detektiva, Spis a Subjekt!");
+        if(!data.officer || !data.caseid || !data.subject) return alert("Chybí povinná pole (Detektiv, Spis nebo Subjekt)!");
 
         cases.unshift(data);
-        localStorage.setItem('lspd_db_v9', JSON.stringify(cases));
+        localStorage.setItem('lspd_db_v10', JSON.stringify(cases));
         updateTable();
         
-        // Reset polí
         document.getElementById('subject').value = "";
         document.getElementById('birthdate').value = "";
         document.getElementById('mdtid').value = "";
         document.getElementById('custom-reason').value = "";
-        alert("Záznam byl úspěšně zařazen do archivu.");
+        alert("Případ uložen do databáze.");
     }
 
     function updateTable() {
@@ -264,8 +261,8 @@ Za účelem objasnění okolností případu je žádáno o poskytnutí informac
                 <td>${c.subject} (${c.mdtid})</td>
                 <td style="font-size:11px;">${c.crime}</td>
                 <td class="action-btns">
-                    <button class="btn-sm" onclick="viewCase(${c.id})">Prohlížet</button>
-                    <button class="btn-sm" style="color:#5865F2" onclick="copyForDOJ(${c.id})">Discord DOJ</button>
+                    <button class="btn-sm" onclick="viewCase(${c.id})">NÁHLED</button>
+                    <button class="btn-sm" style="color:#5865F2" onclick="copyForDOJ(${c.id})">DISCORD DOJ</button>
                     <button class="btn-sm" style="color:#f85149" onclick="generatePDF(${c.id})">PDF</button>
                 </td>
             </tr>
@@ -283,7 +280,7 @@ Za účelem objasnění okolností případu je žádáno o poskytnutí informac
         
         let text = `<strong>Zjištěné skutečnosti:</strong><br>${c.fixedFacts}`;
         if(c.customReason.trim() !== "") {
-            text += `<br><br><strong>Doplňující odůvodnění:</strong><br>${c.customReason}`;
+            text += `<br><br><strong>Odůvodnění:</strong><br>${c.customReason}`;
         }
         document.getElementById('v-full-text').innerHTML = text;
         document.getElementById('modal').style.display = 'flex';
@@ -308,13 +305,13 @@ ${c.fixedFacts}
 \`\`\``;
 
         if(c.customReason.trim() !== "") {
-            msg += `\n**DOPLŇUJÍCÍ ODŮVODNĚNÍ:**\n\`\`\`\n${c.customReason}\n\`\`\``;
+            msg += `\n**ODŮVODNĚNÍ:**\n\`\`\`\n${c.customReason}\n\`\`\``;
         }
 
-        msg += `\n*Záznam vygenerován automatizovaným systémem Detective Bureau LSPD*`;
+        msg += `\n*Záznam autorizován skrze MDT LSPD*`;
         
         navigator.clipboard.writeText(msg);
-        alert("Zkopírováno. Odůvodnění bylo zahrnuto pouze pokud bylo vyplněno.");
+        alert("Zkopírováno pro DOJ. Sekce odůvodnění byla vložena pouze pokud nebyla prázdná.");
     }
 
     function generatePDF(id) {
@@ -324,7 +321,7 @@ ${c.fixedFacts}
         const clean = (t) => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
         doc.setFont("helvetica", "bold");
-        doc.text("LSPD DETECTIVE BUREAU - INVESTIGATION REPORT", 105, 20, {align:"center"});
+        doc.text("LSPD DETECTIVE BUREAU - REPORT", 105, 20, {align:"center"});
         doc.setFontSize(10);
         doc.text(`SPIS: ${c.caseid}`, 20, 40);
         doc.text(`KVALIFIKACE: ${clean(c.crime)}`, 20, 48);
@@ -340,7 +337,7 @@ ${c.fixedFacts}
         
         if(c.customReason.trim() !== "") {
             doc.setFont("helvetica", "bold");
-            doc.text("DOPLNUJICI ODUVODNENI:", 20, 160);
+            doc.text("ODUVODNENI:", 20, 160);
             doc.setFont("helvetica", "normal");
             doc.text(doc.splitTextToSize(clean(c.customReason), 170), 20, 170);
         }
@@ -350,7 +347,7 @@ ${c.fixedFacts}
         doc.setFont("helvetica", "normal"); doc.setFontSize(9);
         doc.text(clean(c.rank), 140, 270);
         
-        doc.save(`DETECTIVE_ARCHIVE_${c.caseid}.pdf`);
+        doc.save(`DETECTIVE_REPORT_${c.caseid}.pdf`);
     }
 </script>
 
