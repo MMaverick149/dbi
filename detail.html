@@ -9,39 +9,44 @@
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg-dark); color: white; margin: 0; display: flex; height: 100vh; }
         .sidebar { width: 260px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 15px; display: flex; flex-direction: column; }
         .main { flex-grow: 1; padding: 30px; overflow-y: auto; }
-        .case-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+        .case-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
         .grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
         .card { background: var(--card-bg); border: 1px solid var(--border); padding: 20px; border-radius: 6px; margin-bottom: 20px; }
-        textarea, input { width: 100%; background: #0b0e14; border: 1px solid var(--border); color: white; padding: 10px; border-radius: 4px; box-sizing: border-box; outline: none; margin-top: 5px; }
+        textarea, input { width: 100%; background: #0b0e14; border: 1px solid var(--border); color: white; padding: 10px; border-radius: 4px; box-sizing: border-box; outline: none; }
         textarea:read-only { background: #161b22; color: #8b949e; border-style: dashed; }
         .btn-save { background: var(--success); color: white; border: none; padding: 12px 25px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .lock-banner { background: var(--danger); color: white; padding: 10px; border-radius: 4px; text-align: center; font-weight: bold; margin-bottom: 20px; display: none; }
+        .list-item { background: #0b0e14; padding: 8px; border-radius: 4px; margin-top: 5px; font-size: 13px; border-left: 3px solid var(--gold); }
     </style>
 </head>
 <body>
+
 <div class="sidebar">
     <a href="index.html" style="color: var(--accent-blue); text-decoration: none; font-size: 13px;"><i class="fa-solid fa-arrow-left"></i> Zpět do databáze</a>
-    <h3 id="side-id" style="color: var(--gold); margin-top: 20px;">--</h3>
-    <p id="side-title" style="font-size: 14px; color: #9ba3af;">--</p>
+    <h3 id="side-id" style="color: var(--gold); margin-top: 25px;">--</h3>
+    <p id="side-title" style="font-size: 13px; color: #9ba3af;">--</p>
     <div style="flex-grow: 1;"></div>
-    <button onclick="logout()" style="background:none; border:1px solid var(--danger); color:var(--danger); padding:10px; width:100%; border-radius:4px; cursor:pointer; margin-bottom:10px;"><i class="fa-solid fa-power-off"></i> ODHLÁSIT</button>
+    <button onclick="logout()" style="background:none; border:1px solid var(--danger); color:var(--danger); padding:10px; width:100%; border-radius:4px; cursor:pointer;"><i class="fa-solid fa-power-off"></i> ODHLÁSIT</button>
 </div>
+
 <div class="main">
-    <div id="lock-msg" style="background: var(--danger); color: white; padding: 10px; border-radius: 4px; margin-bottom: 20px; display: none; text-align: center; font-weight: bold;"><i class="fa-solid fa-lock"></i> ARCHIVOVANÝ SPIS SASP (POUZE PRO ČTENÍ)</div>
+    <div id="lock-banner" class="lock-banner"><i class="fa-solid fa-lock"></i> TENTO SPIS BYL ARCHIVOVÁN A JE POUZE PRO ČTENÍ</div>
     <div class="case-header">
-        <div><h1 id="head-title" style="margin:0;">--</h1><span id="head-status" style="color: var(--gold); font-size: 13px; font-weight: bold;">--</span></div>
-        <button id="save-btn" class="btn-save" onclick="saveCase()">ULOŽIT DO DATABÁZE</button>
+        <div><h1 id="head-title" style="margin:0;">--</h1><span id="head-status" style="color: var(--gold); font-size: 12px; font-weight: bold; text-transform: uppercase;">--</span></div>
+        <button id="save-btn" class="btn-save" onclick="saveCase()"><i class="fa-solid fa-floppy-disk"></i> ULOŽIT ZPRÁVU</button>
     </div>
     <div class="grid">
         <div class="left-col">
-            <div class="card"><h3>Zpráva o incidentu</h3><textarea id="case-desc" style="height: 450px;" placeholder="Detailní popis zásahu/vyšetřování SASP..."></textarea></div>
+            <div class="card"><h3>Oficiální hlášení</h3><textarea id="case-desc" style="height: 500px;" placeholder="Zadejte podrobnosti o vyšetřování..."></textarea></div>
         </div>
         <div class="right-col">
             <div class="card"><h3>Osoby</h3><div id="list-persons"></div></div>
             <div class="card"><h3>Vozidla</h3><div id="list-vehicles"></div></div>
-            <div class="card"><h3>Zajištěné důkazy</h3><div id="list-evidence"></div></div>
+            <div class="card"><h3>Důkazy</h3><div id="list-evidence"></div></div>
         </div>
     </div>
 </div>
+
 <script>
     const urlParams = new URLSearchParams(window.location.search);
     const caseIndex = urlParams.get('id');
@@ -58,7 +63,7 @@
         
         if(currentCase.status === "UZAVŘENÝ") {
             document.getElementById('case-desc').readOnly = true;
-            document.getElementById('lock-msg').style.display = 'block';
+            document.getElementById('lock-banner').style.display = 'block';
             document.getElementById('save-btn').style.display = 'none';
         }
         renderLists();
@@ -66,7 +71,7 @@
 
     function renderLists() {
         ['persons', 'vehicles', 'evidence'].forEach(type => {
-            document.getElementById(`list-${type}`).innerHTML = (currentCase[type] || []).map(item => `<div style="padding:8px; background:#0b0e14; border-radius:4px; margin-top:5px; font-size:13px;">${item}</div>`).join('');
+            document.getElementById(`list-${type}`).innerHTML = (currentCase[type] || []).map(item => `<div class="list-item">${item}</div>`).join('');
         });
     }
 
@@ -74,7 +79,8 @@
         currentCase.description = document.getElementById('case-desc').value;
         cases[caseIndex] = currentCase;
         localStorage.setItem('lspd_v15_data', JSON.stringify(cases));
-        alert("Spis SASP byl aktualizován.");
+        // Zde by mohl být SASP_Modal, pro jednoduchost zatím alert
+        alert("Spis SASP úspěšně uložen.");
     }
 
     function logout() { localStorage.removeItem('lspd_logged_session'); window.location.href = 'login.html'; }

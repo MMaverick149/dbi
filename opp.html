@@ -111,7 +111,20 @@
         </div>
     </div>
 </div>
-
+<div id="customModal" class="modal-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 9999; align-items: center; justify-content: center;">
+    <div class="modal" style="background: var(--sidebar-bg); border: 1px solid var(--border); padding: 30px; border-radius: 8px; width: 400px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
+        <i id="modalIcon" class="fa-solid fa-circle-exclamation" style="font-size: 40px; color: var(--gold); margin-bottom: 15px;"></i>
+        <h3 id="modalTitle" style="margin-top: 0; color: white;">Systémová zpráva</h3>
+        <p id="modalText" style="color: #9ba3af; font-size: 14px; margin-bottom: 25px;">--</p>
+        <div id="modalInputContainer" style="display: none; margin-bottom: 20px;">
+            <input type="text" id="modalInput" style="width: 100%; background: #0b0e14; border: 1px solid var(--border); color: white; padding: 12px; border-radius: 4px; box-sizing: border-box;">
+        </div>
+        <div style="display: flex; gap: 10px; justify-content: center;">
+            <button id="modalBtnConfirm" style="background: var(--gold); color: black; border: none; padding: 10px 25px; border-radius: 4px; font-weight: bold; cursor: pointer;">OK</button>
+            <button id="modalBtnCancel" style="background: none; color: white; border: 1px solid var(--border); padding: 10px 25px; border-radius: 4px; cursor: pointer; display: none;">Zrušit</button>
+        </div>
+    </div>
+</div>
 <script>
     // Automatické nastavení dnešního data
     const date = new Date();
