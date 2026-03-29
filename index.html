@@ -121,8 +121,8 @@
 
     function renderCases() {
         const tbody = document.getElementById('case-table-body');
-        tbody.innerHTML = cases.map(c => `
-            <tr>
+        tbody.innerHTML = cases.map((c, index) => `
+            <tr onclick="window.location.href='detail.html?id=${index}'" style="cursor:pointer;">
                 <td><i class="fa-solid fa-file-invoice" style="color:var(--accent-blue)"></i></td>
                 <td><b>${c.id}</b></td>
                 <td>${c.title}</td>
