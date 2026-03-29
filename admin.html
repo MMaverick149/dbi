@@ -15,8 +15,8 @@
             --danger: #f85149;
             --success: #2ea043;
         }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg-dark); color: white; margin: 0; display: flex; height: 100vh; overflow: hidden; }
-        .sidebar { width: 260px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 15px; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg-dark); color: white; margin: 0; display: flex; height: 100vh; }
+        .sidebar { width: 260px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 15px; display: flex; flex-direction: column; }
         .main { flex-grow: 1; padding: 30px; overflow-y: auto; }
         .card { background: var(--card-bg); border: 1px solid var(--border); padding: 20px; border-radius: 6px; margin-bottom: 25px; }
         table { width: 100%; border-collapse: collapse; }
@@ -28,54 +28,30 @@
     </style>
 </head>
 <body>
-
 <div class="sidebar">
     <a href="index.html" style="color: var(--accent-blue); text-decoration: none; font-size: 13px;"><i class="fa-solid fa-arrow-left"></i> Zpět</a>
     <h3 style="color: var(--gold); margin-top: 20px;">COMMAND PANEL</h3>
+    <div style="flex-grow: 1;"></div>
+    <button onclick="logout()" style="background:none; border:1px solid var(--danger); color:var(--danger); padding:10px; width:100%; border-radius:4px; cursor:pointer; margin-bottom:10px;"><i class="fa-solid fa-power-off"></i> ODHLÁSIT</button>
 </div>
-
 <div class="main">
     <div class="card">
-        <h3><i class="fa-solid fa-users"></i> Správa personálu</h3>
-        <div style="margin-bottom: 15px;">
-            <input type="text" id="m-name" placeholder="Jméno">
-            <input type="text" id="m-call" placeholder="Volačka">
-            <select id="m-rank">
-                <option value="OFFICER">OFFICER</option>
-                <option value="DETEKTIV">DETEKTIV</option>
-                <option value="COMMAND">COMMAND</option>
-            </select>
-            <button class="btn-add" onclick="addMember()">PŘIDAT</button>
-        </div>
-        <table>
-            <thead><tr><th>JMÉNO</th><th>RANK</th><th>AKCE</th></tr></thead>
-            <tbody id="member-table"></tbody>
-        </table>
+        <h3>Správa personálu</h3>
+        <div style="margin-bottom: 15px;"><input type="text" id="m-name" placeholder="Jméno"><input type="text" id="m-call" placeholder="Volačka"><select id="m-rank"><option value="OFFICER">OFFICER</option><option value="DETEKTIV">DETEKTIV</option><option value="COMMAND">COMMAND</option></select><button class="btn-add" onclick="addMember()">PŘIDAT</button></div>
+        <table><thead><tr><th>JMÉNO</th><th>RANK</th><th>AKCE</th></tr></thead><tbody id="member-table"></tbody></table>
     </div>
-
     <div class="card">
-        <h3><i class="fa-solid fa-history"></i> Logy akcí</h3>
+        <div style="display:flex; justify-content:space-between; align-items:center;"><h3>Historie logů</h3><button onclick="clearLogs()" style="color:var(--danger); background:none; border:none; cursor:pointer; font-size:10px;">SMAZAT HISTORII</button></div>
         <div id="history-box" class="history-box"></div>
-        <button onclick="clearLogs()" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:10px; margin-top:5px;">Smazat historii</button>
     </div>
 </div>
-
 <script>
     function render() {
         const members = JSON.parse(localStorage.getItem('lspd_members')) || [];
         const logs = JSON.parse(localStorage.getItem('lspd_history')) || [];
-
-        document.getElementById('member-table').innerHTML = members.map((m, i) => `
-            <tr>
-                <td>${m.name} (${m.callsign})</td>
-                <td><span style="color:var(--gold)">${m.rank}</span></td>
-                <td><button onclick="deleteMember(${i})" style="color:var(--danger); background:none; border:none; cursor:pointer;">Odebrat</button></td>
-            </tr>
-        `).join('');
-
+        document.getElementById('member-table').innerHTML = members.map((m, i) => `<tr><td>${m.name} (${m.callsign})</td><td>${m.rank}</td><td><button onclick="deleteMember(${i})" style="color:var(--danger); background:none; border:none; cursor:pointer;">Odebrat</button></td></tr>`).join('');
         document.getElementById('history-box').innerHTML = logs.map(l => `<div>${l}</div>`).join('');
     }
-
     function addMember() {
         const name = document.getElementById('m-name').value;
         const callsign = document.getElementById('m-call').value;
@@ -86,19 +62,14 @@
         localStorage.setItem('lspd_members', JSON.stringify(members));
         render();
     }
-
     function deleteMember(i) {
         let members = JSON.parse(localStorage.getItem('lspd_members'));
         members.splice(i, 1);
         localStorage.setItem('lspd_members', JSON.stringify(members));
         render();
     }
-
-    function clearLogs() {
-        localStorage.setItem('lspd_history', JSON.stringify([]));
-        render();
-    }
-
+    function clearLogs() { localStorage.setItem('lspd_history', JSON.stringify([])); render(); }
+    function logout() { localStorage.removeItem('lspd_logged_session'); window.location.href = 'login.html'; }
     render();
 </script>
 </body>

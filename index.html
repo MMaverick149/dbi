@@ -17,23 +17,19 @@
             --success: #2ea043;
         }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg-dark); color: #e1e4e8; margin: 0; display: flex; height: 100vh; overflow: hidden; }
-        
         .sidebar { width: 260px; min-width: 260px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 15px; display: flex; flex-direction: column; box-sizing: border-box; }
         .user-card { background: #0b0e14; padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid var(--border); }
         .role-badge { font-size: 10px; background: var(--gold); color: black; padding: 2px 6px; border-radius: 3px; font-weight: bold; margin-top: 5px; display: inline-block; text-transform: uppercase; }
-
         .nav-group { flex-grow: 1; display: flex; flex-direction: column; gap: 5px; }
         .nav-btn { background: none; border: 1px solid transparent; color: var(--text-gray); padding: 12px; text-align: left; cursor: pointer; border-radius: 4px; display: flex; align-items: center; gap: 10px; font-size: 13px; text-decoration: none; transition: 0.2s; }
         .nav-btn:hover { background: #1c212b; color: white; }
         .nav-btn.active { background: var(--accent-blue); color: #0b0e14; font-weight: bold; }
-
         .admin-link { color: var(--gold) !important; border: 1px solid rgba(212, 175, 55, 0.3) !important; margin-top: 10px; }
-
         .main { flex-grow: 1; padding: 30px; overflow-y: auto; }
         table { width: 100%; border-collapse: collapse; background: var(--card-bg); border: 1px solid var(--border); }
         th { text-align: left; padding: 15px; color: var(--text-gray); border-bottom: 2px solid var(--border); font-size: 11px; text-transform: uppercase; }
         td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 13px; }
-
+        tr:hover { background: rgba(74, 158, 255, 0.05); cursor: pointer; }
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 100; }
         .modal { background: var(--sidebar-bg); padding: 25px; border-radius: 8px; border: 1px solid var(--border); width: 400px; }
         input { background: var(--bg-dark); border: 1px solid var(--border); color: white; padding: 12px; width: 100%; border-radius: 4px; box-sizing: border-box; margin: 10px 0; outline: none; }
@@ -58,40 +54,33 @@
 
 <div class="sidebar">
     <div class="user-card">
-        <div id="u-name" style="font-weight: bold; font-size: 15px;">Dorian Hall</div>
+        <div id="u-name" style="font-weight: bold; font-size: 15px;">--</div>
         <div id="u-call" style="color: var(--gold); font-size: 11px;">--</div>
-        <div id="u-role" class="role-badge">COMMAND</div>
+        <div id="u-role" class="role-badge">--</div>
     </div>
-    
     <div class="nav-group">
         <button class="nav-btn active"><i class="fa-solid fa-folder"></i> Evidence Spisů</button>
         <button class="nav-btn" onclick="openModal()"><i class="fa-solid fa-plus-circle"></i> Nový Spis</button>
-        
         <a href="opp.html" class="nav-btn"><i class="fa-solid fa-file-signature"></i> OPP Generátor</a>
-        
-        <a href="admin.html" id="admin-btn" class="nav-btn admin-link" style="display: none;">
-            <i class="fa-solid fa-user-shield"></i> ADMINISTRACE
-        </a>
+        <a href="admin.html" id="admin-btn" class="nav-btn admin-link" style="display: none;"><i class="fa-solid fa-user-shield"></i> ADMINISTRACE</a>
     </div>
-
     <button class="nav-btn" onclick="logout()" style="color: var(--danger); border-top: 1px solid var(--border); padding-top: 15px; margin-top: 10px;"><i class="fa-solid fa-power-off"></i> Odhlásit</button>
 </div>
 
 <div class="main">
-    <h2 style="font-weight: 300;">Centrální Databáze Spisů</h2>
+    <h2 style="font-weight: 300; margin-bottom: 25px;">Centrální Databáze Spisů</h2>
     <table>
-        <thead>
-            <tr><th>STATUS</th><th>ID</th><th>NÁZEV</th><th>AUTOR</th><th>STAV</th></tr>
-        </thead>
+        <thead><tr><th>STATUS</th><th>ID</th><th>NÁZEV</th><th>AUTOR</th><th>STAV</th></tr></thead>
         <tbody id="case-table-body"></tbody>
     </table>
 </div>
 
 <script>
     let cases = JSON.parse(localStorage.getItem('lspd_v15_data')) || [];
-    let loggedUser = JSON.parse(localStorage.getItem('lspd_logged_session')) || {name: "Dorian Hall", rank: "COMMAND", callsign: "1D-01"};
+    let loggedUser = JSON.parse(localStorage.getItem('lspd_logged_session'));
 
     function init() {
+        if(!loggedUser) { window.location.href = 'login.html'; return; }
         if(loggedUser.name === "Dorian Hall") loggedUser.rank = "COMMAND";
         document.getElementById('u-name').innerText = loggedUser.name;
         document.getElementById('u-call').innerText = loggedUser.callsign || "Bez volačky";
@@ -107,22 +96,16 @@
         const id = document.getElementById('caseId').value;
         const title = document.getElementById('caseTitle').value;
         if(!id || !title) return;
-
-        cases.unshift({ id, title, author: loggedUser.name, status: "OTEVŘENÝ" });
+        cases.unshift({ id, title, author: loggedUser.name, status: "OTEVŘENÝ", description: "", persons: [], vehicles: [], evidence: [] });
         localStorage.setItem('lspd_v15_data', JSON.stringify(cases));
-        
-        let logs = JSON.parse(localStorage.getItem('lspd_history')) || [];
-        logs.unshift(`[${new Date().toLocaleTimeString()}] ${loggedUser.name} vytvořil spis ${id}`);
-        localStorage.setItem('lspd_history', JSON.stringify(logs));
-
         closeModal();
         renderCases();
     }
 
     function renderCases() {
         const tbody = document.getElementById('case-table-body');
-        tbody.innerHTML = cases.map((c, index) => `
-            <tr onclick="window.location.href='detail.html?id=${index}'" style="cursor:pointer;">
+        tbody.innerHTML = cases.map((c, i) => `
+            <tr onclick="window.location.href='detail.html?id=${i}'">
                 <td><i class="fa-solid fa-file-invoice" style="color:var(--accent-blue)"></i></td>
                 <td><b>${c.id}</b></td>
                 <td>${c.title}</td>
@@ -132,7 +115,7 @@
         `).join('');
     }
 
-    function logout() { localStorage.removeItem('lspd_logged_session'); location.reload(); }
+    function logout() { localStorage.removeItem('lspd_logged_session'); window.location.href = 'login.html'; }
     init();
 </script>
 </body>

@@ -16,148 +16,78 @@
             --success: #2ea043;
         }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg-dark); color: white; margin: 0; display: flex; height: 100vh; }
-        .sidebar { width: 260px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 15px; }
+        .sidebar { width: 260px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 15px; display: flex; flex-direction: column; }
         .main { flex-grow: 1; padding: 30px; overflow-y: auto; }
-        
         .case-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
         .grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
         .card { background: var(--card-bg); border: 1px solid var(--border); padding: 20px; border-radius: 6px; margin-bottom: 20px; }
-        
-        label { display: block; font-size: 11px; color: #9ba3af; text-transform: uppercase; margin-bottom: 5px; margin-top: 15px; }
-        textarea, input { width: 100%; background: #0b0e14; border: 1px solid var(--border); color: white; padding: 10px; border-radius: 4px; box-sizing: border-box; outline: none; }
-        textarea:focus { border-color: var(--accent-blue); }
-        
-        .tag-input-group { display: flex; gap: 5px; margin-top: 5px; }
+        textarea, input { width: 100%; background: #0b0e14; border: 1px solid var(--border); color: white; padding: 10px; border-radius: 4px; box-sizing: border-box; outline: none; margin-top: 5px; }
+        .tag-input-group { display: flex; gap: 5px; }
         .btn-add { background: var(--accent-blue); color: black; border: none; padding: 0 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
         .list-item { background: #0b0e14; padding: 8px; border-radius: 4px; margin-top: 5px; display: flex; justify-content: space-between; font-size: 13px; border-left: 3px solid var(--accent-blue); }
-        .btn-save { background: var(--success); color: white; border: none; padding: 12px 25px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 15px; }
+        .btn-save { background: var(--success); color: white; border: none; padding: 12px 25px; border-radius: 4px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
-
 <div class="sidebar">
     <a href="index.html" style="color: var(--accent-blue); text-decoration: none; font-size: 13px;"><i class="fa-solid fa-arrow-left"></i> Zpět do databáze</a>
     <h3 id="side-id" style="color: var(--gold); margin-top: 20px;">--</h3>
     <p id="side-title" style="font-size: 14px; color: #9ba3af;">--</p>
+    <div style="flex-grow: 1;"></div>
+    <button onclick="logout()" style="background:none; border:1px solid var(--danger); color:var(--danger); padding:10px; width:100%; border-radius:4px; cursor:pointer; margin-bottom:10px;"><i class="fa-solid fa-power-off"></i> ODHLÁSIT SE</button>
 </div>
-
 <div class="main">
     <div class="case-header">
-        <div>
-            <h1 id="head-title" style="margin:0;">Načítání spisu...</h1>
-            <span id="head-status" style="color: var(--gold); font-size: 13px; font-weight: bold;">OTEVŘENÝ</span>
-        </div>
+        <div><h1 id="head-title" style="margin:0;">--</h1><span id="head-status" style="color: var(--gold); font-size: 13px; font-weight: bold;">--</span></div>
         <button class="btn-save" onclick="saveCase()"><i class="fa-solid fa-floppy-disk"></i> ULOŽIT SPIS</button>
     </div>
-
     <div class="grid">
         <div class="left-col">
-            <div class="card">
-                <h3><i class="fa-solid fa-align-left"></i> Popis události</h3>
-                <textarea id="case-desc" style="height: 300px;" placeholder="Zde popište průběh vyšetřování..."></textarea>
-            </div>
+            <div class="card"><h3>Popis události</h3><textarea id="case-desc" style="height: 400px;" placeholder="Průběh vyšetřování..."></textarea></div>
         </div>
-
         <div class="right-col">
-            <div class="card">
-                <h3><i class="fa-solid fa-user-tag"></i> Podezřelé osoby</h3>
-                <div class="tag-input-group">
-                    <input type="text" id="in-person" placeholder="Jméno osoby...">
-                    <button class="btn-add" onclick="addItem('persons', 'in-person')">+</button>
-                </div>
-                <div id="list-persons"></div>
-            </div>
-
-            <div class="card">
-                <h3><i class="fa-solid fa-car"></i> Vozidla</h3>
-                <div class="tag-input-group">
-                    <input type="text" id="in-vehicle" placeholder="SPZ / Model...">
-                    <button class="btn-add" onclick="addItem('vehicles', 'in-vehicle')">+</button>
-                </div>
-                <div id="list-vehicles"></div>
-            </div>
-
-            <div class="card">
-                <h3><i class="fa-solid fa-box-open"></i> Důkazy (Linky)</h3>
-                <div class="tag-input-group">
-                    <input type="text" id="in-evidence" placeholder="URL na fotku/video...">
-                    <button class="btn-add" onclick="addItem('evidence', 'in-evidence')">+</button>
-                </div>
-                <div id="list-evidence"></div>
-            </div>
+            <div class="card"><h3>Osoby</h3><div class="tag-input-group"><input type="text" id="in-person"><button class="btn-add" onclick="addItem('persons', 'in-person')">+</button></div><div id="list-persons"></div></div>
+            <div class="card"><h3>Vozidla</h3><div class="tag-input-group"><input type="text" id="in-vehicle"><button class="btn-add" onclick="addItem('vehicles', 'in-vehicle')">+</button></div><div id="list-vehicles"></div></div>
+            <div class="card"><h3>Důkazy</h3><div class="tag-input-group"><input type="text" id="in-evidence"><button class="btn-add" onclick="addItem('evidence', 'in-evidence')">+</button></div><div id="list-evidence"></div></div>
         </div>
     </div>
 </div>
-
 <script>
-    // Získání ID z URL adresy
     const urlParams = new URLSearchParams(window.location.search);
     const caseIndex = urlParams.get('id');
     let cases = JSON.parse(localStorage.getItem('lspd_v15_data')) || [];
     let currentCase = cases[caseIndex];
 
     function init() {
-        if (!currentCase) {
-            alert("Spis nenalezen!");
-            window.location.href = 'index.html';
-            return;
-        }
-
-        // Pokud pole v objektu neexistují, vytvoříme je
-        if(!currentCase.description) currentCase.description = "";
-        if(!currentCase.persons) currentCase.persons = [];
-        if(!currentCase.vehicles) currentCase.vehicles = [];
-        if(!currentCase.evidence) currentCase.evidence = [];
-
-        // Naplnění dat
+        if(!currentCase) return window.location.href = 'index.html';
         document.getElementById('side-id').innerText = currentCase.id;
         document.getElementById('side-title').innerText = currentCase.title;
         document.getElementById('head-title').innerText = currentCase.title;
         document.getElementById('head-status').innerText = currentCase.status;
-        document.getElementById('case-desc').value = currentCase.description;
-
+        document.getElementById('case-desc').value = currentCase.description || "";
         renderLists();
     }
-
     function renderLists() {
-        const types = ['persons', 'vehicles', 'evidence'];
-        types.forEach(type => {
-            const container = document.getElementById(`list-${type}`);
-            container.innerHTML = currentCase[type].map((item, i) => `
-                <div class="list-item">
-                    ${item}
-                    <i class="fa-solid fa-times" style="color:var(--danger); cursor:pointer;" onclick="removeItem('${type}', ${i})"></i>
-                </div>
-            `).join('');
+        ['persons', 'vehicles', 'evidence'].forEach(type => {
+            document.getElementById(`list-${type}`).innerHTML = (currentCase[type] || []).map((item, i) => `<div class="list-item">${item}<i class="fa-solid fa-times" onclick="removeItem('${type}', ${i})" style="color:var(--danger); cursor:pointer;"></i></div>`).join('');
         });
     }
-
     function addItem(type, inputId) {
         const val = document.getElementById(inputId).value;
         if(!val) return;
+        if(!currentCase[type]) currentCase[type] = [];
         currentCase[type].push(val);
         document.getElementById(inputId).value = "";
         renderLists();
     }
-
-    function removeItem(type, i) {
-        currentCase[type].splice(i, 1);
-        renderLists();
-    }
-
+    function removeItem(type, i) { currentCase[type].splice(i, 1); renderLists(); }
     function saveCase() {
         currentCase.description = document.getElementById('case-desc').value;
         cases[caseIndex] = currentCase;
         localStorage.setItem('lspd_v15_data', JSON.stringify(cases));
-        
-        // Logování akce
-        let logs = JSON.parse(localStorage.getItem('lspd_history')) || [];
-        logs.unshift(`[${new Date().toLocaleTimeString()}] Aktualizován spis ${currentCase.id}`);
-        localStorage.setItem('lspd_history', JSON.stringify(logs));
-
-        alert("Spis byl úspěšně uložen!");
+        alert("Uloženo!");
     }
-
+    function logout() { localStorage.removeItem('lspd_logged_session'); window.location.href = 'login.html'; }
     init();
 </script>
 </body>
