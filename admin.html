@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>LSPD - Personnel Management</title>
+    <title>LSPD - Personnel Admin</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -10,163 +10,102 @@
             --sidebar-bg: #151921;
             --card-bg: #1c212b;
             --accent-blue: #4a9eff;
-            --text-gray: #9ba3af;
-            --text-white: #e1e4e8;
             --border: #2d333b;
+            --gold: #d4af37;
             --danger: #f85149;
             --success: #2ea043;
-            --gold: #d4af37;
         }
-
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-dark); color: var(--text-white); margin: 0; display: flex; height: 100vh; }
-
-        /* SIDEBAR ADMIN */
-        .sidebar { width: 260px; background-color: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; }
-        .nav-btn { background: none; border: 1px solid transparent; color: var(--text-gray); padding: 12px; text-align: left; cursor: pointer; margin-bottom: 5px; border-radius: 4px; display: flex; align-items: center; gap: 10px; transition: 0.2s; text-decoration: none; font-size: 13px; }
-        .nav-btn:hover { background: #1c212b; color: white; }
-        .nav-btn.active { background: var(--gold); color: #0b0e14; font-weight: bold; }
-
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg-dark); color: white; margin: 0; display: flex; height: 100vh; }
+        .sidebar { width: 250px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 20px; }
         .main { flex-grow: 1; padding: 40px; overflow-y: auto; }
-
-        /* TABLE PERSONNEL */
-        table { width: 100%; border-collapse: collapse; background: var(--card-bg); border: 1px solid var(--border); border-radius: 4px; }
-        th { text-align: left; padding: 15px; color: var(--text-gray); border-bottom: 2px solid var(--border); font-size: 11px; text-transform: uppercase; }
-        td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 13px; }
-
-        .rank-badge { padding: 3px 8px; border-radius: 3px; font-size: 10px; font-weight: bold; text-transform: uppercase; }
-        .rank-cmd { background: var(--gold); color: black; }
-        .rank-det { background: var(--accent-blue); color: white; }
-
-        .form-card { background: var(--sidebar-bg); border: 1px solid var(--border); padding: 25px; border-radius: 6px; margin-bottom: 30px; }
-        .grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 15px; align-items: end; }
-        
-        label { color: var(--accent-blue); font-size: 11px; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 5px; }
-        input, select { background: var(--bg-dark); border: 1px solid var(--border); color: white; padding: 10px; border-radius: 4px; width: 100%; box-sizing: border-box; }
-        
-        .btn-add { background: var(--success); color: white; border: none; padding: 10px; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; }
-        .btn-del { background: none; border: 1px solid var(--danger); color: var(--danger); padding: 5px 10px; border-radius: 3px; cursor: pointer; }
-        .btn-del:hover { background: var(--danger); color: white; }
-
-        #notif { position: fixed; top: 20px; right: 20px; padding: 15px 25px; border-radius: 4px; display: none; z-index: 1000; }
+        .card { background: var(--card-bg); border: 1px solid var(--border); padding: 20px; border-radius: 4px; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 12px; color: #9ba3af; border-bottom: 2px solid var(--border); font-size: 11px; }
+        td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 13px; }
+        input, select { background: #0b0e14; border: 1px solid var(--border); color: white; padding: 8px; border-radius: 4px; }
+        .btn { padding: 8px 15px; border: none; border-radius: 3px; cursor: pointer; font-weight: bold; }
+        .btn-add { background: var(--success); color: white; }
+        .btn-del { background: none; border: 1px solid var(--danger); color: var(--danger); }
+        .nav-link { color: var(--accent-blue); text-decoration: none; display: block; margin-top: 20px; font-size: 13px; }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
-    <div style="text-align: center; margin-bottom: 30px;">
-        <i class="fa-solid fa-users-gear" style="font-size: 40px; color: var(--gold);"></i>
-        <h3 style="margin: 10px 0 0 0;">PERSONNEL</h3>
-        <span style="font-size: 10px; color: var(--text-gray);">ADMIN PANEL</span>
-    </div>
-    
-    <a href="index.html" class="nav-btn"><i class="fa-solid fa-arrow-left"></i> Zpět do Terminálu</a>
-    <div class="nav-btn active"><i class="fa-solid fa-user-pen"></i> Správa Členů</div>
+    <h2 style="color: var(--gold); font-size: 18px;">LSPD ADMIN</h2>
+    <p style="font-size: 11px; color: #9ba3af;">Správa divize a oprávnění</p>
+    <a href="index.html" class="nav-link"><i class="fa-solid fa-arrow-left"></i> Zpět do Terminálu</a>
 </div>
 
 <div class="main">
-    <h2 style="font-weight: 300;">Databáze Detektivní Divize</h2>
-
-    <div class="form-card">
-        <div class="grid">
-            <div>
-                <label>Jméno a Příjmení</label>
-                <input type="text" id="new-name" placeholder="např. Dorian Hall">
-            </div>
-            <div>
-                <label>Pozice / Hodnost</label>
-                <select id="new-rank">
-                    <option value="DETECTIVE">Detektiv</option>
-                    <option value="COMMAND">Vedení (Full Access)</option>
-                </select>
-            </div>
-            <div>
-                <button class="btn-add" onclick="addUser()">PŘIDAT ČLENA</button>
-            </div>
+    <div class="card">
+        <h3>Přidat nového člena</h3>
+        <div style="display: flex; gap: 10px;">
+            <input type="text" id="add-name" placeholder="Jméno a Příjmení" style="flex: 2;">
+            <select id="add-rank" style="flex: 1;">
+                <option value="DETECTIVE">Detektiv</option>
+                <option value="COMMAND">Vedení</option>
+            </select>
+            <button class="btn btn-add" onclick="addNewUser()">PŘIDAT</button>
         </div>
     </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>JMÉNO A PŘÍJMENÍ</th>
-                <th>OPRÁVNĚNÍ</th>
-                <th>STAV</th>
-                <th style="text-align: right;">AKCE</th>
-            </tr>
-        </thead>
-        <tbody id="user-list">
-            </tbody>
-    </table>
+    <div class="card">
+        <h3>Seznam členů divize</h3>
+        <table>
+            <thead>
+                <tr><th>JMÉNO</th><th>VOLAČKA</th><th>POZICE</th><th>AKCE</th></tr>
+            </thead>
+            <tbody id="user-table-body"></tbody>
+        </table>
+    </div>
 </div>
 
-<div id="notif"></div>
-
 <script>
-    // Inicializace databáze uživatelů
-    let users = JSON.parse(localStorage.getItem('lspd_members')) || [
-        { name: "Dorian Hall", role: "COMMAND" }
+    let members = JSON.parse(localStorage.getItem('lspd_members')) || [
+        { name: "Dorian Hall", callsign: "1D-01", rank: "COMMAND" }
     ];
 
-    function save() {
-        localStorage.setItem('lspd_members', JSON.stringify(users));
-        render();
-    }
-
-    function addUser() {
-        const name = document.getElementById('new-name').value;
-        const role = document.getElementById('new-rank').value;
-
-        if(!name) return showNotif("Zadejte jméno!", "var(--danger)");
-        
-        users.push({ name, role });
-        document.getElementById('new-name').value = '';
-        save();
-        showNotif("Člen přidán do databáze", "var(--success)");
-    }
-
-    function removeUser(index) {
-        if(users.length === 1) return showNotif("Nelze smazat posledního člena!", "var(--danger)");
-        users.splice(index, 1);
-        save();
-    }
-
-    function changeRole(index, newRole) {
-        users[index].role = newRole;
-        save();
-        showNotif("Pozice aktualizována", "var(--accent-blue)");
-    }
-
-    function render() {
-        const tbody = document.getElementById('user-list');
-        tbody.innerHTML = users.map((u, i) => `
+    function renderMembers() {
+        const tbody = document.getElementById('user-table-body');
+        tbody.innerHTML = members.map((m, i) => `
             <tr>
-                <td><b>${u.name}</b></td>
+                <td><b>${m.name}</b></td>
+                <td>${m.callsign || '--'}</td>
                 <td>
-                    <select onchange="changeRole(${i}, this.value)" style="width: auto; padding: 5px;">
-                        <option value="DETECTIVE" ${u.role === 'DETECTIVE' ? 'selected' : ''}>Detective</option>
-                        <option value="COMMAND" ${u.role === 'COMMAND' ? 'selected' : ''}>Command</option>
+                    <select onchange="updateRank(${i}, this.value)">
+                        <option value="DETECTIVE" ${m.rank === 'DETECTIVE' ? 'selected' : ''}>Detektiv</option>
+                        <option value="COMMAND" ${m.rank === 'COMMAND' ? 'selected' : ''}>Vedení</option>
                     </select>
                 </td>
-                <td>
-                    <span class="rank-badge ${u.role === 'COMMAND' ? 'rank-cmd' : 'rank-det'}">${u.role}</span>
-                </td>
-                <td style="text-align: right;">
-                    <button class="btn-del" onclick="removeUser(${i})"><i class="fa-solid fa-trash"></i></button>
-                </td>
+                <td><button class="btn btn-del" onclick="deleteMember(${i})">ODSTRANIT</button></td>
             </tr>
         `).join('');
+        localStorage.setItem('lspd_members', JSON.stringify(members));
     }
 
-    function showNotif(msg, color) {
-        const n = document.getElementById('notif');
-        n.innerText = msg;
-        n.style.background = color;
-        n.style.display = 'block';
-        setTimeout(() => n.style.display = 'none', 3000);
+    function addNewUser() {
+        const name = document.getElementById('add-name').value;
+        const rank = document.getElementById('add-rank').value;
+        if(!name) return;
+        members.push({ name, rank, callsign: "" });
+        document.getElementById('add-name').value = "";
+        renderMembers();
     }
 
-    render();
+    function updateRank(index, newRank) {
+        members[index].rank = newRank;
+        renderMembers();
+    }
+
+    function deleteMember(index) {
+        if(confirm("Opravdu odstranit tohoto člena?")) {
+            members.splice(index, 1);
+            renderMembers();
+        }
+    }
+
+    renderMembers();
 </script>
-
 </body>
 </html>
