@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <title>LSPD - Můj Profil</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { --bg-dark: #0b0e14; --sidebar-bg: #151921; --card-bg: #1c212b; --accent-blue: #4a9eff; --border: #2d333b; --gold: #d4af37; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg-dark); color: white; margin: 0; display: flex; }
+        .sidebar { width: 260px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 15px; height: 100vh; }
+        .main { flex-grow: 1; padding: 40px; overflow-y: auto; }
+        .profile-header { display: flex; align-items: center; gap: 20px; margin-bottom: 40px; }
+        .avatar { width: 80px; height: 80px; background: var(--card-bg); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px; border: 2px solid var(--accent-blue); }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 40px; }
+        .stat-card { background: var(--card-bg); padding: 20px; border-radius: 8px; border: 1px solid var(--border); text-align: center; }
+        .stat-num { font-size: 32px; font-weight: bold; color: var(--accent-blue); }
+        .msg-card { background: rgba(74, 158, 255, 0.1); border: 1px solid var(--accent-blue); padding: 20px; border-radius: 8px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+<div class="sidebar">
+    <a href="index.html" style="color: var(--accent-blue); text-decoration: none;"><i class="fa-solid fa-arrow-left"></i> Zpět do databáze</a>
+</div>
+<div class="main">
+    <div class="profile-header">
+        <div class="avatar"><i class="fa-solid fa-user-shield"></i></div>
+        <div>
+            <h1 id="p-name" style="margin:0;">--</h1>
+            <div id="p-rank" style="color: var(--gold); font-weight: bold; text-transform: uppercase;">--</div>
+            <div id="p-call" style="color: #9ba3af;">--</div>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card"><div class="stat-num" id="s-total">0</div><div>Moje Spisy</div></div>
+        <div class="stat-card"><div class="stat-num" id="s-open" style="color: var(--gold);">0</div><div>Otevřené</div></div>
+        <div class="stat-card"><div class="stat-num" id="s-closed" style="color: #2ea043;">0</div><div>Uzavřené</div></div>
+    </div>
+
+    <h3><i class="fa-solid fa-envelope"></i> Zprávy od vedení divize</h3>
+    <div id="message-container">
+        <div class="msg-card">
+            <div style="font-weight: bold; margin-bottom: 5px;">HLAVNÍ VELITELSTVÍ</div>
+            <div style="font-size: 14px;">Vítejte ve svém osobním profilu. Zde uvidíte přehled své práce a důležitá oznámení.</div>
+            <div style="font-size: 11px; color: #9ba3af; margin-top: 10px;">Dnes v 08:00</div>
+        </div>
+    </div>
+</div>
+<script>
+    const user = JSON.parse(localStorage.getItem('lspd_logged_session'));
+    const cases = JSON.parse(localStorage.getItem('lspd_v15_data')) || [];
+
+    if(!user) window.location.href = 'login.html';
+
+    document.getElementById('p-name').innerText = user.name;
+    document.getElementById('p-rank').innerText = user.rank;
+    document.getElementById('p-call').innerText = user.callsign;
+
+    const myCases = cases.filter(c => c.author === user.name);
+    document.getElementById('s-total').innerText = myCases.length;
+    document.getElementById('s-open').innerText = myCases.filter(c => c.status !== 'UZAVŘENÝ').length;
+    document.getElementById('s-closed').innerText = myCases.filter(c => c.status === 'UZAVŘENÝ').length;
+
+    // Pokud je uživatel COMMAND, může přidat zprávu (volitelné pro budoucno)
+</script>
+</body>
+</html>

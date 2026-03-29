@@ -5,156 +5,46 @@
     <title>LSPD - Login</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root {
-            --bg-dark: #0b0e14;
-            --card-bg: #151921;
-            --accent-blue: #4a9eff;
-            --border: #2d333b;
-            --gold: #d4af37;
-            --text-gray: #9ba3af;
-        }
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background: var(--bg-dark);
-            color: white;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            overflow: hidden;
-        }
-        .login-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            padding: 40px;
-            border-radius: 8px;
-            width: 350px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        .logo {
-            font-size: 50px;
-            color: var(--accent-blue);
-            margin-bottom: 10px;
-        }
-        h2 {
-            margin: 0 0 5px 0;
-            font-weight: 300;
-            letter-spacing: 2px;
-        }
-        p {
-            color: var(--text-gray);
-            font-size: 12px;
-            margin-bottom: 30px;
-            text-transform: uppercase;
-        }
-        .input-group {
-            text-align: left;
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            font-size: 11px;
-            color: var(--gold);
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        input {
-            width: 100%;
-            background: var(--bg-dark);
-            border: 1px solid var(--border);
-            color: white;
-            padding: 12px;
-            border-radius: 4px;
-            box-sizing: border-box;
-            outline: none;
-            transition: 0.2s;
-        }
-        input:focus {
-            border-color: var(--accent-blue);
-        }
-        .btn-login {
-            width: 100%;
-            background: var(--accent-blue);
-            color: #0b0e14;
-            border: none;
-            padding: 14px;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 14px;
-            margin-top: 10px;
-            transition: 0.2s;
-        }
-        .btn-login:hover {
-            background: #62b0ff;
-            transform: translateY(-2px);
-        }
-        .error-msg {
-            color: #f85149;
-            font-size: 12px;
-            margin-top: 15px;
-            display: none;
-        }
+        :root { --bg-dark: #0b0e14; --card-bg: #151921; --accent-blue: #4a9eff; --border: #2d333b; --gold: #d4af37; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg-dark); color: white; margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; }
+        .login-card { background: var(--card-bg); border: 1px solid var(--border); padding: 40px; border-radius: 8px; width: 350px; text-align: center; }
+        .input-group { text-align: left; margin-bottom: 20px; }
+        label { display: block; font-size: 11px; color: var(--gold); margin-bottom: 5px; font-weight: bold; }
+        input { width: 100%; background: var(--bg-dark); border: 1px solid var(--border); color: white; padding: 12px; border-radius: 4px; box-sizing: border-box; outline: none; }
+        .btn-login { width: 100%; background: var(--accent-blue); color: #0b0e14; border: none; padding: 14px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 10px; }
     </style>
 </head>
 <body>
-
 <div class="login-card">
-    <div class="logo"><i class="fa-solid fa-shield-halved"></i></div>
-    <h2>LSPD</h2>
-    <p>Database Access</p>
-
+    <div style="font-size: 50px; color: var(--accent-blue); margin-bottom: 10px;"><i class="fa-solid fa-shield-halved"></i></div>
+    <h2>LSPD DATABASE</h2>
+    <p style="color: #9ba3af; font-size: 12px; text-transform: uppercase;">Autorizovaný přístup</p>
     <div class="input-group">
         <label>UŽIVATELSKÉ JMÉNO</label>
-        <input type="text" id="username" placeholder="např. Dorian Hall">
+        <input type="text" id="username" placeholder="Jméno a Příjmení">
     </div>
-
-    <div class="input-group" style="margin-bottom: 10px;">
+    <div class="input-group">
         <label>PŘÍSTUPOVÝ KLÍČ</label>
         <input type="password" id="password" placeholder="••••••••">
     </div>
-
-    <div id="error" class="error-msg">Neplatné přihlašovací údaje!</div>
-
-    <button class="btn-login" onclick="handleLogin()">PŘIHLÁSIT SE</button>
+    <div id="error" style="color: #f85149; font-size: 12px; margin-bottom: 15px; display: none;">Neplatné údaje!</div>
+    <button class="btn-login" onclick="handleLogin()">VSTOUPIT</button>
 </div>
-
 <script>
     function handleLogin() {
         const user = document.getElementById('username').value;
         const pass = document.getElementById('password').value;
-        const error = document.getElementById('error');
-
-        // Načtení členů z databáze (nebo vytvoření výchozího adminka)
         let members = JSON.parse(localStorage.getItem('lspd_members')) || [
-            { name: "Dorian Hall", callsign: "1D-01", rank: "COMMAND" }
+            { name: "Admin", callsign: "00", rank: "COMMAND" }
         ];
-
-        // Jednoduchá kontrola - hledáme shodu jména v seznamu členů
-        // Pro testování je heslo nastaveno na "1234"
-        const foundUser = members.find(m => m.name.toLowerCase() === user.toLowerCase());
-
-        if (foundUser && pass === "1234") {
-            // Uložení session
-            localStorage.setItem('lspd_logged_session', JSON.stringify(foundUser));
-            
-            // Přesměrování do systému
+        const found = members.find(m => m.name.toLowerCase() === user.toLowerCase());
+        if (found && pass === "1234") {
+            localStorage.setItem('lspd_logged_session', JSON.stringify(found));
             window.location.href = 'index.html';
         } else {
-            error.style.display = 'block';
-            setTimeout(() => { error.style.display = 'none'; }, 3000);
+            document.getElementById('error').style.display = 'block';
         }
     }
-
-    // Umožnění přihlášení stiskem Enter
-    document.addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') {
-            handleLogin();
-        }
-    });
 </script>
-
 </body>
 </html>
