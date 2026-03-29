@@ -15,6 +15,7 @@
             --text-white: #c9d1d9;
             --border: #30363d;
             --input-bg: #0d1117;
+            --danger: #f85149;
         }
 
         body {
@@ -45,7 +46,6 @@
             background: #21262d;
             border-radius: 6px;
             border-left: 4px solid var(--accent-blue);
-            margin-bottom: 20px;
         }
 
         /* HLAVNÍ OBSAH */
@@ -83,26 +83,28 @@
         /* TLAČÍTKA */
         .btn-group { display: flex; gap: 10px; margin-top: 20px; }
         .btn {
-            padding: 12px 20px;
+            padding: 12px 25px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             font-weight: bold;
             text-transform: uppercase;
-            transition: 0.2s;
             display: flex;
             align-items: center;
             gap: 8px;
         }
         .btn-blue { background: var(--accent-blue); color: #0d1117; }
-        .btn-discord { background: #5865F2; color: white; }
-        .btn-pdf { background: #f85149; color: white; }
+        .btn-pdf { background: var(--danger); color: white; }
 
-        /* HISTORIE */
+        /* TABULKA */
         table { width: 100%; border-collapse: collapse; background: var(--card-bg); margin-top: 20px; border-radius: 8px; overflow: hidden; }
         th { text-align: left; padding: 12px; color: var(--text-gray); border-bottom: 1px solid var(--border); }
         td { padding: 12px; border-bottom: 1px solid var(--border); }
-        .btn-view { background: transparent; border: 1px solid var(--accent-blue); color: var(--accent-blue); padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+        
+        .action-btns { display: flex; gap: 8px; }
+        .btn-sm { padding: 5px 10px; border-radius: 4px; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--text-white); font-size: 11px; }
+        .btn-view { border-color: var(--accent-blue); color: var(--accent-blue); }
+        .btn-delete { border-color: var(--danger); color: var(--danger); }
 
         /* MODAL */
         #modal {
@@ -110,24 +112,20 @@
             background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 1000;
         }
         .modal-body { background: var(--card-bg); width: 600px; padding: 30px; border-radius: 8px; border: 1px solid var(--accent-blue); }
-        pre { background: #000; padding: 20px; color: #00ff00; font-family: monospace; white-space: pre-wrap; border-radius: 5px; }
+        pre { background: #000; padding: 20px; color: #00ff00; font-family: monospace; white-space: pre-wrap; border-radius: 5px; max-height: 300px; overflow-y: auto; }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
     <div class="menu-item">
-        <i class="fa-solid fa-shield-halved"></i>
-        <span>LSPD - OPERATIVNÍ MODUL</span>
-    </div>
-    <div style="font-size: 11px; color: var(--text-gray); margin-top: auto;">
-        Status: <span style="color: #3fb950;">ONLINE</span><br>
-        Version: 2.1.0
+        <i class="fa-solid fa-file-invoice"></i>
+        <span>LSPD - EVIDENCE OPP</span>
     </div>
 </div>
 
 <div class="main">
-    <h2 style="margin-top:0;">Žádost o OPP</h2>
+    <h2 style="margin-top:0;">Nový protokol</h2>
     
     <div class="grid">
         <div class="field">
@@ -136,7 +134,7 @@
         </div>
         <div class="field">
             <label>Identifikace subjektu</label>
-            <input type="text" id="subject" placeholder="Jméno a ID">
+            <input type="text" id="subject" placeholder="Jméno a ID osoby">
         </div>
         <div class="field">
             <label>Klasifikace případu</label>
@@ -157,25 +155,24 @@
         </div>
         <div class="field full">
             <label>Odůvodnění žádosti</label>
-            <textarea id="facts" rows="5" placeholder="Zadejte duvody zadosti..."></textarea>
+            <textarea id="facts" rows="4"></textarea>
         </div>
     </div>
 
     <div class="btn-group">
-        <button class="btn btn-blue" onclick="saveToHistory()"><i class="fa-solid fa-save"></i> Uložit a Zobrazit</button>
-        <button class="btn btn-discord" onclick="sendToDiscord()"><i class="fa-brands fa-discord"></i> Discord</button>
-        <button class="btn btn-pdf" onclick="generatePDF()"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+        <button class="btn btn-blue" onclick="processAll()"><i class="fa-solid fa-check-double"></i> Uložit a Schválit</button>
+        <button class="btn btn-pdf" onclick="generatePDF()"><i class="fa-solid fa-file-pdf"></i> Generovat PDF</button>
     </div>
 
     <div style="margin-top: 40px;">
-        <label>Historie v terminálu</label>
+        <label>Historie žádostí</label>
         <table>
             <thead>
                 <tr>
                     <th>Datum</th>
                     <th>Subjekt</th>
                     <th>Příslušník</th>
-                    <th>Akce</th>
+                    <th>Správa</th>
                 </tr>
             </thead>
             <tbody id="history-rows"></tbody>
@@ -185,38 +182,59 @@
 
 <div id="modal">
     <div class="modal-body">
-        <h3>Detail protokolu</h3>
+        <h3>Protokol byl vytvořen a odeslán</h3>
         <pre id="modal-text"></pre>
         <button class="btn btn-blue" onclick="document.getElementById('modal').style.display='none'">Zavřít</button>
     </div>
 </div>
 
 <script>
-    // --- KONFIGURACE ---
-    const DISCORD_WEBHOOK_URL = "SEM_VLOZ_TVUJ_WEBHOOK_URL";
+    // --- KONFIGURACE WEBHOOKU ---
+    const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1487754214041194596/KPNaj-qDPmVY_6yEsdKvGNri_8AbjS8JS3PBo8GvuKi2R1Qkgtx1iZjYEODUVVYI_Wux";
 
-    let historyLog = [];
+    let historyLog = JSON.parse(localStorage.getItem('lspd_history')) || [];
+    updateTable();
 
-    // Pomocná funkce pro odstranění diakritiky (řeší chyby v PDF)
-    const removeAccents = (str) => {
-        return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    }
+    const removeAccents = (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
-    function saveToHistory() {
+    async function processAll() {
+        const officer = document.getElementById('officer').value;
+        const subject = document.getElementById('subject').value;
+        const type = document.getElementById('type').value;
+        const facts = document.getElementById('facts').value;
+
+        if(!officer || !subject) return alert("Chybí jméno příslušníka nebo subjektu!");
+
+        // 1. Uložit do historie
         const data = {
             id: Date.now(),
             date: new Date().toLocaleString('cs-CZ'),
-            officer: document.getElementById('officer').value,
-            subject: document.getElementById('subject').value,
-            crime: document.getElementById('crime').value,
-            type: document.getElementById('type').value,
-            facts: document.getElementById('facts').value
+            officer, subject, type, facts,
+            crime: document.getElementById('crime').value
         };
-
-        if(!data.officer || !data.subject) return alert("Vyplňte základní údaje!");
-
         historyLog.unshift(data);
+        localStorage.setItem('lspd_history', JSON.stringify(historyLog));
         updateTable();
+
+        // 2. Automaticky odeslat na Discord
+        if(DISCORD_WEBHOOK_URL !== "SEM_VLOZ_TVUJ_WEBHOOK_URL") {
+            const payload = {
+                embeds: [{
+                    title: "📁 NOVÁ ŽÁDOST O OPP",
+                    color: 3447003,
+                    fields: [
+                        { name: "Příslušník", value: officer, inline: true },
+                        { name: "Subjekt", value: subject, inline: true },
+                        { name: "Typ", value: type, inline: false },
+                        { name: "Odůvodnění", value: facts }
+                    ],
+                    timestamp: new Date()
+                }]
+            };
+            fetch(DISCORD_WEBHOOK_URL, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
+        }
+
+        // 3. Zobrazit detail
         viewDetail(data.id);
     }
 
@@ -227,113 +245,83 @@
                 <td>${r.date}</td>
                 <td>${r.subject}</td>
                 <td>${r.officer}</td>
-                <td><button class="btn-view" onclick="viewDetail(${r.id})">Zobrazit</button></td>
+                <td class="action-btns">
+                    <button class="btn-sm btn-view" onclick="viewDetail(${r.id})">Detail</button>
+                    <button class="btn-sm btn-delete" onclick="deleteEntry(${r.id})"><i class="fa-solid fa-trash"></i></button>
+                </td>
             </tr>
         `).join('');
     }
 
     function viewDetail(id) {
         const r = historyLog.find(x => x.id === id);
-        const text = `ŽÁDOST OPP\n----------\nVYSTAVIL: ${r.officer}\nSUBJEKT:  ${r.subject}\nTYP:      ${r.type}\n----------\nODŮVODNĚNÍ:\n${r.facts}`;
+        const text = `PROTOKOL OPP\n----------\nVYSTAVIL: ${r.officer}\nSUBJEKT:  ${r.subject}\nTYP:      ${r.type}\n----------\nODŮVODNĚNÍ:\n${r.facts}`;
         document.getElementById('modal-text').innerText = text;
         document.getElementById('modal').style.display = 'flex';
     }
 
-    async function sendToDiscord() {
-        const officer = document.getElementById('officer').value;
-        const subject = document.getElementById('subject').value;
-        const type = document.getElementById('type').value;
-        const facts = document.getElementById('facts').value;
-
-        if(DISCORD_WEBHOOK_URL === "https://discord.com/api/webhooks/1487754214041194596/KPNaj-qDPmVY_6yEsdKvGNri_8AbjS8JS3PBo8GvuKi2R1Qkgtx1iZjYEODUVVYI_Wux") return alert("Musíš v kódu nastavit Webhook URL!");
-
-        const payload = {
-            embeds: [{
-                title: "📁 NOVÁ ŽÁDOST O OPP",
-                color: 3447003,
-                fields: [
-                    { name: "Příslušník", value: officer, inline: true },
-                    { name: "Subjekt", value: subject, inline: true },
-                    { name: "Typ", value: type, inline: false },
-                    { name: "Odůvodnění", value: facts }
-                ],
-                timestamp: new Date()
-            }]
-        };
-
-        await fetch(DISCORD_WEBHOOK_URL, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(payload)
-        });
-        alert("Odesláno na Discord!");
+    function deleteEntry(id) {
+        if(confirm("Opravdu smazat tento záznam z historie?")) {
+            historyLog = historyLog.filter(x => x.id !== id);
+            localStorage.setItem('lspd_history', JSON.stringify(historyLog));
+            updateTable();
+        }
     }
 
     function generatePDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
         
-        // Data bez diakritiky pro PDF
         const officer = removeAccents(document.getElementById('officer').value);
         const subject = removeAccents(document.getElementById('subject').value);
         const type = removeAccents(document.getElementById('type').value);
         const facts = removeAccents(document.getElementById('facts').value);
         const date = new Date().toLocaleDateString();
 
-        // Hlavička
         doc.setFont("helvetica", "bold");
-        doc.setFontSize(20);
-        doc.text("ZADOST O OPP", 105, 25, { align: "center" });
+        doc.setFontSize(22);
+        doc.text("PROTOKOL O ZADOSTI OPP", 105, 30, { align: "center" });
         
         doc.setFontSize(10);
         doc.setFont("helvetica", "normal");
-        doc.text(`ID Protokolu: ${Math.floor(Math.random()*100000)}`, 20, 35);
-        doc.text(`Datum: ${date}`, 160, 35);
+        doc.text(`Datum: ${date}`, 160, 45);
 
         doc.setLineWidth(0.5);
-        doc.line(20, 40, 190, 40);
-
-        // Obsah
-        doc.setFont("helvetica", "bold");
-        doc.text("Vystavujici prislusnik:", 20, 50);
-        doc.setFont("helvetica", "normal");
-        doc.text(officer, 70, 50);
+        doc.line(20, 50, 190, 50);
 
         doc.setFont("helvetica", "bold");
-        doc.text("Prověřovany subjekt:", 20, 60);
+        doc.text("Zadajici prislusnik:", 20, 65);
         doc.setFont("helvetica", "normal");
-        doc.text(subject, 70, 60);
+        doc.text(officer, 70, 65);
 
         doc.setFont("helvetica", "bold");
-        doc.text("Typ zadosti:", 20, 70);
+        doc.text("Proverovany subjekt:", 20, 75);
         doc.setFont("helvetica", "normal");
-        doc.text(type, 70, 70);
+        doc.text(subject, 70, 75);
 
         doc.setFont("helvetica", "bold");
-        doc.text("Zjistene skutecnosti:", 20, 85);
+        doc.text("Duvod zadosti:", 20, 90);
         doc.setFont("helvetica", "normal");
-        const splitText = doc.splitTextToSize(facts, 170);
-        doc.text(splitText, 20, 95);
+        const splitText = doc.splitTextToSize(facts, 160);
+        doc.text(splitText, 20, 100);
 
-        // Patka a podpis
         const pageHeight = doc.internal.pageSize.height;
-        doc.line(20, pageHeight - 60, 190, pageHeight - 60);
+        doc.line(130, pageHeight - 50, 190, pageHeight - 50);
         
-        // Simulace psacího podpisu
+        // --- SEKCE PODPISU ---
+        // 1. "Ruční" podpis (kurzíva)
         doc.setFont("times", "italic");
-        doc.setFontSize(16);
-        doc.text(officer, 140, pageHeight - 45); // Generovaný podpis
+        doc.setFontSize(18);
+        doc.text(officer, 140, pageHeight - 55); 
         
+        // 2. Klasické Jméno a Příjmení (tiskací)
         doc.setFont("helvetica", "normal");
-        doc.setFontSize(9);
-        doc.text("__________________________", 135, pageHeight - 40);
-        doc.text("Digitalni podpis prislusnika", 138, pageHeight - 35);
-        
+        doc.setFontSize(10);
+        doc.text(officer, 135, pageHeight - 45);
         doc.setFontSize(8);
-        doc.setTextColor(100);
-        doc.text("Tento dokument je majetkem sboru a podlehá utajeni dle vnitrnich predpisu.", 105, pageHeight - 15, {align: "center"});
+        doc.text("Jmeno a prijmeni / Digitalni podpis", 135, pageHeight - 40);
 
-        doc.save(`Zadost_OPP_${subject}.pdf`);
+        doc.save(`Protokol_OPP_${subject}.pdf`);
     }
 </script>
 
