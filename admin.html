@@ -7,120 +7,76 @@
     <style>
         :root { --bg-dark: #0b0e14; --sidebar-bg: #151921; --card-bg: #1c212b; --accent-blue: #4a9eff; --border: #2d333b; --gold: #d4af37; --danger: #f85149; --success: #2ea043; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg-dark); color: white; margin: 0; display: flex; height: 100vh; }
-        .sidebar { width: 260px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 15px; display: flex; flex-direction: column; }
-        .main { flex-grow: 1; padding: 30px; overflow-y: auto; }
-        .card { background: var(--card-bg); border: 1px solid var(--border); padding: 20px; border-radius: 6px; margin-bottom: 25px; }
-        table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; padding: 10px; color: #9ba3af; border-bottom: 2px solid var(--border); font-size: 11px; text-transform: uppercase; }
-        td { padding: 10px; border-bottom: 1px solid var(--border); font-size: 13px; }
-        input, select { background: #0b0e14; border: 1px solid var(--border); color: white; padding: 10px; border-radius: 4px; margin-bottom: 10px; width: 100%; box-sizing: border-box; }
-        .btn-add { background: var(--success); border: none; padding: 12px; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%; color: white; }
-        .btn-status { background: var(--gold); border: none; color: black; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold; }
-        
-        /* Modal Style */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 1000; }
-        .modal { background: var(--sidebar-bg); border: 1px solid var(--border); padding: 30px; border-radius: 8px; width: 380px; text-align: center; }
+        .sidebar { width: 200px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 10px; display: flex; flex-direction: column; }
+        .main { flex-grow: 1; padding: 25px; overflow-y: auto; }
+        .card { background: var(--card-bg); border: 1px solid var(--border); padding: 20px; border-radius: 6px; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th { text-align: left; padding: 10px; color: #9ba3af; border-bottom: 2px solid var(--border); }
+        td { padding: 10px; border-bottom: 1px solid var(--border); }
+        input, select { background: #0b0e14; border: 1px solid var(--border); color: white; padding: 10px; border-radius: 4px; width: 100%; box-sizing: border-box; margin-bottom: 10px; }
+        .btn-action { background: var(--success); color: white; border: none; padding: 10px; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; }
+        .history-box { background: #0b0e14; padding: 15px; border: 1px solid var(--border); border-radius: 4px; height: 150px; overflow-y: auto; font-family: monospace; font-size: 12px; color: #9ba3af; }
     </style>
 </head>
 <body>
-
-<div id="deleteModal" class="modal-overlay">
-    <div class="modal">
-        <i class="fa-solid fa-triangle-exclamation" style="font-size: 40px; color: var(--danger); margin-bottom: 15px;"></i>
-        <h3>Potvrdit smazání</h3>
-        <p style="color: #9ba3af; font-size: 14px; margin-bottom: 25px;">Opravdu chcete tento spis trvale smazat? Tato akce je nevratná.</p>
-        <div style="display: flex; gap: 10px; justify-content: center;">
-            <button id="confirmDelBtn" style="background: var(--danger); color: white; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; cursor: pointer;">SMAZAT</button>
-            <button onclick="closeDelModal()" style="background: none; color: white; border: 1px solid var(--border); padding: 10px 20px; border-radius: 4px; cursor: pointer;">Zrušit</button>
-        </div>
-    </div>
-</div>
-
 <div class="sidebar">
-    <a href="index.html" style="color: var(--accent-blue); text-decoration: none; font-size: 13px;"><i class="fa-solid fa-arrow-left"></i> Zpět do systému</a>
-    <h3 style="color: var(--gold); margin-top: 25px;">SASP COMMAND</h3>
+    <a href="index.html" style="color: var(--accent-blue); text-decoration: none; font-size: 12px;"><i class="fa-solid fa-arrow-left"></i> Zpět</a>
+    <h3 style="color: var(--gold); margin-top: 20px;">COMMAND</h3>
     <div style="flex-grow: 1;"></div>
     <button onclick="logout()" style="background:none; border:1px solid var(--danger); color:var(--danger); padding:10px; border-radius:4px; cursor:pointer;"><i class="fa-solid fa-power-off"></i> Odhlásit</button>
 </div>
-
 <div class="main">
     <div class="card">
-        <h3><i class="fa-solid fa-folder-tree"></i> Správa všech spisů SASP</h3>
-        <table>
-            <thead><tr><th>ID</th><th>NÁZEV</th><th>AUTOR</th><th>STAV</th><th>AKCE</th></tr></thead>
-            <tbody id="admin-case-table"></tbody>
-        </table>
+        <h3>Správa hledaných / předvolaných osob</h3>
+        <div style="display:grid; grid-template-columns: 2fr 1fr 1fr; gap:10px; margin-bottom: 15px;">
+            <input type="text" id="w-name" placeholder="Celé jméno">
+            <select id="w-status"><option value="HLEDANÝ">HLEDANÝ</option><option value="PŘEDVOLANÝ">PŘEDVOLANÝ</option></select>
+            <button onclick="addWanted()" class="btn-action" style="background:var(--danger)">PŘIDAT</button>
+        </div>
+        <table><thead><tr><th>JMÉNO</th><th>STAV</th><th>AKCE</th></tr></thead><tbody id="wanted-table"></tbody></table>
     </div>
-    
-    <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 20px;">
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
         <div class="card">
             <h3>Nový příslušník</h3>
             <input type="text" id="m-name" placeholder="Jméno a Příjmení">
             <input type="text" id="m-call" placeholder="Volačka">
-            <input type="text" id="m-pass" placeholder="Přístupový klíč">
-            <select id="m-rank">
-                <option value="TROOPER">TROOPER</option>
-                <option value="SERGEANT">SERGEANT</option>
-                <option value="LIEUTENANT">LIEUTENANT</option>
-                <option value="COMMAND">COMMAND</option>
-            </select>
-            <button class="btn-add" onclick="addMember()">PŘIDAT DO SASP</button>
+            <input type="text" id="m-pass" placeholder="Heslo">
+            <select id="m-rank"><option value="TROOPER">TROOPER</option><option value="SERGEANT">SERGEANT</option><option value="COMMAND">COMMAND</option></select>
+            <button onclick="addMember()" class="btn-action">PŘIDAT</button>
         </div>
         <div class="card">
             <h3>Seznam personálu</h3>
-            <table><thead><tr><th>JMÉNO</th><th>RANK</th><th>HESLO</th><th>AKCE</th></tr></thead><tbody id="member-table"></tbody></table>
+            <table><thead><tr><th>JMÉNO</th><th>RANK</th><th>AKCE</th></tr></thead><tbody id="member-table"></tbody></table>
         </div>
     </div>
+
+    <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center;"><h3>Historie logů</h3><button onclick="clearLogs()" style="background:var(--danger); border:none; color:white; padding:5px 10px; border-radius:4px; cursor:pointer; font-size:11px;">Smazat logy</button></div>
+        <div id="history-box" class="history-box"></div>
+    </div>
 </div>
-
 <script>
-    let pendingDeleteIndex = null;
-
     function render() {
         const members = JSON.parse(localStorage.getItem('lspd_members')) || [];
-        const cases = JSON.parse(localStorage.getItem('lspd_v15_data')) || [];
+        const wanted = JSON.parse(localStorage.getItem('sasp_wanted')) || [];
+        const logs = JSON.parse(localStorage.getItem('lspd_history')) || [];
 
-        document.getElementById('admin-case-table').innerHTML = cases.map((c, i) => `
-            <tr>
-                <td><b>${c.id}</b></td><td>${c.title}</td><td>${c.author}</td>
-                <td><span style="color:${c.status === 'UZAVŘENÝ' ? 'var(--success)' : 'var(--gold)'}">${c.status}</span></td>
-                <td>
-                    <button class="btn-status" onclick="toggleStatus(${i})">STAV</button>
-                    <button onclick="openDelModal(${i})" style="background:none; border:none; color:var(--danger); cursor:pointer;"><i class="fa-solid fa-trash"></i></button>
-                </td>
-            </tr>`).join('');
-
-        document.getElementById('member-table').innerHTML = members.map((m, i) => `
-            <tr><td>${m.name} (${m.callsign})</td><td>${m.rank}</td><td><code>${m.password}</code></td>
-            <td><button onclick="deleteMember(${i})" style="color:var(--danger); border:none; background:none; cursor:pointer;">Odebrat</button></td></tr>`).join('');
+        document.getElementById('member-table').innerHTML = members.map((m, i) => `<tr><td>${m.name} (${m.callsign})</td><td>${m.rank}</td><td><button onclick="delMember(${i})" style="color:var(--danger); border:none; background:none; cursor:pointer;">Odebrat</button></td></tr>`).join('');
+        document.getElementById('wanted-table').innerHTML = wanted.map((p, i) => `<tr><td>${p.name}</td><td style="color:${p.status === 'HLEDANÝ' ? 'var(--danger)' : 'var(--accent-blue)'}">${p.status}</td><td><button onclick="delWanted(${i})" style="color:var(--danger); border:none; background:none; cursor:pointer;"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('');
+        document.getElementById('history-box').innerHTML = logs.map(l => `<div>${l}</div>`).join('');
     }
 
-    function toggleStatus(i) {
-        let cases = JSON.parse(localStorage.getItem('lspd_v15_data'));
-        cases[i].status = cases[i].status === "OTEVŘENÝ" ? "UZAVŘENÝ" : "OTEVŘENÝ";
-        localStorage.setItem('lspd_v15_data', JSON.stringify(cases));
+    function addWanted() {
+        const name = document.getElementById('w-name').value;
+        const status = document.getElementById('w-status').value;
+        if(!name) return;
+        let wanted = JSON.parse(localStorage.getItem('sasp_wanted')) || [];
+        wanted.push({name, status});
+        localStorage.setItem('sasp_wanted', JSON.stringify(wanted));
+        logAction(`Přidal na seznam ${status}: ${name}`);
         render();
     }
-
-    function openDelModal(i) {
-        pendingDeleteIndex = i;
-        document.getElementById('deleteModal').style.display = 'flex';
-    }
-
-    function closeDelModal() {
-        document.getElementById('deleteModal').style.display = 'none';
-        pendingDeleteIndex = null;
-    }
-
-    document.getElementById('confirmDelBtn').onclick = function() {
-        if(pendingDeleteIndex !== null) {
-            let cases = JSON.parse(localStorage.getItem('lspd_v15_data'));
-            cases.splice(pendingDeleteIndex, 1);
-            localStorage.setItem('lspd_v15_data', JSON.stringify(cases));
-            closeDelModal();
-            render();
-        }
-    };
 
     function addMember() {
         const name = document.getElementById('m-name').value;
@@ -131,16 +87,19 @@
         let members = JSON.parse(localStorage.getItem('lspd_members')) || [];
         members.push({name, callsign, rank, password});
         localStorage.setItem('lspd_members', JSON.stringify(members));
-        location.reload();
-    }
-
-    function deleteMember(i) {
-        let members = JSON.parse(localStorage.getItem('lspd_members'));
-        members.splice(i, 1);
-        localStorage.setItem('lspd_members', JSON.stringify(members));
+        logAction(`Vytvořil nového uživatele: ${name}`);
         render();
     }
 
+    function logAction(msg) {
+        let logs = JSON.parse(localStorage.getItem('lspd_history')) || [];
+        logs.push(`[${new Date().toLocaleString()}] ADMIN: ${msg}`);
+        localStorage.setItem('lspd_history', JSON.stringify(logs));
+    }
+
+    function delWanted(i) { let w = JSON.parse(localStorage.getItem('sasp_wanted')); w.splice(i, 1); localStorage.setItem('sasp_wanted', JSON.stringify(w)); render(); }
+    function delMember(i) { let m = JSON.parse(localStorage.getItem('lspd_members')); m.splice(i, 1); localStorage.setItem('lspd_members', JSON.stringify(m)); render(); }
+    function clearLogs() { if(confirm("Opravdu smazat celou historii?")) { localStorage.setItem('lspd_history', JSON.stringify([])); render(); } }
     function logout() { localStorage.removeItem('lspd_logged_session'); window.location.href = 'login.html'; }
     render();
 </script>

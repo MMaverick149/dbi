@@ -7,74 +7,120 @@
     <style>
         :root { --bg-dark: #0b0e14; --sidebar-bg: #151921; --card-bg: #1c212b; --accent-blue: #4a9eff; --border: #2d333b; --gold: #d4af37; --danger: #f85149; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg-dark); color: white; margin: 0; display: flex; height: 100vh; overflow: hidden; }
-        .sidebar { width: 260px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 15px; display: flex; flex-direction: column; }
-        .user-card { background: #0b0e14; padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid var(--border); cursor: pointer; border-left: 3px solid var(--gold); }
-        .role-badge { font-size: 10px; background: var(--gold); color: black; padding: 2px 6px; border-radius: 3px; font-weight: bold; margin-top: 5px; display: inline-block; }
-        .nav-btn { background: none; border: none; color: #9ba3af; padding: 12px; text-align: left; cursor: pointer; border-radius: 4px; display: flex; align-items: center; gap: 10px; text-decoration: none; font-size: 13px; }
-        .nav-btn:hover, .nav-btn.active { background: var(--card-bg); color: white; }
-        .main { flex-grow: 1; padding: 30px; overflow-y: auto; }
-        table { width: 100%; border-collapse: collapse; background: var(--card-bg); border: 1px solid var(--border); }
-        th { text-align: left; padding: 15px; color: #9ba3af; border-bottom: 2px solid var(--border); font-size: 11px; text-transform: uppercase; }
-        td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 13px; }
         
-        /* Custom Modal Style */
+        /* Užší Sidebar */
+        .sidebar { width: 200px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 10px; display: flex; flex-direction: column; flex-shrink: 0; }
+        .user-card { background: #0b0e14; padding: 10px; border-radius: 6px; margin-bottom: 15px; border: 1px solid var(--border); border-left: 3px solid var(--gold); font-size: 12px; }
+        .nav-btn { background: none; border: none; color: #9ba3af; padding: 10px; text-align: left; cursor: pointer; border-radius: 4px; display: flex; align-items: center; gap: 8px; text-decoration: none; font-size: 12px; margin-bottom: 2px; }
+        .nav-btn:hover, .nav-btn.active { background: var(--card-bg); color: white; }
+
+        .main { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; gap: 20px; }
+        .content-area { flex-grow: 1; }
+        
+        /* Pravý panel pro logy a hledané */
+        .side-info { width: 300px; display: flex; flex-direction: column; gap: 15px; flex-shrink: 0; }
+        .info-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 6px; padding: 15px; display: flex; flex-direction: column; max-height: 45vh; }
+        .info-header { font-size: 11px; color: var(--gold); font-weight: bold; text-transform: uppercase; margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 5px; display: flex; justify-content: space-between; }
+        
+        .log-list, .wanted-list { overflow-y: auto; font-size: 11px; color: #9ba3af; }
+        .log-item { padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .wanted-item { display: flex; justify-content: space-between; padding: 5px 0; color: #eee; }
+        .status-wanted { color: var(--danger); font-weight: bold; animation: pulse 1.5s infinite; }
+        
+        table { width: 100%; border-collapse: collapse; background: var(--card-bg); border: 1px solid var(--border); }
+        th { text-align: left; padding: 12px; color: #9ba3af; border-bottom: 2px solid var(--border); font-size: 10px; text-transform: uppercase; }
+        td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 12px; }
+
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 999; }
-        .modal { background: var(--sidebar-bg); padding: 25px; border-radius: 8px; width: 400px; border: 1px solid var(--border); box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
-        .m-input { width: 100%; padding: 12px; margin-bottom: 15px; background: #0b0e14; border: 1px solid var(--border); color: white; border-radius: 4px; box-sizing: border-box; }
+        .modal { background: var(--sidebar-bg); padding: 25px; border-radius: 8px; width: 400px; border: 1px solid var(--border); }
     </style>
 </head>
 <body>
 
-<div id="newCaseModal" class="modal-overlay">
-    <div class="modal">
-        <h3 style="color: var(--gold); margin-top:0;"><i class="fa-solid fa-file-pen"></i> Nový spis SASP</h3>
-        <label style="font-size: 10px; color: #9ba3af;">ČÍSLO SPISU</label>
-        <input type="text" id="caseId" class="m-input" placeholder="#2026-001">
-        <label style="font-size: 10px; color: #9ba3af;">NÁZEV INCIDENTU</label>
-        <input type="text" id="caseTitle" class="m-input" placeholder="Bankovní loupež">
-        <button onclick="confirmNewCase()" style="width:100%; padding:12px; background:var(--gold); border:none; font-weight:bold; cursor:pointer; color:black; border-radius:4px;">VYTVOŘIT SPIS</button>
-        <button onclick="closeModal()" style="width:100%; padding:10px; background:none; color:#9ba3af; border:none; cursor:pointer; margin-top:5px;">Zrušit</button>
-    </div>
-</div>
-
 <div class="sidebar">
-    <div style="text-align: center; margin-bottom: 20px;">
-        <i class="fa-solid fa-star" style="font-size: 30px; color: var(--gold);"></i>
-        <div style="font-weight: bold; font-size: 12px; margin-top: 5px; letter-spacing: 1px;">SASP TERMINÁL</div>
+    <div style="text-align: center; margin-bottom: 15px;">
+        <i class="fa-solid fa-star" style="font-size: 24px; color: var(--gold);"></i>
+        <div style="font-weight: bold; font-size: 11px; margin-top: 5px;">SASP TERMINÁL</div>
     </div>
-    <div class="user-card" onclick="window.location.href='profil.html'">
+    <div class="user-card">
         <div id="u-name" style="font-weight: bold;">--</div>
-        <div id="u-call" style="color: var(--gold); font-size: 11px;">--</div>
-        <div id="u-role" class="role-badge">--</div>
+        <div id="u-role" style="color: var(--gold); font-size: 10px; font-weight: bold;">--</div>
     </div>
-    <div class="nav-group" style="flex-grow: 1;">
+    <nav style="flex-grow: 1;">
         <a href="index.html" class="nav-btn active"><i class="fa-solid fa-folder-open"></i> Evidence Spisů</a>
         <button class="nav-btn" onclick="openModal()"><i class="fa-solid fa-plus-circle"></i> Nový Spis</button>
-        <a href="opp.html" class="nav-btn"><i class="fa-solid fa-file-signature"></i> OPP Generátor</a>
         <a href="admin.html" id="admin-btn" class="nav-btn" style="display: none; color: var(--gold);"><i class="fa-solid fa-user-shield"></i> Administrace</a>
-    </div>
+    </nav>
     <button class="nav-btn" onclick="logout()" style="color: var(--danger);"><i class="fa-solid fa-power-off"></i> Odhlásit</button>
 </div>
 
 <div class="main">
-    <h2 style="font-weight: 300; margin-bottom: 25px;">San Andreas State Police - Centrální Databáze</h2>
-    <table>
-        <thead><tr><th>ID SPISU</th><th>NÁZEV</th><th>ZPRACOVATEL</th><th>STAV</th></tr></thead>
-        <tbody id="case-table-body"></tbody>
-    </table>
+    <div class="content-area">
+        <h2 style="font-weight: 300; margin-top: 0;">Centrální Databáze Spisů</h2>
+        <table>
+            <thead><tr><th>ID</th><th>NÁZEV</th><th>ZPRACOVATEL</th><th>STAV</th></tr></thead>
+            <tbody id="case-table-body"></tbody>
+        </table>
+    </div>
+
+    <div class="side-info">
+        <div class="info-card">
+            <div class="info-header"><span>Hledané / Předvolané osoby</span></div>
+            <div id="wanted-list" class="wanted-list"></div>
+        </div>
+        <div class="info-card">
+            <div class="info-header"><span>Poslední aktivita</span></div>
+            <div id="log-list" class="log-list"></div>
+        </div>
+    </div>
+</div>
+
+<div id="newCaseModal" class="modal-overlay">
+    <div class="modal">
+        <h3 style="color: var(--gold); margin-top:0;">Nový spis</h3>
+        <input type="text" id="caseId" placeholder="ID Spisu" style="width:100%; padding:10px; margin-bottom:10px; background:#0b0e14; border:1px solid var(--border); color:white;">
+        <input type="text" id="caseTitle" placeholder="Název incidentu" style="width:100%; padding:10px; margin-bottom:15px; background:#0b0e14; border:1px solid var(--border); color:white;">
+        <button onclick="confirmNewCase()" style="width:100%; padding:12px; background:var(--gold); border:none; font-weight:bold; cursor:pointer; color:black; border-radius:4px;">VYTVOŘIT</button>
+        <button onclick="closeModal()" style="width:100%; padding:10px; background:none; color:#9ba3af; border:none; cursor:pointer;">Zrušit</button>
+    </div>
 </div>
 
 <script>
     let cases = JSON.parse(localStorage.getItem('lspd_v15_data')) || [];
+    let logs = JSON.parse(localStorage.getItem('lspd_history')) || [];
+    let wanted = JSON.parse(localStorage.getItem('sasp_wanted')) || [];
     let loggedUser = JSON.parse(localStorage.getItem('lspd_logged_session'));
 
     function init() {
         if(!loggedUser) return window.location.href = 'login.html';
         document.getElementById('u-name').innerText = loggedUser.name;
-        document.getElementById('u-call').innerText = loggedUser.callsign;
         document.getElementById('u-role').innerText = loggedUser.rank;
         if (loggedUser.rank === "COMMAND") document.getElementById('admin-btn').style.display = 'flex';
         renderCases();
+        renderLogs();
+        renderWanted();
+    }
+
+    function renderCases() {
+        document.getElementById('case-table-body').innerHTML = cases.map((c, i) => `
+            <tr onclick="window.location.href='detail.html?id=${i}'" style="cursor:pointer;">
+                <td><b>${c.id}</b></td><td>${c.title}</td><td>${c.author}</td>
+                <td><span style="color:${c.status === 'UZAVŘENÝ' ? '#2ea043' : 'var(--gold)'}">${c.status}</span></td>
+            </tr>`).join('');
+    }
+
+    function renderLogs() {
+        document.getElementById('log-list').innerHTML = logs.slice(-20).reverse().map(l => `<div class="log-item">${l}</div>`).join('');
+    }
+
+    function renderWanted() {
+        document.getElementById('wanted-list').innerHTML = wanted.map(p => `
+            <div class="wanted-item">
+                <span>${p.name}</span>
+                <span class="${p.status === 'HLEDANÝ' ? 'status-wanted' : ''}" style="color:${p.status === 'HLEDANÝ' ? 'var(--danger)' : 'var(--accent-blue)'}">${p.status}</span>
+            </div>
+        `).join('');
     }
 
     function openModal() { document.getElementById('newCaseModal').style.display = 'flex'; }
@@ -85,16 +131,11 @@
         const title = document.getElementById('caseTitle').value;
         if(!id || !title) return;
         cases.unshift({ id, title, author: loggedUser.name, status: "OTEVŘENÝ", description: "", persons: [], vehicles: [], evidence: [] });
+        
+        logs.push(`[${new Date().toLocaleString()}] ${loggedUser.name}: Vytvořil spis ${id}`);
         localStorage.setItem('lspd_v15_data', JSON.stringify(cases));
+        localStorage.setItem('lspd_history', JSON.stringify(logs));
         location.reload();
-    }
-
-    function renderCases() {
-        document.getElementById('case-table-body').innerHTML = cases.map((c, i) => `
-            <tr onclick="window.location.href='detail.html?id=${i}'" style="cursor:pointer;">
-                <td><b>${c.id}</b></td><td>${c.title}</td><td>${c.author}</td>
-                <td><span style="color:${c.status === 'UZAVŘENÝ' ? '#2ea043' : 'var(--gold)'}">${c.status}</span></td>
-            </tr>`).join('');
     }
 
     function logout() { localStorage.removeItem('lspd_logged_session'); window.location.href = 'login.html'; }

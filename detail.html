@@ -7,46 +7,49 @@
     <style>
         :root { --bg-dark: #0b0e14; --sidebar-bg: #151921; --card-bg: #1c212b; --accent-blue: #4a9eff; --border: #2d333b; --gold: #d4af37; --danger: #f85149; --success: #2ea043; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg-dark); color: white; margin: 0; display: flex; height: 100vh; }
-        .sidebar { width: 260px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 15px; display: flex; flex-direction: column; }
-        .main { flex-grow: 1; padding: 30px; overflow-y: auto; }
-        .case-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+        .sidebar { width: 200px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 10px; display: flex; flex-direction: column; }
+        .main { flex-grow: 1; padding: 25px; overflow-y: auto; }
         .grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
         .card { background: var(--card-bg); border: 1px solid var(--border); padding: 20px; border-radius: 6px; margin-bottom: 20px; }
-        textarea, input { width: 100%; background: #0b0e14; border: 1px solid var(--border); color: white; padding: 10px; border-radius: 4px; box-sizing: border-box; outline: none; }
-        textarea:read-only { background: #161b22; color: #8b949e; border-style: dashed; }
+        textarea, input { width: 100%; background: #0b0e14; border: 1px solid var(--border); color: white; padding: 10px; border-radius: 4px; box-sizing: border-box; outline: none; margin-top: 5px; }
         .btn-save { background: var(--success); color: white; border: none; padding: 12px 25px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .lock-banner { background: var(--danger); color: white; padding: 10px; border-radius: 4px; text-align: center; font-weight: bold; margin-bottom: 20px; display: none; }
-        .list-item { background: #0b0e14; padding: 8px; border-radius: 4px; margin-top: 5px; font-size: 13px; border-left: 3px solid var(--gold); }
+        .tag-input-group { display: flex; gap: 5px; }
+        .btn-add { background: var(--accent-blue); color: black; border: none; padding: 0 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .list-item { background: #0b0e14; padding: 8px; border-radius: 4px; margin-top: 5px; display: flex; justify-content: space-between; font-size: 13px; border-left: 3px solid var(--gold); }
+        @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.05); } 100% { opacity: 1; transform: scale(1); } }
     </style>
 </head>
 <body>
-
 <div class="sidebar">
-    <a href="index.html" style="color: var(--accent-blue); text-decoration: none; font-size: 13px;"><i class="fa-solid fa-arrow-left"></i> Zpět do databáze</a>
-    <h3 id="side-id" style="color: var(--gold); margin-top: 25px;">--</h3>
-    <p id="side-title" style="font-size: 13px; color: #9ba3af;">--</p>
+    <a href="index.html" style="color: var(--accent-blue); text-decoration: none; font-size: 12px;"><i class="fa-solid fa-arrow-left"></i> Zpět</a>
+    <h3 id="side-id" style="color: var(--gold); margin-top: 20px; font-size: 16px;">--</h3>
     <div style="flex-grow: 1;"></div>
     <button onclick="logout()" style="background:none; border:1px solid var(--danger); color:var(--danger); padding:10px; width:100%; border-radius:4px; cursor:pointer;"><i class="fa-solid fa-power-off"></i> ODHLÁSIT</button>
 </div>
-
 <div class="main">
-    <div id="lock-banner" class="lock-banner"><i class="fa-solid fa-lock"></i> TENTO SPIS BYL ARCHIVOVÁN A JE POUZE PRO ČTENÍ</div>
-    <div class="case-header">
-        <div><h1 id="head-title" style="margin:0;">--</h1><span id="head-status" style="color: var(--gold); font-size: 12px; font-weight: bold; text-transform: uppercase;">--</span></div>
-        <button id="save-btn" class="btn-save" onclick="saveCase()"><i class="fa-solid fa-floppy-disk"></i> ULOŽIT ZPRÁVU</button>
+    <div id="lock-banner" style="background: var(--danger); color: white; padding: 10px; border-radius: 4px; text-align: center; font-weight: bold; margin-bottom: 20px; display: none;"><i class="fa-solid fa-lock"></i> ARCHIVOVANÝ SPIS</div>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h1 id="head-title" style="margin:0;">--</h1>
+        <button id="save-btn" class="btn-save" onclick="saveCase()">ULOŽIT SPIS</button>
     </div>
     <div class="grid">
         <div class="left-col">
-            <div class="card"><h3>Oficiální hlášení</h3><textarea id="case-desc" style="height: 500px;" placeholder="Zadejte podrobnosti o vyšetřování..."></textarea></div>
+            <div class="card"><h3>Zpráva o incidentu</h3><textarea id="case-desc" style="height: 500px;"></textarea></div>
         </div>
         <div class="right-col">
-            <div class="card"><h3>Osoby</h3><div id="list-persons"></div></div>
-            <div class="card"><h3>Vozidla</h3><div id="list-vehicles"></div></div>
-            <div class="card"><h3>Důkazy</h3><div id="list-evidence"></div></div>
+            <div class="card">
+                <h3>Osoby</h3>
+                <div class="tag-input-group editor-only"><input type="text" id="in-person"><button class="btn-add" onclick="addItem('persons', 'in-person')">+</button></div>
+                <div id="list-persons"></div>
+            </div>
+            <div class="card">
+                <h3>Vozidla</h3>
+                <div class="tag-input-group editor-only"><input type="text" id="in-vehicle"><button class="btn-add" onclick="addItem('vehicles', 'in-vehicle')">+</button></div>
+                <div id="list-vehicles"></div>
+            </div>
         </div>
     </div>
 </div>
-
 <script>
     const urlParams = new URLSearchParams(window.location.search);
     const caseIndex = urlParams.get('id');
@@ -56,33 +59,62 @@
     function init() {
         if(!currentCase) return window.location.href = 'index.html';
         document.getElementById('side-id').innerText = currentCase.id;
-        document.getElementById('side-title').innerText = currentCase.title;
         document.getElementById('head-title').innerText = currentCase.title;
-        document.getElementById('head-status').innerText = currentCase.status;
         document.getElementById('case-desc').value = currentCase.description || "";
-        
         if(currentCase.status === "UZAVŘENÝ") {
             document.getElementById('case-desc').readOnly = true;
             document.getElementById('lock-banner').style.display = 'block';
             document.getElementById('save-btn').style.display = 'none';
+            document.querySelectorAll('.editor-only').forEach(el => el.style.display = 'none');
         }
         renderLists();
     }
 
     function renderLists() {
-        ['persons', 'vehicles', 'evidence'].forEach(type => {
-            document.getElementById(`list-${type}`).innerHTML = (currentCase[type] || []).map(item => `<div class="list-item">${item}</div>`).join('');
+        const isLocked = currentCase.status === "UZAVŘENÝ";
+        ['persons', 'vehicles'].forEach(type => {
+            document.getElementById(`list-${type}`).innerHTML = (currentCase[type] || []).map((item, i) => `
+                <div class="list-item">
+                    ${item}
+                    ${!isLocked ? `<i class="fa-solid fa-times" onclick="removeItem('${type}', ${i})" style="color:var(--danger); cursor:pointer;"></i>` : ''}
+                </div>`).join('');
         });
     }
 
+    function addItem(type, inputId) {
+        const val = document.getElementById(inputId).value;
+        if(!val) return;
+        if(type === 'persons') {
+            let wantedList = JSON.parse(localStorage.getItem('sasp_wanted')) || [];
+            let found = wantedList.find(p => p.name.toLowerCase() === val.toLowerCase());
+            if(found) showWantedAlert(found);
+        }
+        if(!currentCase[type]) currentCase[type] = [];
+        currentCase[type].push(val);
+        document.getElementById(inputId).value = "";
+        renderLists();
+    }
+
+    function showWantedAlert(person) {
+        const alertDiv = document.createElement('div');
+        alertDiv.style = "position:fixed; inset:0; background:rgba(139,0,0,0.95); z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; text-align:center;";
+        alertDiv.innerHTML = `
+            <i class="fa-solid fa-triangle-exclamation" style="font-size:80px; margin-bottom:20px; animation: pulse 1s infinite;"></i>
+            <h1 style="font-size:50px; margin:0;">VAROVÁNÍ: DETEKCE OSOBY</h1>
+            <h2 style="font-size:40px; color:var(--gold); text-transform:uppercase; animation: pulse 0.5s infinite;">${person.name}</h2>
+            <p style="font-size:24px;">Tato osoba je vedená jako: ${person.status}</p>
+            <button onclick="this.parentElement.remove()" style="margin-top:30px; padding:15px 40px; background:white; color:black; border:none; font-weight:bold; cursor:pointer; border-radius:4px;">ZAVŘÍT</button>
+        `;
+        document.body.appendChild(alertDiv);
+    }
+
+    function removeItem(type, i) { currentCase[type].splice(i, 1); renderLists(); }
     function saveCase() {
         currentCase.description = document.getElementById('case-desc').value;
         cases[caseIndex] = currentCase;
         localStorage.setItem('lspd_v15_data', JSON.stringify(cases));
-        // Zde by mohl být SASP_Modal, pro jednoduchost zatím alert
-        alert("Spis SASP úspěšně uložen.");
+        alert("Uloženo!");
     }
-
     function logout() { localStorage.removeItem('lspd_logged_session'); window.location.href = 'login.html'; }
     init();
 </script>
