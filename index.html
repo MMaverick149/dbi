@@ -70,7 +70,7 @@
 
 <div class="sidebar">
     <div class="badge-area">
-        <div class="badge-icon"><i class="fa-solid fa-magnifying-glass-location"></i></div>
+        <div class="badge-icon"><i class="fa-solid fa-user-secret"></i></div>
         <div style="font-weight: bold; letter-spacing: 2px;">DETECTIVE BUREAU</div>
         <div style="font-size: 10px; color: var(--text-gray);">LOS SANTOS POLICE DEPT.</div>
     </div>
@@ -81,7 +81,7 @@
     
     <div class="grid">
         <div class="field">
-            <label>Detektiv</label>
+            <label>Vyšetřující Detektiv</label>
             <input type="text" id="officer" placeholder="Jméno Příjmení">
         </div>
         <div class="field">
@@ -97,10 +97,20 @@
             <label>CASE ID</label>
             <input type="text" id="caseid" placeholder="#2026-XXXX">
         </div>
+
         <div class="field">
-            <label>Subjekt šetření</label>
-            <input type="text" id="subject" placeholder="Jméno / Firma">
+            <label>Subjekt (Jméno Příjmení)</label>
+            <input type="text" id="subject" placeholder="John Doe">
         </div>
+        <div class="field">
+            <label>Datum narození</label>
+            <input type="text" id="birthdate" placeholder="DD/MM/YYYY">
+        </div>
+        <div class="field">
+            <label>MDT ID</label>
+            <input type="text" id="mdtid" placeholder="např. 8421">
+        </div>
+
         <div class="field">
             <label>Právní kvalifikace</label>
             <select id="crime">
@@ -110,7 +120,7 @@
                 <option value="Hospodářská kriminalita">Hospodářská kriminalita</option>
             </select>
         </div>
-        <div class="field">
+        <div class="field full">
             <label>Typ OPP</label>
             <select id="type">
                 <option value="Prověrka majetku a finančních prostředků">Prověrka majetku a finančních prostředků</option>
@@ -118,6 +128,7 @@
                 <option value="Sledování osob a věcí">Sledování osob a věcí</option>
             </select>
         </div>
+
         <div class="field full">
             <label>Zjištěné skutečnosti (Systémový záznam)</label>
             <textarea id="fixed-facts" rows="5" readonly>Na základě prvotního ohledání místa činu bylo zjištěno, že došlo k násilnému trestnému činu, při kterém byly nalezeny osoby bez známek života s poraněními odpovídajícími násilnému útoku. V rámci probíhajícího vyšetřování byly zajištěny důkazní materiály a probíhá analýza stop z místa činu.
@@ -138,7 +149,7 @@ Za účelem objasnění okolností případu je žádáno o poskytnutí informac
         <thead>
             <tr>
                 <th>CASE ID</th>
-                <th>SUBJEKT</th>
+                <th>SUBJEKT (ID)</th>
                 <th>DETEKTIV</th>
                 <th>SPRÁVA</th>
             </tr>
@@ -165,7 +176,7 @@ Za účelem objasnění okolností případu je žádáno o poskytnutí informac
             <div>
                 <div class="det-label">Datum</div>
                 <div class="det-value" id="v-date"></div>
-                <div class="det-label">Subjekt</div>
+                <div class="det-label">Podezřelý / Subjekt</div>
                 <div class="det-value" id="v-sub"></div>
             </div>
         </div>
@@ -177,7 +188,7 @@ Za účelem objasnění okolností případu je žádáno o poskytnutí informac
             <div style="text-align: center; border-top: 2px solid #000; width: 220px;">
                 <div class="signature-font" id="v-sign"></div>
                 <div style="font-size: 10px; font-weight: bold;" id="v-rank"></div>
-                <div style="font-size: 8px; color: #888;">Digitálně podepsáno</div>
+                <div style="font-size: 8px; color: #888;">Digitálně podepsáno skrze MDT</div>
             </div>
         </div>
     </div>
@@ -185,7 +196,7 @@ Za účelem objasnění okolností případu je žádáno o poskytnutí informac
 
 <script>
     const DISCORD_WEBHOOK_URL = "SEM_VLOZ_TVUJ_WEBHOOK_URL";
-    let cases = JSON.parse(localStorage.getItem('lspd_det_v7')) || [];
+    let cases = JSON.parse(localStorage.getItem('lspd_det_v8')) || [];
     updateTable();
 
     function saveDetectiveCase() {
@@ -196,28 +207,33 @@ Za účelem objasnění okolností případu je žádáno o poskytnutí informac
             rank: document.getElementById('rank').value,
             caseid: document.getElementById('caseid').value,
             subject: document.getElementById('subject').value,
+            birthdate: document.getElementById('birthdate').value,
+            mdtid: document.getElementById('mdtid').value,
             type: document.getElementById('type').value,
             crime: document.getElementById('crime').value,
             fixedFacts: document.getElementById('fixed-facts').value,
             customReason: document.getElementById('custom-reason').value
         };
 
-        if(!data.officer || !data.caseid) return alert("Chybí jméno nebo Case ID!");
+        if(!data.officer || !data.caseid || !data.subject) return alert("Chybí klíčové údaje!");
 
         cases.unshift(data);
-        localStorage.setItem('lspd_det_v7', JSON.stringify(cases));
+        localStorage.setItem('lspd_det_v8', JSON.stringify(cases));
         updateTable();
 
+        // Vyčistit pole pro další záznam
         document.getElementById('subject').value = "";
+        document.getElementById('birthdate').value = "";
+        document.getElementById('mdtid').value = "";
         document.getElementById('custom-reason').value = "";
-        alert("Záznam byl úspěšně archivován.");
+        alert("Případ uložen.");
     }
 
     function updateTable() {
         document.getElementById('history-rows').innerHTML = cases.map(c => `
             <tr>
                 <td style="font-weight:bold; color:var(--accent-blue)">${c.caseid}</td>
-                <td>${c.subject}</td>
+                <td>${c.subject} (${c.mdtid})</td>
                 <td>${c.officer}</td>
                 <td class="action-btns">
                     <button class="btn-sm" onclick="viewCase(${c.id})">Náhled</button>
@@ -233,7 +249,7 @@ Za účelem objasnění okolností případu je žádáno o poskytnutí informac
         document.getElementById('v-off').innerText = c.officer;
         document.getElementById('v-case').innerText = c.caseid;
         document.getElementById('v-date').innerText = c.date;
-        document.getElementById('v-sub').innerText = c.subject;
+        document.getElementById('v-sub').innerText = `${c.subject} (Nar: ${c.birthdate}, MDT ID: ${c.mdtid})`;
         document.getElementById('v-rank').innerText = c.rank;
         document.getElementById('v-sign').innerText = c.officer;
         
@@ -251,29 +267,31 @@ Za účelem objasnění okolností případu je žádáno o poskytnutí informac
 ---
 **CASE ID:** \`${c.caseid}\`
 **DETEKTIV:** ${c.officer} (${c.rank})
-**SUBJEKT:** ${c.subject}
+
+**SUBJEKT:**
+> Jméno: ${c.subject}
+> Datum narození: ${c.birthdate}
+> MDT ID: ${c.mdtid}
 
 **ZJIŠTĚNÉ SKUTEČNOSTI:**
 \`\`\`
 ${c.fixedFacts}
 \`\`\``;
 
-        // Pokud je odůvodnění prázdné, tato sekce se vůbec nenapíše
         if(c.customReason.trim() !== "") {
             text += `\n**DOPLŇUJÍCÍ ODŮVODNĚNÍ:**\n\`\`\`\n${c.customReason}\n\`\`\``;
         }
 
-        text += `\n*Záznam vygenerován v systému LSPD MDT*`;
+        text += `\n*Záznam vygenerován detektivním terminálem LSPD*`;
         
         navigator.clipboard.writeText(text);
-        alert("Zkopírováno pro DOJ. Sekce odůvodnění byla zahrnuta pouze pokud nebyla prázdná.");
+        alert("Zkopírováno pro DOJ (Discord).");
     }
 
     function generatePDF(id) {
         const c = cases.find(x => x.id === id);
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-        
         const clean = (txt) => txt.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
         doc.setFont("helvetica", "bold");
@@ -282,13 +300,18 @@ ${c.fixedFacts}
         doc.text(`SPIS: ${c.caseid}`, 20, 40);
         doc.text(`DATUM: ${c.date}`, 140, 40);
         
-        doc.text("ZJISTENE SKUTECNOSTI:", 20, 60);
+        doc.text("SUBJEKT:", 20, 50);
         doc.setFont("helvetica", "normal");
-        let y = 70;
+        doc.text(`${clean(c.subject)} | Nar: ${c.birthdate} | MDT ID: ${c.mdtid}`, 20, 58);
+
+        doc.setFont("helvetica", "bold");
+        doc.text("ZJISTENE SKUTECNOSTI:", 20, 75);
+        doc.setFont("helvetica", "normal");
+        let y = 85;
         doc.text(doc.splitTextToSize(clean(c.fixedFacts), 170), 20, y);
         
         if(c.customReason.trim() !== "") {
-            y += 60;
+            y += 65;
             doc.setFont("helvetica", "bold");
             doc.text("DOPLNUJICI ODUVODNENI:", 20, y);
             doc.setFont("helvetica", "normal");
