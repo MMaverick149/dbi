@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>LSPD - Case Management System v12</title>
+    <title>LSPD - Case Management System v13</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -21,6 +21,21 @@
 
         body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-dark); color: var(--text-white); margin: 0; display: flex; height: 100vh; overflow: hidden; }
         
+        /* NOTIFIKACE */
+        #notification-container {
+            position: fixed; top: 20px; right: 20px; z-index: 9999;
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .toast {
+            background: var(--sidebar-bg); border-left: 4px solid var(--accent-blue);
+            color: white; padding: 15px 25px; border-radius: 4px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            display: flex; align-items: center; gap: 15px;
+            transform: translateX(120%); transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        .toast.show { transform: translateX(0); }
+        .toast i { font-size: 20px; color: var(--accent-blue); }
+
         /* SIDEBAR */
         .sidebar { width: 260px; background-color: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; flex-shrink: 0; }
         .nav-btn { 
@@ -44,8 +59,7 @@
         /* FULLSCREEN DETAIL OVERLAY */
         #case-detail-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg-dark); z-index: 1000; display: none;
-            flex-direction: column;
+            background: var(--bg-dark); z-index: 1000; display: none; flex-direction: column;
         }
         .detail-header {
             padding: 20px 40px; background: var(--sidebar-bg); border-bottom: 1px solid var(--border);
@@ -55,72 +69,76 @@
 
         /* UI ELEMENTS */
         .section-card { background: var(--card-bg); border: 1px solid var(--border); padding: 20px; border-radius: 4px; margin-bottom: 20px; }
-        .field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 15px; }
         label { color: var(--accent-blue); font-size: 11px; font-weight: bold; text-transform: uppercase; }
-        input, select, textarea { background-color: var(--input-bg); border: 1px solid var(--border); color: var(--text-white); padding: 10px; border-radius: 3px; font-size: 13px; outline: none; }
+        input, select, textarea { background-color: var(--input-bg); border: 1px solid var(--border); color: var(--text-white); padding: 10px; border-radius: 3px; font-size: 13px; outline: none; margin-top: 5px; }
         
         .btn-main { background: var(--accent-blue); color: #0b0e14; padding: 10px 20px; border: none; border-radius: 3px; cursor: pointer; font-weight: bold; font-size: 12px; }
         .btn-close { background: var(--danger); color: white; padding: 10px 20px; border: none; border-radius: 3px; cursor: pointer; }
         
-        .tag { background: #343942; padding: 5px 12px; border-radius: 4px; font-size: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; border: 1px solid var(--border); }
+        .tag { background: #343942; padding: 8px 12px; border-radius: 4px; font-size: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; border: 1px solid var(--border); }
         .tag i { cursor: pointer; color: var(--danger); }
 
-        .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
-        .photo-item { position: relative; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
-        .photo-item img { width: 100%; height: 120px; object-fit: cover; }
+        .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; margin-top: 10px; }
+        .photo-item { position: relative; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; height: 120px; }
+        .photo-item img { width: 100%; height: 100%; object-fit: cover; }
         .photo-item .del-img { position: absolute; top: 5px; right: 5px; background: rgba(248, 81, 73, 0.8); border: none; color: white; border-radius: 3px; cursor: pointer; }
     </style>
 </head>
 <body>
 
+<div id="notification-container"></div>
+
 <div class="sidebar">
     <div style="text-align: center; margin-bottom: 30px;">
-        <i class="fa-solid fa-folder-tree" style="font-size: 40px; color: var(--gold);"></i>
+        <i class="fa-solid fa-folder-closed" style="font-size: 40px; color: var(--gold);"></i>
         <h3 style="margin: 10px 0 0 0; letter-spacing: 2px;">DB TERMINAL</h3>
         <span style="font-size: 10px; color: var(--text-gray);">LOS SANTOS POLICE DEPT.</span>
     </div>
-    <button class="nav-btn active" onclick="switchTab('list', this)"><i class="fa-solid fa-list-ul"></i> Seznam Spisů</button>
-    <button class="nav-btn" onclick="createNewCase()"><i class="fa-solid fa-plus"></i> Nový Spis</button>
-    <button class="nav-btn" onclick="switchTab('opp', this)"><i class="fa-solid fa-file-contract"></i> OPP Žádosti</button>
+    <button class="nav-btn active" onclick="switchTab('list', this)"><i class="fa-solid fa-database"></i> Databáze Spisů</button>
+    <button class="nav-btn" onclick="createNewCase()"><i class="fa-solid fa-folder-plus"></i> Nový Vyšetřovací Spis</button>
+    <button class="nav-btn" onclick="switchTab('opp', this)"><i class="fa-solid fa-gavel"></i> OPP Evidence</button>
 </div>
 
 <div class="main">
     <div id="view-list" class="view active">
-        <h2 style="font-weight: 300;">Databáze Vyšetřování</h2>
+        <h2 style="font-weight: 300;">Aktivní a Uzavřená Vyšetřování</h2>
         <table>
-            <thead><tr><th>CASE ID</th><th>NÁZEV</th><th>STATUS</th><th>VYŠETŘOVATEL</th><th>AKCE</th></tr></thead>
+            <thead><tr><th>CASE ID</th><th>NÁZEV PŘÍPADU</th><th>STAV</th><th>AKCE</th></tr></thead>
             <tbody id="main-case-list"></tbody>
         </table>
     </div>
-
     <div id="view-opp" class="view">
         <h2 style="font-weight: 300;">OPP Agenda</h2>
-        <p style="color: var(--text-gray);">Zde se spravují schválené žádosti pro DOJ.</p>
+        <p>Evidence žádostí pro státní zastupitelství.</p>
     </div>
 </div>
 
 <div id="case-detail-overlay">
     <div class="detail-header">
         <div>
-            <span id="det-case-id" style="color: var(--accent-blue); font-weight: bold; font-size: 20px;"></span>
-            <span id="det-case-title" style="margin-left: 15px; font-weight: 300; font-size: 20px;"></span>
+            <span id="det-case-id" style="color: var(--accent-blue); font-weight: bold; font-size: 22px;"></span>
+            <span id="det-case-title" style="margin-left: 15px; font-weight: 300; font-size: 22px; color: var(--text-gray);"></span>
         </div>
-        <div style="display: flex; gap: 10px;">
-            <button class="btn-main" style="background: var(--success); color: white;" onclick="saveCurrentCase()"><i class="fa-solid fa-floppy-disk"></i> ULOŽIT SPIS</button>
-            <button class="btn-close" onclick="closeDetail()"><i class="fa-solid fa-xmark"></i> ZAVŘÍT</button>
+        <div style="display: flex; gap: 12px;">
+            <button class="btn-main" style="background: var(--success); color: white;" onclick="saveCurrentCase()">
+                <i class="fa-solid fa-check"></i> ULOŽIT ZMĚNY
+            </button>
+            <button class="btn-close" onclick="closeDetail()">
+                <i class="fa-solid fa-xmark"></i> ZAVŘÍT
+            </button>
         </div>
     </div>
 
     <div class="detail-content">
         <div class="left-col">
             <div class="section-card">
-                <label>Shrnutí případu a důkazní situace</label>
-                <textarea id="det-desc" rows="15" style="width: 100%; margin-top: 10px; box-sizing: border-box; resize: vertical;"></textarea>
+                <label>Protokol o vyšetřování a důkazní břemeno</label>
+                <textarea id="det-desc" rows="18" style="width: 100%; box-sizing: border-box; resize: none;"></textarea>
             </div>
             <div class="section-card">
-                <label>Fotodokumentace (Odkazy na FiveManager)</label>
-                <div style="display: flex; gap: 10px; margin: 10px 0;">
-                    <input type="text" id="det-photo-input" placeholder="Vložte URL obrázku..." style="flex-grow: 1;">
+                <label>Externí dokumentace (FiveManager Fotky)</label>
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <input type="text" id="det-photo-input" placeholder="Vložte URL odkazu..." style="flex-grow: 1; margin-top:0;">
                     <button class="btn-main" onclick="addPhoto()">PŘIDAT</button>
                 </div>
                 <div id="det-photo-grid" class="photo-grid"></div>
@@ -129,8 +147,8 @@
 
         <div class="right-col">
             <div class="section-card">
-                <label>Status Případu</label>
-                <select id="det-status" style="width: 100%; margin-top: 10px;">
+                <label>Administrativní Stav</label>
+                <select id="det-status" style="width: 100%;">
                     <option value="OTEVŘENÝ">OTEVŘENÝ</option>
                     <option value="V ŠETŘENÍ">V ŠETŘENÍ</option>
                     <option value="UZAVŘENÝ">UZAVŘENÝ</option>
@@ -138,33 +156,47 @@
             </div>
 
             <div class="section-card">
-                <label><i class="fa-solid fa-users"></i> Osoby (Podezřelí/Svědci)</label>
+                <label><i class="fa-solid fa-user-tie"></i> Zúčastněné Osoby</label>
                 <div style="display: flex; flex-direction: column; gap: 5px; margin-top: 10px;">
-                    <input type="text" id="det-p-name" placeholder="Jméno a Příjmení">
-                    <input type="text" id="det-p-mdt" placeholder="MDT ID">
-                    <button class="btn-sec" onclick="addPerson()" style="margin-bottom: 10px; cursor:pointer;">+ PŘIDAT OSOBU</button>
+                    <input type="text" id="det-p-name" placeholder="Jméno Příjmení" style="margin-top:0;">
+                    <input type="text" id="det-p-mdt" placeholder="MDT ID" style="margin-top:0;">
+                    <button class="btn-main" onclick="addPerson()" style="background:#2d333b; color:white;">+ PŘIDAT</button>
                 </div>
-                <div id="det-person-list"></div>
+                <div id="det-person-list" style="margin-top: 15px;"></div>
             </div>
 
             <div class="section-card">
-                <label><i class="fa-solid fa-car"></i> Vozidla</label>
+                <label><i class="fa-solid fa-car-side"></i> Registrovaná Vozidla</label>
                 <div style="display: flex; flex-direction: column; gap: 5px; margin-top: 10px;">
-                    <input type="text" id="det-v-plate" placeholder="SPZ / RZ">
-                    <input type="text" id="det-v-model" placeholder="Model a Barva">
-                    <button class="btn-sec" onclick="addVehicle()" style="margin-bottom: 10px; cursor:pointer;">+ PŘIDAT VOZIDLO</button>
+                    <input type="text" id="det-v-plate" placeholder="SPZ" style="margin-top:0;">
+                    <input type="text" id="det-v-model" placeholder="Značka / Barva" style="margin-top:0;">
+                    <button class="btn-main" onclick="addVehicle()" style="background:#2d333b; color:white;">+ PŘIDAT</button>
                 </div>
-                <div id="det-vehicle-list"></div>
+                <div id="det-vehicle-list" style="margin-top: 15px;"></div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    let cases = JSON.parse(localStorage.getItem('lspd_v12_cases')) || [];
+    let cases = JSON.parse(localStorage.getItem('lspd_v13_cases')) || [];
     let currentCaseId = null;
 
-    // --- NAVIGACE ---
+    // --- NOTIFIKAČNÍ SYSTÉM ---
+    function notify(message, icon = 'fa-circle-check') {
+        const container = document.getElementById('notification-container');
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
+        container.appendChild(toast);
+        
+        setTimeout(() => toast.classList.add('show'), 100);
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 500);
+        }, 4000);
+    }
+
     function switchTab(tabId, btn) {
         document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -173,44 +205,40 @@
         renderList();
     }
 
-    // --- LISTING ---
     function renderList() {
         const tbody = document.getElementById('main-case-list');
         tbody.innerHTML = cases.map(c => `
             <tr>
                 <td><b style="color:var(--accent-blue)">${c.id}</b></td>
                 <td>${c.title}</td>
-                <td><span style="color:var(--accent-blue)">${c.status}</span></td>
-                <td>${c.officer || 'Nezadaný'}</td>
-                <td><button class="btn-main" onclick="openCase('${c.id}')">OTEVŘÍT SPIS</button></td>
+                <td><span style="font-size:11px; padding:3px 8px; border-radius:3px; background:#252d38;">${c.status}</span></td>
+                <td><button class="btn-main" onclick="openCase('${c.id}')">OTEVŘÍT</button></td>
             </tr>
         `).join('');
     }
 
-    // --- CASE LOGIC ---
     function createNewCase() {
-        const id = prompt("Zadejte CASE ID (např. #2026-005):");
-        const title = prompt("Zadejte název případu:");
+        const id = prompt("Zadejte Číslo Spisu (např. #2026-001):");
+        const title = prompt("Název případu:");
         if(!id || !title) return;
 
         const newCase = {
-            id, title, status: 'OTEVŘENÝ', officer: 'Detektiv',
+            id, title, status: 'OTEVŘENÝ',
             desc: '', persons: [], vehicles: [], photos: []
         };
         cases.unshift(newCase);
         saveToDB();
-        openCase(id);
+        renderList();
+        notify(`Spis ${id} byl úspěšně vytvořen.`);
     }
 
     function openCase(id) {
         currentCaseId = id;
         const c = cases.find(x => x.id === id);
-        
         document.getElementById('det-case-id').innerText = c.id;
         document.getElementById('det-case-title').innerText = c.title;
         document.getElementById('det-desc').value = c.desc;
         document.getElementById('det-status').value = c.status;
-        
         renderDetails();
         document.getElementById('case-detail-overlay').style.display = 'flex';
     }
@@ -222,27 +250,17 @@
 
     function renderDetails() {
         const c = cases.find(x => x.id === currentCaseId);
-        
-        // Osoby
         document.getElementById('det-person-list').innerHTML = c.persons.map((p, i) => `
-            <div class="tag">${p.name} (${p.mdt}) <i class="fa-solid fa-trash" onclick="removeEntity('persons', ${i})"></i></div>
+            <div class="tag">${p.name} (${p.mdt}) <i class="fa-solid fa-xmark" onclick="removeEntity('persons', ${i})"></i></div>
         `).join('');
-
-        // Vozidla
         document.getElementById('det-vehicle-list').innerHTML = c.vehicles.map((v, i) => `
-            <div class="tag">${v.plate} - ${v.model} <i class="fa-solid fa-trash" onclick="removeEntity('vehicles', ${i})"></i></div>
+            <div class="tag">${v.plate} - ${v.model} <i class="fa-solid fa-xmark" onclick="removeEntity('vehicles', ${i})"></i></div>
         `).join('');
-
-        // Fotky
         document.getElementById('det-photo-grid').innerHTML = c.photos.map((url, i) => `
-            <div class="photo-item">
-                <img src="${url}">
-                <button class="del-img" onclick="removeEntity('photos', ${i})">×</button>
-            </div>
+            <div class="photo-item"><img src="${url}"><button class="del-img" onclick="removeEntity('photos', ${i})">×</button></div>
         `).join('');
     }
 
-    // --- ADD / REMOVE ---
     function addPerson() {
         const name = document.getElementById('det-p-name').value;
         const mdt = document.getElementById('det-p-mdt').value;
@@ -279,11 +297,11 @@
         c.desc = document.getElementById('det-desc').value;
         c.status = document.getElementById('det-status').value;
         saveToDB();
-        alert("Změny ve spisu byly uloženy do databáze.");
+        notify(`Změny ve spisu ${c.id} byly uloženy.`, 'fa-floppy-disk');
     }
 
     function saveToDB() {
-        localStorage.setItem('lspd_v12_cases', JSON.stringify(cases));
+        localStorage.setItem('lspd_v13_cases', JSON.stringify(cases));
     }
 
     renderList();
