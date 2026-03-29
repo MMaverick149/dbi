@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>MDT - Správa Žádostí OPP</title>
+    <title>MDT - Operativní Modul OPP</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -58,7 +58,6 @@
             color: var(--text-white);
             text-decoration: none;
             border-radius: 6px;
-            margin-bottom: 5px;
             background-color: #21262d;
             border-left: 3px solid var(--accent-blue);
         }
@@ -73,38 +72,19 @@
             gap: 20px;
         }
 
-        /* HORNÍ KARTA PROFILU (Vstupní pole) */
+        /* VSTUPNÍ KARTA */
         .profile-card {
             background-color: var(--card-bg);
             border: 1px solid var(--border);
             border-radius: 8px;
             padding: 25px;
-            display: flex;
-            gap: 30px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        }
-
-        .photo-area {
-            width: 140px;
-            height: 160px;
-            background-color: #0d1117;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-gray);
-            font-size: 10px;
-            text-align: center;
-            padding: 10px;
         }
 
         .info-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 20px;
-            flex-grow: 1;
         }
 
         .info-item label { 
@@ -120,25 +100,16 @@
             background: rgba(0,0,0,0.2);
             border: 1px solid var(--border);
             color: var(--text-white);
-            width: 100%;
             padding: 10px;
             border-radius: 4px;
             outline: none;
+            width: 100%;
             box-sizing: border-box;
-            transition: border-color 0.2s;
         }
 
-        input:focus, textarea:focus {
-            border-color: var(--accent-blue);
-        }
+        .full-width { grid-column: span 2; }
 
-        .reason-box {
-            grid-column: span 2;
-            resize: vertical;
-            font-family: inherit;
-        }
-
-        /* TABULKA HISTORIE */
+        /* TABULKA */
         .table-section {
             background-color: var(--card-bg);
             border: 1px solid var(--border);
@@ -154,27 +125,57 @@
         .records-table th {
             background-color: rgba(255,255,255,0.03);
             text-align: left;
-            padding: 15px;
+            padding: 12px;
             color: var(--text-gray);
-            font-size: 12px;
+            font-size: 11px;
             border-bottom: 1px solid var(--border);
         }
 
         .records-table td {
-            padding: 15px;
+            padding: 12px;
             border-bottom: 1px solid var(--border);
-            font-size: 13px;
         }
 
-        .records-table tr:hover { 
-            background-color: rgba(88, 166, 255, 0.05); 
+        /* MODÁLNÍ OKNO (VÝSLEDEK) */
+        #modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
         }
 
-        /* TLAČÍTKA */
-        .actions-bar {
+        .modal-content {
+            background: var(--card-bg);
+            width: 600px;
+            max-height: 80vh;
+            border: 1px solid var(--accent-blue);
+            border-radius: 8px;
+            padding: 20px;
             display: flex;
-            justify-content: flex-end;
-            gap: 10px;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        #report-text {
+            background: #0d1117;
+            color: #00ff00; /* Terminálová zelená pro přehlednost */
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            overflow-y: auto;
+            border-radius: 4px;
+            font-size: 12px;
         }
 
         .btn-primary {
@@ -186,18 +187,15 @@
             cursor: pointer;
             font-weight: bold;
             text-transform: uppercase;
-            transition: transform 0.1s;
         }
 
-        .btn-primary:active { transform: scale(0.98); }
-
-        .status-badge {
-            background: rgba(35, 134, 54, 0.2);
-            color: #3fb950;
-            padding: 4px 8px;
+        .btn-close {
+            background: #f85149;
+            color: white;
+            border: none;
+            padding: 8px 15px;
             border-radius: 4px;
-            font-size: 11px;
-            border: 1px solid #238636;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -208,7 +206,6 @@
         <strong>LSPD TERMINÁL</strong><br>
         <span style="color: var(--text-gray); font-size: 10px;">OPERATIVNÍ MODUL OPP</span>
     </div>
-    
     <nav>
         <div class="menu-item">
             <i class="fa-solid fa-file-signature"></i>
@@ -219,25 +216,18 @@
 
 <div class="main-container">
     <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h1 style="margin:0; font-size: 20px;">Protokolování žádosti o prolomení / výpis</h1>
-        <div class="actions-bar">
-            <button class="btn-primary" onclick="vytvoritZadost()">Schválit a odeslat</button>
-        </div>
+        <h1 style="margin:0; font-size: 18px;">Protokolování žádosti</h1>
+        <button class="btn-primary" onclick="generovatZpravu()">Schválit a odeslat</button>
     </div>
 
     <div class="profile-card">
-        <div class="photo-area">
-            <i class="fa-solid fa-user-shield fa-3x" style="margin-bottom: 10px;"></i>
-            DOKUMENTACE<br>SUBJEKTU
-        </div>
-        
         <div class="info-grid">
             <div class="info-item">
                 <label>Vyžadující příslušník</label>
-                <input type="text" id="officer" placeholder="Zadejte jméno a hodnost...">
+                <input type="text" id="officer" placeholder="Hodnost a jméno...">
             </div>
             <div class="info-item">
-                <label>Identifikace subjektu (Podezřelý/Oběť)</label>
+                <label>Identifikace subjektu</label>
                 <input type="text" id="subject" placeholder="Jméno, narození, ID...">
             </div>
             <div class="info-item">
@@ -246,7 +236,6 @@
                     <option value="Vražda (§ 140 TZ)">Vražda (§ 140 TZ)</option>
                     <option value="Loupež (§ 173 TZ)">Loupež (§ 173 TZ)</option>
                     <option value="Drogová kriminalita">Drogová kriminalita</option>
-                    <option value="Hospodářská trestná činnost">Hospodářská trestná činnost</option>
                 </select>
             </div>
             <div class="info-item">
@@ -254,12 +243,12 @@
                 <select id="type">
                     <option value="Prolomení telefonu">Prolomení telefonu</option>
                     <option value="Výpis z telekomunikace">Výpis z telekomunikace</option>
-                    <option value="Prověrka majetku a účtů">Prověrka majetku a účtů</option>
+                    <option value="Prověrka majetku">Prověrka majetku</option>
                 </select>
             </div>
-            <div class="info-item" style="grid-column: span 2;">
-                <label>Zjištěné skutečnosti (Odůvodnění)</label>
-                <textarea id="facts" class="reason-box" rows="4">Na základě vyšetřování bylo zjištěno...</textarea>
+            <div class="info-item full-width">
+                <label>Odůvodnění žádosti</label>
+                <textarea id="facts" rows="4">Na základě prvotního ohledání místa činu...</textarea>
             </div>
         </div>
     </div>
@@ -268,45 +257,77 @@
         <table class="records-table">
             <thead>
                 <tr>
-                    <th>Typ Žádosti</th>
+                    <th>Typ</th>
                     <th>Subjekt</th>
                     <th>Příslušník</th>
-                    <th>Datum uložení</th>
-                    <th>Stav systému</th>
+                    <th>Datum</th>
                 </tr>
             </thead>
             <tbody id="history-log">
-                <tr>
-                    <td>Výpis z telekomunikace</td>
-                    <td>Luis Vega</td>
-                    <td>Systémový záznam</td>
-                    <td>28.03.2026</td>
-                    <td><span class="status-badge">ARCHIVOVÁNO</span></td>
-                </tr>
-            </tbody>
+                </tbody>
         </table>
     </div>
 </div>
 
+<div id="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <strong>VÝSLEDNÝ PROTOKOL ŽÁDOSTI</strong>
+            <button class="btn-close" onclick="zavritModal()">X</button>
+        </div>
+        <div id="report-text"></div>
+        <div style="margin-top: 15px; display: flex; gap: 10px;">
+            <button class="btn-primary" onclick="copyText()">Kopírovat text</button>
+            <button class="btn-close" style="background: #30363d;" onclick="zavritModal()">Zavřít</button>
+        </div>
+    </div>
+</div>
+
 <script>
-    function vytvoritZadost() {
-        const officer = document.getElementById('officer').value || "Neznámý";
-        const subject = document.getElementById('subject').value || "Neznámý";
+    function generovatZpravu() {
+        const officer = document.getElementById('officer').value || "NEUVEDENO";
+        const subject = document.getElementById('subject').value || "NEZNÁMÝ";
+        const crime = document.getElementById('crime').value;
         const type = document.getElementById('type').value;
-        const dnes = new Date().toLocaleDateString('cs-CZ');
-        
+        const facts = document.getElementById('facts').value;
+        const datum = new Date().toLocaleDateString('cs-CZ');
+
+        // Text zprávy
+        const zprava = `ŽÁDOST O UŽITÍ OPP DLE § 37 Z.Č. 006-19
+--------------------------------------------------
+VYŽADUJÍCÍ PŘÍSLUŠNÍK: ${officer}
+TYP PROSTŘEDKU:       ${type}
+SUBJEKT:              ${subject}
+TRESTNÝ ČIN:          ${crime}
+--------------------------------------------------
+ZJIŠTĚNÉ SKUTEČNOSTI:
+${facts}
+
+Za účelem objasnění okolností případu je žádáno o 
+poskytnutí součinnosti v rozsahu výše uvedeném.
+
+S pozdravem,
+LSPD - Oddělení operativy
+Datum: ${datum}`;
+
+        // Zobrazit v modalu
+        document.getElementById('report-text').innerText = zprava;
+        document.getElementById('modal-overlay').style.display = 'flex';
+
+        // Přidat do historie na pozadí
         const log = document.getElementById('history-log');
         const radek = log.insertRow(0);
-        
-        radek.innerHTML = `
-            <td>${type}</td>
-            <td>${subject}</td>
-            <td>${officer}</td>
-            <td>${dnes}</td>
-            <td><span class="status-badge" style="background: rgba(88, 166, 255, 0.2); color: var(--accent-blue); border-color: var(--accent-blue);">ZPRACOVÁVÁNO</span></td>
-        `;
+        radek.innerHTML = `<td>${type}</td><td>${subject}</td><td>${officer}</td><td>${datum}</td>`;
+    }
 
-        alert("Žádost o OPP byla úspěšně zaevidována do systému.");
+    function zavritModal() {
+        document.getElementById('modal-overlay').style.display = 'none';
+    }
+
+    function copyText() {
+        const text = document.getElementById('report-text').innerText;
+        navigator.clipboard.writeText(text);
+        alert("Zpráva zkopírována!");
     }
 </script>
 
