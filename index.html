@@ -2,332 +2,261 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MDT 2.0 - Správa OPP</title>
+    <title>LSPD MDT - Profil Občana</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Definice barev podle vzoru */
         :root {
-            --bg-color: #1a1b26; /* Tmavé pozadí */
-            --sidebar-bg: #11121d; /* Ještě tmavší sidebar */
-            --content-bg: #1f202e; /* Mírně světlejší panel */
-            --card-bg: #272839; /* Barva karty/boxu */
-            --text-main: #c0caf5; /* Hlavní text */
-            --text-muted: #7983a5; /* Tlumený text */
-            --accent: #bb9af7; /* Fialový akcent */
-            --success: #9ece6a; /* Zelená barva (šipky) */
-            --border-color: #2f334d; /* Barva ohraničení */
+            --bg-dark: #0d1117;
+            --sidebar-bg: #161b22;
+            --card-bg: #1b2129;
+            --accent-blue: #58a6ff;
+            --text-gray: #8b949e;
+            --text-white: #c9d1d9;
+            --border: #30363d;
+            --success: #238636;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-white);
             margin: 0;
-            padding: 0;
-            background-color: var(--bg-color);
-            color: var(--text-main);
             display: flex;
             height: 100vh;
-            overflow: hidden;
-        }
-
-        /* --- LEVÝ SIDEBAR --- */
-        .sidebar {
-            width: 70px;
-            background-color: var(--sidebar-bg);
-            border-right: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 20px 0;
-            align-items: center;
-        }
-
-        .sidebar-top i, .sidebar-bottom i {
-            font-size: 20px;
-            color: var(--text-muted);
-            margin-bottom: 30px;
-            cursor: pointer;
-            transition: color 0.3s;
-        }
-
-        .sidebar-top i:hover, .sidebar-top i.active {
-            color: var(--accent);
-        }
-
-        .sidebar-bottom i:hover {
-            color: #f7768e; /* Červená pro odhlášení */
-        }
-
-        /* --- HLAVNÍ OBSAH --- */
-        .main-content {
-            flex-grow: 1;
-            padding: 20px;
-            background-color: var(--content-bg);
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Hlavička jako ve vzoru */
-        .content-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .header-title {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .header-title h2 {
-            margin: 0;
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        .header-controls i {
-            color: var(--text-muted);
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        /* Sekce filtrů/zadávání */
-        .controls-row {
-            display: grid;
-            grid-template-columns: 2fr 1.5fr 1fr;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .search-input {
-            grid-column: span 3;
-            margin-bottom: 10px;
-        }
-
-        input, select, textarea {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 12px;
-            border-radius: 6px;
             font-size: 13px;
-            outline: none;
-            width: 100%;
-            box-sizing: border-box;
         }
 
-        input::placeholder {
-            color: var(--text-muted);
+        /* SIDEBAR */
+        .sidebar {
+            width: 220px;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
         }
 
-        textarea {
-            grid-column: span 3;
-            font-family: 'Courier New', monospace; /* Pro zjištěné skutečnosti */
-        }
-
-        /* --- VÝSTUPNÍ KARTA --- */
-        .output-container {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding-right: 10px; /* pro scrollbar */
-        }
-
-        #spis-output {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 20px;
-            display: none;
-            position: relative;
-        }
-
-        /* Zelený status box z obrázku, přizpůsobený naší zprávě */
-        .output-header {
+        .user-profile {
             display: flex;
             align-items: center;
-            gap: 15px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 15px;
-            margin-bottom: 15px;
+            gap: 10px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 20px;
         }
 
-        .status-icon {
-            background-color: rgba(158, 206, 106, 0.1);
-            color: var(--success);
-            width: 40px;
-            height: 40px;
+        .user-profile i { font-size: 30px; color: var(--accent-blue); }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            color: var(--text-gray);
+            text-decoration: none;
+            border-radius: 6px;
+            margin-bottom: 5px;
+            transition: 0.2s;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background-color: #21262d;
+            color: var(--text-white);
+        }
+
+        /* MAIN CONTENT */
+        .main-container {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        /* HORNÍ KARTA PROFILU */
+        .profile-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
             border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            gap: 40px;
+            margin-bottom: 20px;
+        }
+
+        .photo-placeholder {
+            width: 150px;
+            height: 180px;
+            background-color: #0d1117;
+            border: 1px dashed var(--border);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            color: var(--text-gray);
         }
 
-        .output-title-info {
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
             flex-grow: 1;
         }
 
-        .output-title {
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .output-meta {
-            color: var(--text-muted);
-            font-size: 12px;
-        }
-
-        .copy-btn {
-            background: none;
-            border: 1px solid var(--accent);
-            color: var(--accent);
-            padding: 6px 15px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 0.3s;
-        }
-
-        .copy-btn:hover {
-            background-color: var(--accent);
-            color: var(--sidebar-bg);
-        }
-
-        .output-body {
-            font-family: 'Courier New', monospace;
-            font-size: 13px;
-            line-height: 1.6;
-            white-space: pre-wrap;
-        }
-
-        /* Tlačítko pro generování */
-        .btn-action {
-            grid-column: span 3;
-            background-color: var(--accent);
-            color: var(--sidebar-bg);
+        .info-item label { color: var(--text-gray); display: block; margin-bottom: 4px; font-size: 11px; text-transform: uppercase; }
+        .info-item input, .info-item select {
+            background: transparent;
             border: none;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-white);
+            width: 100%;
+            padding: 5px 0;
+            outline: none;
+        }
+
+        /* TABULKA JAKO NA OBRÁZKU */
+        .records-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .records-table th {
+            background-color: rgba(255,255,255,0.05);
+            text-align: left;
             padding: 12px;
-            border-radius: 6px;
-            font-weight: 600;
+            color: var(--text-gray);
+            font-weight: 500;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .records-table td {
+            padding: 12px;
+            border-bottom: 1px dotted var(--border);
+        }
+
+        .records-table tr:hover { background-color: rgba(255,255,255,0.02); }
+
+        .btn-add {
+            background-color: var(--accent-blue);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
             cursor: pointer;
-            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+
+        /* STATUS TEXTY */
+        .status-ok { color: #3fb950; display: flex; align-items: center; gap: 5px; }
+
+        /* TEXTAREA PRO DŮVOD */
+        .reason-box {
+            grid-column: span 2;
+            background: #0d1117;
+            border: 1px solid var(--border);
+            color: var(--text-white);
+            padding: 10px;
+            border-radius: 4px;
+            resize: none;
         }
     </style>
 </head>
 <body>
 
-    <div class="sidebar">
-        <div class="sidebar-top">
-            <i class="fa-solid fa-grip-vertical"></i> <i class="fa-solid fa-id-card active"></i> <i class="fa-solid fa-car"></i>
-            <i class="fa-solid fa-briefcase"></i>
-        </div>
-        <div class="sidebar-bottom">
-            <i class="fa-solid fa-sun"></i> <i class="fa-solid fa-sign-out-alt"></i> </div>
-    </div>
-
-    <div class="main-content">
-        <div class="content-header">
-            <div class="header-title">
-                <i class="fa-solid fa-id-card" style="color: var(--accent);"></i>
-                <h2>Podání Žádosti OPP</h2>
-            </div>
-            <div class="header-controls">
-                <i class="fa-solid fa-history"></i>
-            </div>
-        </div>
-
-        <div class="controls-row">
-            <input type="text" id="officer" placeholder="Vyžadující příslušník (např. kpt. Jan Novák)" class="search-input">
-            <input type="text" id="subject" placeholder="Podezřelá osoba (např. Luis Vega, 13.03.1993, NC5422)">
-            
-            <select id="crime">
-                <option value="" disabled selected>Vyberte trestný čin...</option>
-                <option value="Vražda (§ 140 TZ)">Vražda - § 140 TZ</option>
-                <option value="Loupež (§ 173 TZ)">Loupež - § 173 TZ</option>
-                <option value="Drogy (§ 283 TZ)">Drogy - § 283 TZ</option>
-            </select>
-
-            <input type="date" id="reportDate" title="Datum podání">
-
-            <textarea id="facts" rows="4" placeholder="Zjištěné skutečnosti (Důvod žádosti)...">Na základě prvotního ohledání místa činu bylo zjištěno, že došlo k násilnému trestnému činu, při kterém byly nalezeny osoby bez známek života s poranjenja odpovídajícími násilnému útoku. </textarea>
-            
-            <button class="btn-action" onclick="generateReport()">VYGENEROVAT SPIS</button>
-        </div>
-
-        <div class="output-container">
-            <div id="spis-output">
-                <div class="output-header">
-                    <div class="status-icon">
-                        <i class="fa-solid fa-arrow-right"></i> </div>
-                    <div class="output-title-info">
-                        <div class="output-title">ŽÁDOST O OPP - FORMULÁŘ GENEROVÁN</div>
-                        <div class="output-meta">Systém MDT | Kancelář OPP | Vygenerováno: <span id="meta-date"></span></div>
-                    </div>
-                    <button class="copy-btn" onclick="copyReport()">Kopírovat</button>
-                </div>
-                <div class="output-body" id="output-text">
-                    </div>
-            </div>
+<div class="sidebar">
+    <div class="user-profile">
+        <i class="fa-solid fa-circle-user"></i>
+        <div>
+            <strong>Emily Carter</strong><br>
+            <span style="color: var(--text-gray); font-size: 11px;">Trooper</span>
         </div>
     </div>
+    
+    <nav>
+        <a href="#" class="menu-item"><i class="fa-solid fa-house"></i> Dashboard</a>
+        <a href="#" class="menu-item active"><i class="fa-solid fa-users"></i> Registr občanů</a>
+        <a href="#" class="menu-item"><i class="fa-solid fa-car"></i> Registr vozidel</a>
+        <a href="#" class="menu-item"><i class="fa-solid fa-gun"></i> Registr zbraní</a>
+        <a href="#" class="menu-item"><i class="fa-solid fa-file-invoice"></i> Registr faktur</a>
+    </nav>
+</div>
+
+<div class="main-container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="margin:0;">Občan #1877</h2>
+        <button class="btn-add" onclick="pridatDoSpisu()">PŘIDAT DO SPISU</button>
+    </div>
+
+    <div class="profile-card">
+        <div class="photo-placeholder">
+            <i class="fa-solid fa-camera fa-2x"></i>
+        </div>
+        <div class="info-grid">
+            <div class="info-item">
+                <label>Jméno a Příjmení</label>
+                <input type="text" id="jmeno" value="Luis Vega">
+            </div>
+            <div class="info-item">
+                <label>Datum Narození</label>
+                <input type="text" id="narozeni" value="13.03.1993">
+            </div>
+            <div class="info-item">
+                <label>Pohlaví</label>
+                <select id="pohlavi">
+                    <option>Muž</option>
+                    <option>Žena</option>
+                </select>
+            </div>
+            <div class="info-item">
+                <label>Státní identifikátor</label>
+                <input type="text" id="identifikator" value="#NC5422">
+            </div>
+            <div class="info-item" style="grid-column: span 2;">
+                <label>Zjištěné skutečnosti (Důvod žádosti o OPP)</label>
+                <textarea id="skutecnosti" class="reason-box" rows="3">Násilný trestný čin na místě činu, nalezeny osoby bez známek života.</textarea>
+            </div>
+        </div>
+    </div>
+
+    <h3 style="color: var(--text-gray); font-size: 14px; margin-bottom: 10px;">HISTORIE ŽÁDOSTÍ A ZÁZNAMŮ</h3>
+    <table class="records-table">
+        <thead>
+            <tr>
+                <th>Paragraf / Předmět</th>
+                <th>Datum uložení</th>
+                <th>Vyřizuje</th>
+                <th>Stav žádosti</th>
+            </tr>
+        </thead>
+        <tbody id="vysledky">
+            <tr>
+                <td>§ 37 Z.Č. 006-19 (OPP - Výpis majetku)</td>
+                <td>28.03.2026</td>
+                <td>Emily Carter</td>
+                <td><span class="status-ok"><i class="fa-solid fa-check"></i> Schváleno</span></td>
+            </tr>
+            </tbody>
+    </table>
+</div>
 
 <script>
-    // Přednastavit dnešní datum
-    document.getElementById('reportDate').valueAsDate = new Date();
-
-    function generateReport() {
-        const officer = document.getElementById('officer').value || "[NEUVEDENO]";
-        const subject = document.getElementById('subject').value || "[NEZADÁNO]";
-        const crime = document.getElementById('crime').value || "[NEVYBRÁNO]";
-        const facts = document.getElementById('facts').value;
-        const formDate = new Date(document.getElementById('reportDate').value).toLocaleDateString('cs-CZ');
-        const now = new Date().toLocaleString('cs-CZ');
-
-        const report = `ŽÁDOST O UŽITÍ OPP DLE § 37 Z.Č. 006-19
-Datum podání: ${formDate}
-----------------------------------------------------------
-VYŽADUJÍCÍ PŘÍSLUŠNÍK: ${officer}
-PODEZŘELÁ OSOBA:     ${subject}
-TRESTNÝ ČIN:         ${crime}
-
-PROSTŘEDEK: 
-• Výpis a prověrka majetku a finančních prostředků
-
-PŘEDMĚT VYDÁNÍ:
-• Informace o veškerém evidovaném majetku osoby, zejména bankovních 
-  účtech, finančních prostředcích, registrovaných vozidlech, 
-  nemovitostech, movitém majetku vyšší hodnoty a případných závazcích.
-
-ZJIŠTĚNÉ SKUTEČNOSTI:
-${facts}
-
-Za účelem objasnění okolností případu je žádáno o poskytnutí informací 
-o majetku. Tyto informace mohou napomoci k identifikaci možného motivu 
-a zjištění vazeb na další osoby.
-
-S pozdravem,
-_________________________
-Podpis příslušníka
-${officer}`;
-
-        const outputDiv = document.getElementById('spis-output');
-        document.getElementById('output-text').innerText = report;
-        document.getElementById('meta-date').innerText = now;
-        outputDiv.style.display = 'block';
+    function pridatDoSpisu() {
+        const jmeno = document.getElementById('jmeno').value;
+        const skutecnosti = document.getElementById('skutecnosti').value;
+        const dnes = new Date().toLocaleDateString('cs-CZ');
         
-        // Posunout na výstup
-        outputDiv.scrollIntoView({ behavior: 'smooth' });
-    }
+        const tabulka = document.getElementById('vysledky');
+        const novyRadek = tabulka.insertRow(0); // Přidá na začátek
+        
+        novyRadek.innerHTML = `
+            <td>Žádost OPP: ${jmeno}</td>
+            <td>${dnes}</td>
+            <td>Emily Carter</td>
+            <td><span style="color: #f85149;">V řešení...</span></td>
+        `;
 
-    function copyReport() {
-        const textToCopy = document.getElementById('output-text').innerText;
-        navigator.clipboard.writeText(textToCopy).then(() => {
-            alert('Spis byl zkopírován do schránky.');
-        }).catch(err => {
-            console.error('Chyba při kopírování:', err);
-        });
+        alert("Záznam byl přidán do databáze MDT.");
     }
 </script>
 
