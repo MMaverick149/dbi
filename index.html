@@ -5,11 +5,10 @@
     <title>LSPD - Evidence</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --bg-dark: #0b0e14; --sidebar-bg: #151921; --card-bg: #1c212b; --accent-blue: #4a9eff; --border: #2d333b; --gold: #d4af37; --danger: #f85149; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg-dark); color: #e1e4e8; margin: 0; display: flex; height: 100vh; overflow: hidden; }
+        :root { --bg-dark: #0b0e14; --sidebar-bg: #151921; --card-bg: #1c212b; --accent-blue: #4a9eff; --border: #2d333b; --gold: #d4af37; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg-dark); color: white; margin: 0; display: flex; height: 100vh; overflow: hidden; }
         .sidebar { width: 260px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 15px; display: flex; flex-direction: column; }
-        .user-card { background: #0b0e14; padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid var(--border); cursor: pointer; transition: 0.2s; }
-        .user-card:hover { border-color: var(--accent-blue); }
+        .user-card { background: #0b0e14; padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid var(--border); cursor: pointer; }
         .role-badge { font-size: 10px; background: var(--gold); color: black; padding: 2px 6px; border-radius: 3px; font-weight: bold; margin-top: 5px; display: inline-block; }
         .nav-group { flex-grow: 1; display: flex; flex-direction: column; gap: 5px; }
         .nav-btn { background: none; border: none; color: #9ba3af; padding: 12px; text-align: left; cursor: pointer; border-radius: 4px; display: flex; align-items: center; gap: 10px; text-decoration: none; }
@@ -18,27 +17,25 @@
         table { width: 100%; border-collapse: collapse; background: var(--card-bg); }
         th { text-align: left; padding: 15px; color: #9ba3af; border-bottom: 2px solid var(--border); font-size: 11px; }
         td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 13px; }
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 100; }
         .modal { background: var(--sidebar-bg); padding: 25px; border-radius: 8px; width: 400px; border: 1px solid var(--border); }
-        input { width: 100%; background: var(--bg-dark); border: 1px solid var(--border); color: white; padding: 12px; margin: 10px 0; border-radius: 4px; box-sizing: border-box; }
     </style>
 </head>
 <body>
 <div id="newCaseModal" class="modal-overlay">
     <div class="modal">
         <h3>Nový spis</h3>
-        <input type="text" id="caseId" placeholder="Číslo spisu (např. #001)">
-        <input type="text" id="caseTitle" placeholder="Název případu">
+        <input type="text" id="caseId" placeholder="ID (např. #001)" style="width:100%; padding:10px; margin-bottom:10px; background:#0b0e14; border:1px solid var(--border); color:white;">
+        <input type="text" id="caseTitle" placeholder="Název" style="width:100%; padding:10px; margin-bottom:15px; background:#0b0e14; border:1px solid var(--border); color:white;">
         <button onclick="confirmNewCase()" style="width:100%; padding:12px; background:var(--accent-blue); border:none; font-weight:bold; cursor:pointer;">VYTVOŘIT</button>
-        <button onclick="closeModal()" style="width:100%; padding:10px; background:none; color:white; border:none; cursor:pointer; margin-top:5px;">Zrušit</button>
+        <button onclick="closeModal()" style="width:100%; padding:10px; background:none; color:white; border:none; cursor:pointer;">Zrušit</button>
     </div>
 </div>
 <div class="sidebar">
     <div class="user-card" onclick="window.location.href='profil.html'">
-        <div id="u-name" style="font-weight: bold;">Načítání...</div>
+        <div id="u-name" style="font-weight: bold;">--</div>
         <div id="u-call" style="color: var(--gold); font-size: 11px;">--</div>
         <div id="u-role" class="role-badge">--</div>
-        <div style="font-size: 9px; color: var(--accent-blue); margin-top: 8px;">Zobrazit profil ></div>
     </div>
     <div class="nav-group">
         <a href="index.html" class="nav-btn active"><i class="fa-solid fa-folder"></i> Evidence Spisů</a>
@@ -50,16 +47,13 @@
 </div>
 <div class="main">
     <h2>Centrální Databáze</h2>
-    <table>
-        <thead><tr><th>ID</th><th>NÁZEV</th><th>AUTOR</th><th>STAV</th></tr></thead>
-        <tbody id="case-table-body"></tbody>
-    </table>
+    <table><thead><tr><th>ID</th><th>NÁZEV</th><th>AUTOR</th><th>STAV</th></tr></thead><tbody id="case-table-body"></tbody></table>
 </div>
 <script>
     let cases = JSON.parse(localStorage.getItem('lspd_v15_data')) || [];
     let loggedUser = JSON.parse(localStorage.getItem('lspd_logged_session'));
     function init() {
-        if(!loggedUser) { window.location.href = 'login.html'; return; }
+        if(!loggedUser) return window.location.href = 'login.html';
         document.getElementById('u-name').innerText = loggedUser.name;
         document.getElementById('u-call').innerText = loggedUser.callsign;
         document.getElementById('u-role').innerText = loggedUser.rank;
@@ -77,11 +71,7 @@
         location.reload();
     }
     function renderCases() {
-        document.getElementById('case-table-body').innerHTML = cases.map((c, i) => `
-            <tr onclick="window.location.href='detail.html?id=${i}'">
-                <td><b>${c.id}</b></td><td>${c.title}</td><td>${c.author}</td>
-                <td><span style="color:${c.status === 'UZAVŘENÝ' ? 'var(--success)' : 'var(--gold)'}">${c.status}</span></td>
-            </tr>`).join('');
+        document.getElementById('case-table-body').innerHTML = cases.map((c, i) => `<tr onclick="window.location.href='detail.html?id=${i}'" style="cursor:pointer;"><td><b>${c.id}</b></td><td>${c.title}</td><td>${c.author}</td><td><span style="color:${c.status === 'UZAVŘENÝ' ? '#2ea043' : 'var(--gold)'}">${c.status}</span></td></tr>`).join('');
     }
     function logout() { localStorage.removeItem('lspd_logged_session'); window.location.href = 'login.html'; }
     init();

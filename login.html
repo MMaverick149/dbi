@@ -8,41 +8,30 @@
         :root { --bg-dark: #0b0e14; --card-bg: #151921; --accent-blue: #4a9eff; --border: #2d333b; --gold: #d4af37; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg-dark); color: white; margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; }
         .login-card { background: var(--card-bg); border: 1px solid var(--border); padding: 40px; border-radius: 8px; width: 350px; text-align: center; }
-        .input-group { text-align: left; margin-bottom: 20px; }
-        label { display: block; font-size: 11px; color: var(--gold); margin-bottom: 5px; font-weight: bold; }
-        input { width: 100%; background: var(--bg-dark); border: 1px solid var(--border); color: white; padding: 12px; border-radius: 4px; box-sizing: border-box; outline: none; }
-        .btn-login { width: 100%; background: var(--accent-blue); color: #0b0e14; border: none; padding: 14px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        input { width: 100%; background: var(--bg-dark); border: 1px solid var(--border); color: white; padding: 12px; margin-top: 10px; border-radius: 4px; box-sizing: border-box; }
+        .btn-login { width: 100%; background: var(--accent-blue); color: #0b0e14; border: none; padding: 14px; border-radius: 4px; font-weight: bold; cursor: pointer; margin-top: 20px; }
     </style>
 </head>
 <body>
 <div class="login-card">
-    <div style="font-size: 50px; color: var(--accent-blue); margin-bottom: 10px;"><i class="fa-solid fa-shield-halved"></i></div>
-    <h2>LSPD DATABASE</h2>
-    <p style="color: #9ba3af; font-size: 12px; text-transform: uppercase;">Autorizovaný přístup</p>
-    <div class="input-group">
-        <label>UŽIVATELSKÉ JMÉNO</label>
-        <input type="text" id="username" placeholder="Jméno a Příjmení">
-    </div>
-    <div class="input-group">
-        <label>PŘÍSTUPOVÝ KLÍČ</label>
-        <input type="password" id="password" placeholder="••••••••">
-    </div>
-    <div id="error" style="color: #f85149; font-size: 12px; margin-bottom: 15px; display: none;">Neplatné údaje!</div>
+    <i class="fa-solid fa-building-shield" style="font-size: 50px; color: var(--accent-blue);"></i>
+    <h2>LSPD LOGIN</h2>
+    <input type="text" id="username" placeholder="Jméno a Příjmení">
+    <input type="password" id="password" placeholder="Přístupový klíč">
+    <div id="err" style="color:var(--danger); font-size:12px; margin-top:10px; display:none;">Chyba přihlášení!</div>
     <button class="btn-login" onclick="handleLogin()">VSTOUPIT</button>
 </div>
 <script>
     function handleLogin() {
-        const user = document.getElementById('username').value;
-        const pass = document.getElementById('password').value;
-        let members = JSON.parse(localStorage.getItem('lspd_members')) || [
-            { name: "Admin", callsign: "00", rank: "COMMAND" }
-        ];
-        const found = members.find(m => m.name.toLowerCase() === user.toLowerCase());
-        if (found && pass === "1234") {
+        const u = document.getElementById('username').value;
+        const p = document.getElementById('password').value;
+        const members = JSON.parse(localStorage.getItem('lspd_members')) || [{name:"Admin", password:"admin", rank:"COMMAND", callsign:"00"}];
+        const found = members.find(m => m.name.toLowerCase() === u.toLowerCase() && m.password === p);
+        if(found) {
             localStorage.setItem('lspd_logged_session', JSON.stringify(found));
             window.location.href = 'index.html';
         } else {
-            document.getElementById('error').style.display = 'block';
+            document.getElementById('err').style.display = 'block';
         }
     }
 </script>
