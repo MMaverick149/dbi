@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>LSPD MDT - Profil Občana</title>
+    <title>MDT - Správa Žádostí OPP</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -24,11 +24,12 @@
             display: flex;
             height: 100vh;
             font-size: 13px;
+            overflow: hidden;
         }
 
         /* SIDEBAR */
         .sidebar {
-            width: 220px;
+            width: 240px;
             background-color: var(--sidebar-bg);
             border-right: 1px solid var(--border);
             display: flex;
@@ -36,227 +37,276 @@
             padding: 15px;
         }
 
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding-bottom: 20px;
+        .system-title {
+            padding: 10px;
             border-bottom: 1px solid var(--border);
             margin-bottom: 20px;
+            text-align: center;
         }
 
-        .user-profile i { font-size: 30px; color: var(--accent-blue); }
+        .system-title strong {
+            color: var(--accent-blue);
+            letter-spacing: 1px;
+            font-size: 16px;
+        }
 
         .menu-item {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 10px;
-            color: var(--text-gray);
+            padding: 12px;
+            color: var(--text-white);
             text-decoration: none;
             border-radius: 6px;
             margin-bottom: 5px;
-            transition: 0.2s;
-        }
-
-        .menu-item:hover, .menu-item.active {
             background-color: #21262d;
-            color: var(--text-white);
+            border-left: 3px solid var(--accent-blue);
         }
 
         /* MAIN CONTENT */
         .main-container {
             flex-grow: 1;
-            padding: 20px;
+            padding: 25px;
             overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
-        /* HORNÍ KARTA PROFILU */
+        /* HORNÍ KARTA PROFILU (Vstupní pole) */
         .profile-card {
             background-color: var(--card-bg);
             border: 1px solid var(--border);
             border-radius: 8px;
-            padding: 20px;
+            padding: 25px;
             display: flex;
-            gap: 40px;
-            margin-bottom: 20px;
+            gap: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
-        .photo-placeholder {
-            width: 150px;
-            height: 180px;
+        .photo-area {
+            width: 140px;
+            height: 160px;
             background-color: #0d1117;
-            border: 1px dashed var(--border);
+            border: 1px solid var(--border);
+            border-radius: 4px;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             color: var(--text-gray);
+            font-size: 10px;
+            text-align: center;
+            padding: 10px;
         }
 
         .info-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
+            gap: 20px;
             flex-grow: 1;
         }
 
-        .info-item label { color: var(--text-gray); display: block; margin-bottom: 4px; font-size: 11px; text-transform: uppercase; }
-        .info-item input, .info-item select {
-            background: transparent;
-            border: none;
-            border-bottom: 1px solid var(--border);
-            color: var(--text-white);
-            width: 100%;
-            padding: 5px 0;
-            outline: none;
+        .info-item label { 
+            color: var(--accent-blue); 
+            display: block; 
+            margin-bottom: 6px; 
+            font-size: 11px; 
+            font-weight: bold;
+            text-transform: uppercase; 
         }
 
-        /* TABULKA JAKO NA OBRÁZKU */
-        .records-table {
+        input, select, textarea {
+            background: rgba(0,0,0,0.2);
+            border: 1px solid var(--border);
+            color: var(--text-white);
             width: 100%;
-            border-collapse: collapse;
+            padding: 10px;
+            border-radius: 4px;
+            outline: none;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, textarea:focus {
+            border-color: var(--accent-blue);
+        }
+
+        .reason-box {
+            grid-column: span 2;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        /* TABULKA HISTORIE */
+        .table-section {
             background-color: var(--card-bg);
             border: 1px solid var(--border);
             border-radius: 8px;
             overflow: hidden;
         }
 
+        .records-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
         .records-table th {
-            background-color: rgba(255,255,255,0.05);
+            background-color: rgba(255,255,255,0.03);
             text-align: left;
-            padding: 12px;
+            padding: 15px;
             color: var(--text-gray);
-            font-weight: 500;
+            font-size: 12px;
             border-bottom: 1px solid var(--border);
         }
 
         .records-table td {
-            padding: 12px;
-            border-bottom: 1px dotted var(--border);
+            padding: 15px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
         }
 
-        .records-table tr:hover { background-color: rgba(255,255,255,0.02); }
+        .records-table tr:hover { 
+            background-color: rgba(88, 166, 255, 0.05); 
+        }
 
-        .btn-add {
+        /* TLAČÍTKA */
+        .actions-bar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn-primary {
             background-color: var(--accent-blue);
-            color: white;
+            color: #0d1117;
             border: none;
-            padding: 8px 15px;
+            padding: 10px 20px;
             border-radius: 4px;
             cursor: pointer;
-            margin-bottom: 15px;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: transform 0.1s;
         }
 
-        /* STATUS TEXTY */
-        .status-ok { color: #3fb950; display: flex; align-items: center; gap: 5px; }
+        .btn-primary:active { transform: scale(0.98); }
 
-        /* TEXTAREA PRO DŮVOD */
-        .reason-box {
-            grid-column: span 2;
-            background: #0d1117;
-            border: 1px solid var(--border);
-            color: var(--text-white);
-            padding: 10px;
+        .status-badge {
+            background: rgba(35, 134, 54, 0.2);
+            color: #3fb950;
+            padding: 4px 8px;
             border-radius: 4px;
-            resize: none;
+            font-size: 11px;
+            border: 1px solid #238636;
         }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
-    <div class="user-profile">
-        <i class="fa-solid fa-circle-user"></i>
-        <div>
-            <strong>Emily Carter</strong><br>
-            <span style="color: var(--text-gray); font-size: 11px;">Trooper</span>
-        </div>
+    <div class="system-title">
+        <strong>LSPD TERMINÁL</strong><br>
+        <span style="color: var(--text-gray); font-size: 10px;">OPERATIVNÍ MODUL OPP</span>
     </div>
     
     <nav>
-        <a href="#" class="menu-item"><i class="fa-solid fa-house"></i> Dashboard</a>
-        <a href="#" class="menu-item active"><i class="fa-solid fa-users"></i> Registr občanů</a>
-        <a href="#" class="menu-item"><i class="fa-solid fa-car"></i> Registr vozidel</a>
-        <a href="#" class="menu-item"><i class="fa-solid fa-gun"></i> Registr zbraní</a>
-        <a href="#" class="menu-item"><i class="fa-solid fa-file-invoice"></i> Registr faktur</a>
+        <div class="menu-item">
+            <i class="fa-solid fa-file-signature"></i>
+            <span>Nová žádost OPP</span>
+        </div>
     </nav>
 </div>
 
 <div class="main-container">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h2 style="margin:0;">Občan #1877</h2>
-        <button class="btn-add" onclick="pridatDoSpisu()">PŘIDAT DO SPISU</button>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h1 style="margin:0; font-size: 20px;">Protokolování žádosti o prolomení / výpis</h1>
+        <div class="actions-bar">
+            <button class="btn-primary" onclick="vytvoritZadost()">Schválit a odeslat</button>
+        </div>
     </div>
 
     <div class="profile-card">
-        <div class="photo-placeholder">
-            <i class="fa-solid fa-camera fa-2x"></i>
+        <div class="photo-area">
+            <i class="fa-solid fa-user-shield fa-3x" style="margin-bottom: 10px;"></i>
+            DOKUMENTACE<br>SUBJEKTU
         </div>
+        
         <div class="info-grid">
             <div class="info-item">
-                <label>Jméno a Příjmení</label>
-                <input type="text" id="jmeno" value="Luis Vega">
+                <label>Vyžadující příslušník</label>
+                <input type="text" id="officer" placeholder="Zadejte jméno a hodnost...">
             </div>
             <div class="info-item">
-                <label>Datum Narození</label>
-                <input type="text" id="narozeni" value="13.03.1993">
+                <label>Identifikace subjektu (Podezřelý/Oběť)</label>
+                <input type="text" id="subject" placeholder="Jméno, narození, ID...">
             </div>
             <div class="info-item">
-                <label>Pohlaví</label>
-                <select id="pohlavi">
-                    <option>Muž</option>
-                    <option>Žena</option>
+                <label>Klasifikace případu</label>
+                <select id="crime">
+                    <option value="Vražda (§ 140 TZ)">Vražda (§ 140 TZ)</option>
+                    <option value="Loupež (§ 173 TZ)">Loupež (§ 173 TZ)</option>
+                    <option value="Drogová kriminalita">Drogová kriminalita</option>
+                    <option value="Hospodářská trestná činnost">Hospodářská trestná činnost</option>
                 </select>
             </div>
             <div class="info-item">
-                <label>Státní identifikátor</label>
-                <input type="text" id="identifikator" value="#NC5422">
+                <label>Typ OPP</label>
+                <select id="type">
+                    <option value="Prolomení telefonu">Prolomení telefonu</option>
+                    <option value="Výpis z telekomunikace">Výpis z telekomunikace</option>
+                    <option value="Prověrka majetku a účtů">Prověrka majetku a účtů</option>
+                </select>
             </div>
             <div class="info-item" style="grid-column: span 2;">
-                <label>Zjištěné skutečnosti (Důvod žádosti o OPP)</label>
-                <textarea id="skutecnosti" class="reason-box" rows="3">Násilný trestný čin na místě činu, nalezeny osoby bez známek života.</textarea>
+                <label>Zjištěné skutečnosti (Odůvodnění)</label>
+                <textarea id="facts" class="reason-box" rows="4">Na základě vyšetřování bylo zjištěno...</textarea>
             </div>
         </div>
     </div>
 
-    <h3 style="color: var(--text-gray); font-size: 14px; margin-bottom: 10px;">HISTORIE ŽÁDOSTÍ A ZÁZNAMŮ</h3>
-    <table class="records-table">
-        <thead>
-            <tr>
-                <th>Paragraf / Předmět</th>
-                <th>Datum uložení</th>
-                <th>Vyřizuje</th>
-                <th>Stav žádosti</th>
-            </tr>
-        </thead>
-        <tbody id="vysledky">
-            <tr>
-                <td>§ 37 Z.Č. 006-19 (OPP - Výpis majetku)</td>
-                <td>28.03.2026</td>
-                <td>Emily Carter</td>
-                <td><span class="status-ok"><i class="fa-solid fa-check"></i> Schváleno</span></td>
-            </tr>
+    <div class="table-section">
+        <table class="records-table">
+            <thead>
+                <tr>
+                    <th>Typ Žádosti</th>
+                    <th>Subjekt</th>
+                    <th>Příslušník</th>
+                    <th>Datum uložení</th>
+                    <th>Stav systému</th>
+                </tr>
+            </thead>
+            <tbody id="history-log">
+                <tr>
+                    <td>Výpis z telekomunikace</td>
+                    <td>Luis Vega</td>
+                    <td>Systémový záznam</td>
+                    <td>28.03.2026</td>
+                    <td><span class="status-badge">ARCHIVOVÁNO</span></td>
+                </tr>
             </tbody>
-    </table>
+        </table>
+    </div>
 </div>
 
 <script>
-    function pridatDoSpisu() {
-        const jmeno = document.getElementById('jmeno').value;
-        const skutecnosti = document.getElementById('skutecnosti').value;
+    function vytvoritZadost() {
+        const officer = document.getElementById('officer').value || "Neznámý";
+        const subject = document.getElementById('subject').value || "Neznámý";
+        const type = document.getElementById('type').value;
         const dnes = new Date().toLocaleDateString('cs-CZ');
         
-        const tabulka = document.getElementById('vysledky');
-        const novyRadek = tabulka.insertRow(0); // Přidá na začátek
+        const log = document.getElementById('history-log');
+        const radek = log.insertRow(0);
         
-        novyRadek.innerHTML = `
-            <td>Žádost OPP: ${jmeno}</td>
+        radek.innerHTML = `
+            <td>${type}</td>
+            <td>${subject}</td>
+            <td>${officer}</td>
             <td>${dnes}</td>
-            <td>Emily Carter</td>
-            <td><span style="color: #f85149;">V řešení...</span></td>
+            <td><span class="status-badge" style="background: rgba(88, 166, 255, 0.2); color: var(--accent-blue); border-color: var(--accent-blue);">ZPRACOVÁVÁNO</span></td>
         `;
 
-        alert("Záznam byl přidán do databáze MDT.");
+        alert("Žádost o OPP byla úspěšně zaevidována do systému.");
     }
 </script>
 
