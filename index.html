@@ -13,7 +13,6 @@
             --text-gray: #8b949e;
             --text-white: #c9d1d9;
             --border: #30363d;
-            --success: #238636;
         }
 
         body {
@@ -46,7 +45,6 @@
 
         .system-title strong {
             color: var(--accent-blue);
-            letter-spacing: 1px;
             font-size: 16px;
         }
 
@@ -56,7 +54,6 @@
             gap: 12px;
             padding: 12px;
             color: var(--text-white);
-            text-decoration: none;
             border-radius: 6px;
             background-color: #21262d;
             border-left: 3px solid var(--accent-blue);
@@ -78,7 +75,6 @@
             border: 1px solid var(--border);
             border-radius: 8px;
             padding: 25px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
         .info-grid {
@@ -96,7 +92,7 @@
             text-transform: uppercase; 
         }
 
-        input, select, textarea {
+        input, textarea {
             background: rgba(0,0,0,0.2);
             border: 1px solid var(--border);
             color: var(--text-white);
@@ -107,9 +103,22 @@
             box-sizing: border-box;
         }
 
+        /* ČERNÝ TEXT PRO SELECTY */
+        select {
+            background: #ffffff; /* Bílé pozadí pro kontrast */
+            color: #000000;    /* Černý text */
+            border: 1px solid var(--border);
+            padding: 10px;
+            border-radius: 4px;
+            outline: none;
+            width: 100%;
+            box-sizing: border-box;
+            font-weight: 500;
+        }
+
         .full-width { grid-column: span 2; }
 
-        /* TABULKA */
+        /* TABULKA HISTORIE */
         .table-section {
             background-color: var(--card-bg);
             border: 1px solid var(--border);
@@ -134,13 +143,14 @@
         .records-table td {
             padding: 12px;
             border-bottom: 1px solid var(--border);
+            color: var(--text-white);
         }
 
-        /* MODÁLNÍ OKNO (VÝSLEDEK) */
+        /* MODAL */
         #modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.85);
             display: none;
             justify-content: center;
             align-items: center;
@@ -149,33 +159,22 @@
 
         .modal-content {
             background: var(--card-bg);
-            width: 600px;
-            max-height: 80vh;
+            width: 650px;
             border: 1px solid var(--accent-blue);
             border-radius: 8px;
             padding: 20px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 10px;
-            margin-bottom: 15px;
         }
 
         #report-text {
             background: #0d1117;
-            color: #00ff00; /* Terminálová zelená pro přehlednost */
+            color: #00ff00;
             padding: 15px;
             font-family: 'Courier New', monospace;
             white-space: pre-wrap;
-            overflow-y: auto;
             border-radius: 4px;
-            font-size: 12px;
+            margin: 15px 0;
+            max-height: 400px;
+            overflow-y: auto;
         }
 
         .btn-primary {
@@ -208,27 +207,27 @@
     </div>
     <nav>
         <div class="menu-item">
-            <i class="fa-solid fa-file-signature"></i>
-            <span>Nová žádost OPP</span>
+            <i class="fa-solid fa-clock-rotate-left"></i>
+            <span>Evidence žádostí</span>
         </div>
     </nav>
 </div>
 
 <div class="main-container">
     <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h1 style="margin:0; font-size: 18px;">Protokolování žádosti</h1>
-        <button class="btn-primary" onclick="generovatZpravu()">Schválit a odeslat</button>
+        <h1 style="margin:0; font-size: 18px;">Vytvořit nový záznam OPP</h1>
+        <button class="btn-primary" onclick="schvalitZpravu()">Schválit a odeslat</button>
     </div>
 
     <div class="profile-card">
         <div class="info-grid">
             <div class="info-item">
                 <label>Vyžadující příslušník</label>
-                <input type="text" id="officer" placeholder="Hodnost a jméno...">
+                <input type="text" id="officer" placeholder="Zadejte jméno...">
             </div>
             <div class="info-item">
                 <label>Identifikace subjektu</label>
-                <input type="text" id="subject" placeholder="Jméno, narození, ID...">
+                <input type="text" id="subject" placeholder="Jméno a ID osoby...">
             </div>
             <div class="info-item">
                 <label>Klasifikace případu</label>
@@ -236,6 +235,7 @@
                     <option value="Vražda (§ 140 TZ)">Vražda (§ 140 TZ)</option>
                     <option value="Loupež (§ 173 TZ)">Loupež (§ 173 TZ)</option>
                     <option value="Drogová kriminalita">Drogová kriminalita</option>
+                    <option value="Únos / Omezení svobody">Únos / Omezení svobody</option>
                 </select>
             </div>
             <div class="info-item">
@@ -243,16 +243,17 @@
                 <select id="type">
                     <option value="Prolomení telefonu">Prolomení telefonu</option>
                     <option value="Výpis z telekomunikace">Výpis z telekomunikace</option>
-                    <option value="Prověrka majetku">Prověrka majetku</option>
+                    <option value="Prověrka majetku a financí">Prověrka majetku a financí</option>
                 </select>
             </div>
             <div class="info-item full-width">
-                <label>Odůvodnění žádosti</label>
-                <textarea id="facts" rows="4">Na základě prvotního ohledání místa činu...</textarea>
+                <label>Odůvodnění žádosti (Zjištěné skutečnosti)</label>
+                <textarea id="facts" rows="4">Na základě vyšetřování...</textarea>
             </div>
         </div>
     </div>
 
+    <h3 style="margin: 10px 0 5px 0; color: var(--text-gray); font-size: 12px;">HISTORIE POSLEDNÍCH ŽÁDOSTÍ</h3>
     <div class="table-section">
         <table class="records-table">
             <thead>
@@ -260,7 +261,7 @@
                     <th>Typ</th>
                     <th>Subjekt</th>
                     <th>Příslušník</th>
-                    <th>Datum</th>
+                    <th>Datum podání</th>
                 </tr>
             </thead>
             <tbody id="history-log">
@@ -271,20 +272,20 @@
 
 <div id="modal-overlay">
     <div class="modal-content">
-        <div class="modal-header">
-            <strong>VÝSLEDNÝ PROTOKOL ŽÁDOSTI</strong>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <strong style="color: var(--accent-blue);">AUTORIZOVANÝ PROTOKOL</strong>
             <button class="btn-close" onclick="zavritModal()">X</button>
         </div>
         <div id="report-text"></div>
-        <div style="margin-top: 15px; display: flex; gap: 10px;">
-            <button class="btn-primary" onclick="copyText()">Kopírovat text</button>
+        <div style="display: flex; gap: 10px;">
+            <button class="btn-primary" onclick="copyText()">Kopírovat do schránky</button>
             <button class="btn-close" style="background: #30363d;" onclick="zavritModal()">Zavřít</button>
         </div>
     </div>
 </div>
 
 <script>
-    function generovatZpravu() {
+    function schvalitZpravu() {
         const officer = document.getElementById('officer').value || "NEUVEDENO";
         const subject = document.getElementById('subject').value || "NEZNÁMÝ";
         const crime = document.getElementById('crime').value;
@@ -292,32 +293,34 @@
         const facts = document.getElementById('facts').value;
         const datum = new Date().toLocaleDateString('cs-CZ');
 
-        // Text zprávy
         const zprava = `ŽÁDOST O UŽITÍ OPP DLE § 37 Z.Č. 006-19
---------------------------------------------------
-VYŽADUJÍCÍ PŘÍSLUŠNÍK: ${officer}
-TYP PROSTŘEDKU:       ${type}
-SUBJEKT:              ${subject}
-TRESTNÝ ČIN:          ${crime}
---------------------------------------------------
+==================================================
+VYSTAVIL:     ${officer}
+TYP ŽÁDOSTI:  ${type}
+SUBJEKT:      ${subject}
+PŘÍPAD:       ${crime}
+DATUM:        ${datum}
+==================================================
+
 ZJIŠTĚNÉ SKUTEČNOSTI:
 ${facts}
 
-Za účelem objasnění okolností případu je žádáno o 
-poskytnutí součinnosti v rozsahu výše uvedeném.
+Tato žádost byla schválena v systému MDT a je 
+považována za oficiální dokumentaci vyšetřování.`;
 
-S pozdravem,
-LSPD - Oddělení operativy
-Datum: ${datum}`;
-
-        // Zobrazit v modalu
+        // Zobrazení výsledku
         document.getElementById('report-text').innerText = zprava;
         document.getElementById('modal-overlay').style.display = 'flex';
 
-        // Přidat do historie na pozadí
+        // Přidání do historie (tabulky)
         const log = document.getElementById('history-log');
         const radek = log.insertRow(0);
-        radek.innerHTML = `<td>${type}</td><td>${subject}</td><td>${officer}</td><td>${datum}</td>`;
+        radek.innerHTML = `
+            <td>${type}</td>
+            <td>${subject}</td>
+            <td>${officer}</td>
+            <td>${datum}</td>
+        `;
     }
 
     function zavritModal() {
@@ -327,7 +330,7 @@ Datum: ${datum}`;
     function copyText() {
         const text = document.getElementById('report-text').innerText;
         navigator.clipboard.writeText(text);
-        alert("Zpráva zkopírována!");
+        alert("Protokol byl zkopírován!");
     }
 </script>
 
