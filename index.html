@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>LSPD - Case Management System v16.1</title>
+    <title>LSPD - Case Management System</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -13,7 +13,6 @@
             --text-gray: #9ba3af;
             --text-white: #e1e4e8;
             --border: #2d333b;
-            --input-bg: #0b0e14;
             --gold: #d4af37;
             --danger: #f85149;
             --success: #2ea043;
@@ -21,17 +20,14 @@
 
         body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-dark); color: var(--text-white); margin: 0; display: flex; height: 100vh; overflow: hidden; }
         
-        #notification-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
-        .toast { background: var(--sidebar-bg); border-left: 4px solid var(--accent-blue); color: white; padding: 15px 25px; border-radius: 4px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 15px; transform: translateX(120%); transition: 0.4s; }
-        .toast.show { transform: translateX(0); }
-
+        /* SIDEBAR */
         .sidebar { width: 260px; background-color: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; flex-shrink: 0; }
-        .nav-btn { background: none; border: 1px solid transparent; color: var(--text-gray); padding: 12px; text-align: left; cursor: pointer; margin-bottom: 5px; border-radius: 4px; display: flex; align-items: center; gap: 10px; transition: 0.2s; font-size: 13px; text-decoration: none; }
+        .user-box { background: #0b0e14; padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid var(--border); }
+        .role-badge { font-size: 10px; background: var(--gold); color: black; padding: 2px 6px; border-radius: 3px; font-weight: bold; margin-top: 5px; display: inline-block; text-transform: uppercase; }
+
+        .nav-btn { background: none; border: 1px solid transparent; color: var(--text-gray); padding: 12px; text-align: left; cursor: pointer; margin-bottom: 5px; border-radius: 4px; display: flex; align-items: center; gap: 10px; transition: 0.2s; font-size: 13px; text-decoration: none; width: 100%; }
         .nav-btn:hover { background: #1c212b; color: white; }
         .nav-btn.active { background: var(--accent-blue); color: #0b0e14; font-weight: bold; }
-
-        .user-info { background: #0b0e14; padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid var(--border); }
-        .role-badge { font-size: 10px; background: var(--gold); color: black; padding: 2px 6px; border-radius: 3px; font-weight: bold; margin-top: 5px; display: inline-block; }
 
         .main { flex-grow: 1; padding: 30px; overflow-y: auto; }
         .view { display: none; }
@@ -41,205 +37,148 @@
         th { text-align: left; padding: 15px; color: var(--text-gray); border-bottom: 2px solid var(--border); font-size: 11px; text-transform: uppercase; }
         td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 13px; }
 
+        /* MODALY */
         #login-overlay, #modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.95); z-index: 5000; display: none; align-items: center; justify-content: center; }
         .modal-box { background: var(--sidebar-bg); border: 1px solid var(--border); padding: 30px; border-radius: 8px; width: 400px; }
+        input, select { background: #0b0e14; border: 1px solid var(--border); color: white; padding: 10px; width: 100%; margin-top: 10px; border-radius: 4px; }
+        .btn-main { background: var(--accent-blue); color: black; padding: 10px 20px; border: none; border-radius: 3px; cursor: pointer; font-weight: bold; margin-top: 15px; }
 
-        #case-detail-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); z-index: 1000; display: none; flex-direction: column; }
-        .detail-header { padding: 20px 40px; background: var(--sidebar-bg); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-
-        input, select, textarea { background-color: var(--input-bg); border: 1px solid var(--border); color: var(--text-white); padding: 12px; border-radius: 4px; width: 100%; box-sizing: border-box; margin-top: 8px; outline: none; }
-        .btn-main { background: var(--accent-blue); color: #0b0e14; padding: 10px 20px; border: none; border-radius: 3px; cursor: pointer; font-weight: bold; font-size: 12px; }
+        #case-detail { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-dark); z-index: 1000; display: none; flex-direction: column; }
     </style>
 </head>
 <body>
 
-<div id="notification-container"></div>
-
 <div id="login-overlay">
     <div class="modal-box">
         <h2 style="text-align: center; color: var(--gold);">LSPD TERMINAL</h2>
+        <p style="text-align: center; font-size: 12px; color: var(--text-gray);">Vyberte svůj profil</p>
         <select id="login-select"></select>
-        <button class="btn-main" style="width: 100%; margin-top: 20px;" onclick="confirmLogin()">PŘIHLÁSIT SE</button>
+        <button class="btn-main" style="width: 100%" onclick="confirmLogin()">VSTOUPIT</button>
     </div>
 </div>
 
 <div class="sidebar">
-    <div class="user-info">
-        <div id="u-name" style="font-weight: bold;">Načítání...</div>
-        <div id="u-callsign" style="color: var(--gold); font-size: 12px;">--</div>
+    <div class="user-box">
+        <div id="u-name" style="font-weight: bold;">--</div>
+        <div id="u-callsign" style="color: var(--gold); font-size: 11px;">--</div>
         <div id="u-role" class="role-badge">--</div>
     </div>
 
-    <button class="nav-btn active" onclick="switchTab('cases', this)"><i class="fa-solid fa-folder-tree"></i> Evidence Spisů</button>
-    <button class="nav-btn" onclick="openCreateModal()"><i class="fa-solid fa-plus-circle"></i> Nový Spis</button>
-    <button class="nav-btn" onclick="switchTab('opp', this)"><i class="fa-solid fa-file-shield"></i> OPP Generátor</button>
-
-    <div id="admin-access" style="margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border); display: none;">
-        <a href="admin.html" class="nav-btn" style="color: var(--gold); border: 1px solid rgba(212, 175, 55, 0.4);">
+    <button class="nav-btn active" onclick="switchTab('cases', this)"><i class="fa-solid fa-folder"></i> Evidence Spisů</button>
+    <button class="nav-btn" onclick="openCreateModal()"><i class="fa-solid fa-plus"></i> Nový Spis</button>
+    
+    <div id="admin-area" style="margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border); display: none;">
+        <a href="admin.html" class="nav-btn" style="color: var(--gold);">
             <i class="fa-solid fa-user-shield"></i> ADMINISTRACE
         </a>
     </div>
-    <button class="nav-btn" onclick="logout()" style="margin-top: 10px; color: var(--danger);"><i class="fa-solid fa-power-off"></i> Odhlásit</button>
+    <button class="nav-btn" onclick="logout()" style="color: var(--danger);"><i class="fa-solid fa-power-off"></i> Odhlásit</button>
 </div>
 
 <div class="main">
     <div id="view-cases" class="view active">
-        <h2 style="font-weight: 300;">Databáze Vyšetřování</h2>
+        <h2>Databáze Vyšetřování</h2>
         <table>
             <thead>
                 <tr><th>STATUS</th><th>ID</th><th>NÁZEV</th><th>AUTOR</th><th>STAV</th><th>AKCE</th></tr>
             </thead>
-            <tbody id="case-list-body"></tbody>
+            <tbody id="case-list"></tbody>
         </table>
-    </div>
-
-    <div id="view-opp" class="view">
-        <h2 style="font-weight: 300;">OPP Žádost</h2>
-        <div style="background: var(--card-bg); padding: 30px; border-radius: 8px; border: 1px solid var(--border);">
-            <label>Spis</label><select id="opp-case-select" onchange="loadOppData()"></select>
-            <label style="margin-top:15px; display:block;">Podezřelý</label><select id="opp-sub-select"></select>
-            <label style="margin-top:15px; display:block;">Odůvodnění</label><textarea id="opp-reason" rows="6"></textarea>
-            <button class="btn-main" style="margin-top:20px;" onclick="copyOpp()">KOPÍROVAT PRO DISCORD</button>
-        </div>
     </div>
 </div>
 
 <div id="modal-overlay">
     <div class="modal-box">
         <h3>Založit Nový Spis</h3>
-        <label>ID Spisu</label><input type="text" id="new-case-id" placeholder="#2026-000">
-        <label>Název</label><input type="text" id="new-case-title">
-        <div style="margin-top:25px; display:flex; gap:10px;">
-            <button class="btn-main" onclick="confirmCreate()">VYTVOŘIT</button>
-            <button class="btn-main" style="background:#444" onclick="closeModal()">ZRUŠIT</button>
-        </div>
-    </div>
-</div>
-
-<div id="case-detail-overlay">
-    <div class="detail-header">
-        <div id="det-title-area"></div>
-        <div style="display:flex; gap:10px;">
-            <button class="btn-main" style="background:var(--success); color:white" onclick="saveCase()">ULOŽIT</button>
-            <button class="btn-main" style="background:var(--danger); color:white" onclick="closeDetail()">ZAVŘÍT</button>
-        </div>
-    </div>
-    <div style="display:grid; grid-template-columns: 2fr 1fr; gap:30px; padding:40px; overflow-y:auto;">
-        <textarea id="det-desc" rows="22" style="background:var(--card-bg); color:white; border:1px solid var(--border); padding:20px; font-family:inherit;"></textarea>
-        <div>
-            <div class="user-info">
-                <label>Stav</label>
-                <select id="det-status">
-                    <option value="OTEVŘENÝ">OTEVŘENÝ</option>
-                    <option value="V ŠETŘENÍ">V ŠETŘENÍ</option>
-                    <option value="UZAVŘENÝ">UZAVŘENÝ</option>
-                </select>
-            </div>
-            <div class="user-info">
-                <label>Osoby</label>
-                <div style="display:flex; gap:5px; margin-top:5px;"><input type="text" id="add-p-name"><button onclick="addPerson()">+</button></div>
-                <div id="det-p-list" style="margin-top:10px;"></div>
-            </div>
-        </div>
+        <input type="text" id="new-id" placeholder="Číslo spisu (např. #2026-001)">
+        <input type="text" id="new-title" placeholder="Název případu">
+        <button class="btn-main" onclick="confirmCreate()">VYTVOŘIT</button>
+        <button class="btn-main" style="background:#444; color:white;" onclick="closeModal()">ZRUŠIT</button>
     </div>
 </div>
 
 <script>
+    // DATA SYNC
     let members = JSON.parse(localStorage.getItem('lspd_members')) || [];
     let cases = JSON.parse(localStorage.getItem('lspd_v15_data')) || [];
     let loggedUser = JSON.parse(localStorage.getItem('lspd_logged_session')) || null;
-    let currentId = null;
+
+    // NOUZOVÝ START: Pokud je databáze prázdná, vytvořit Dorian Hall jako Admina
+    if (members.length === 0) {
+        members = [{ name: "Dorian Hall", callsign: "1D-01", rank: "COMMAND" }];
+        localStorage.setItem('lspd_members', JSON.stringify(members));
+    }
 
     function init() {
         if (!loggedUser) {
             document.getElementById('login-overlay').style.display = 'flex';
-            document.getElementById('login-select').innerHTML = '<option value="">-- Vyberte detektiva --</option>' + 
-                members.map(m => `<option value="${m.name}">${m.name}</option>`).join('');
+            document.getElementById('login-select').innerHTML = members.map(m => `<option value="${m.name}">${m.name}</option>`).join('');
         } else {
+            // Kontrola, zda přihlášený uživatel stále existuje v databázi
+            const stillExists = members.find(m => m.name === loggedUser.name);
+            if (!stillExists) { logout(); return; }
+            
+            // Aktualizace dat z databáze (kdyby se v adminu změnila hodnost)
+            loggedUser = stillExists;
+            localStorage.setItem('lspd_logged_session', JSON.stringify(loggedUser));
+            
             updateUI();
-            renderList();
+            renderCases();
         }
     }
 
     function confirmLogin() {
         const name = document.getElementById('login-select').value;
-        if (!name) return;
-        const user = members.find(m => m.name === name);
-        localStorage.setItem('lspd_logged_session', JSON.stringify(user));
+        loggedUser = members.find(m => m.name === name);
+        localStorage.setItem('lspd_logged_session', JSON.stringify(loggedUser));
         location.reload();
     }
 
-    function logout() { localStorage.removeItem('lspd_logged_session'); location.reload(); }
+    function logout() {
+        localStorage.removeItem('lspd_logged_session');
+        location.reload();
+    }
 
     function updateUI() {
         document.getElementById('u-name').innerText = loggedUser.name;
         document.getElementById('u-callsign').innerText = loggedUser.callsign || "Bez volačky";
         document.getElementById('u-role').innerText = loggedUser.rank;
-        if(loggedUser.rank === "COMMAND") document.getElementById('admin-access').style.display = 'block';
+        
+        // ZOBRAZENÍ ADMINISTRACE POUZE PRO COMMAND
+        if (loggedUser.rank === "COMMAND") {
+            document.getElementById('admin-area').style.display = 'block';
+        }
     }
 
-    function renderList() {
-        const tbody = document.getElementById('case-list-body');
-        tbody.innerHTML = cases.map(c => {
-            const canAccess = loggedUser.rank === "COMMAND" || c.author === loggedUser.name;
-            return `<tr><td><i class="fa-solid ${canAccess ? 'fa-lock-open' : 'fa-lock'}" style="color:${canAccess ? 'var(--success)' : 'var(--danger)'}"></i></td>
-            <td><b>${c.id}</b></td><td>${c.title}</td><td>${c.author}</td><td>${c.status}</td>
-            <td>${canAccess ? `<button class="btn-main" onclick="openCase('${c.id}')">OTEVŘÍT</button>` : 'UZAMČENO'}</td></tr>`;
-        }).join('');
+    function renderCases() {
+        const tbody = document.getElementById('case-list');
+        tbody.innerHTML = cases.map(c => `
+            <tr>
+                <td><i class="fa-solid fa-lock-open" style="color:var(--success)"></i></td>
+                <td><b>${c.id}</b></td>
+                <td>${c.title}</td>
+                <td>${c.author}</td>
+                <td>${c.status}</td>
+                <td><button class="btn-main" style="margin:0">OTEVŘÍT</button></td>
+            </tr>
+        `).join('');
     }
 
     function openCreateModal() { document.getElementById('modal-overlay').style.display = 'flex'; }
     function closeModal() { document.getElementById('modal-overlay').style.display = 'none'; }
+    
     function confirmCreate() {
-        const id = document.getElementById('new-case-id').value;
-        const title = document.getElementById('new-case-title').value;
+        const id = document.getElementById('new-id').value;
+        const title = document.getElementById('new-title').value;
         if(!id || !title) return;
         cases.unshift({ id, title, author: loggedUser.name, status: 'OTEVŘENÝ', desc: '', persons: [] });
-        saveAll(); location.reload();
+        localStorage.setItem('lspd_v15_data', JSON.stringify(cases));
+        location.reload();
     }
 
-    function openCase(id) {
-        currentId = id; const c = cases.find(x => x.id === id);
-        document.getElementById('det-title-area').innerHTML = `<h2>${c.id} - ${c.title}</h2>`;
-        document.getElementById('det-desc').value = c.desc;
-        document.getElementById('det-status').value = c.status;
-        renderPersons();
-        document.getElementById('case-detail-overlay').style.display = 'flex';
-    }
-
-    function saveCase() {
-        const c = cases.find(x => x.id === currentId);
-        c.desc = document.getElementById('det-desc').value;
-        c.status = document.getElementById('det-status').value;
-        saveAll(); notify("Uloženo.");
-    }
-
-    function renderPersons() {
-        const c = cases.find(x => x.id === currentId);
-        document.getElementById('det-p-list').innerHTML = c.persons.map((p, i) => `<div style="background:#2d333b; padding:5px; margin-bottom:2px;">${p}</div>`).join('');
-    }
-
-    function addPerson() {
-        const n = document.getElementById('add-p-name').value; if(!n) return;
-        cases.find(x => x.id === currentId).persons.push(n);
-        document.getElementById('add-p-name').value = ''; renderPersons();
-    }
-
-    function closeDetail() { document.getElementById('case-detail-overlay').style.display = 'none'; renderList(); }
     function switchTab(t, b) {
-        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-        document.getElementById('view-'+t).classList.add('active');
-        if(t==='opp') {
-            const sel = document.getElementById('opp-case-select');
-            sel.innerHTML = cases.filter(c => loggedUser.rank === "COMMAND" || c.author === loggedUser.name).map(c => `<option value="${c.id}">${c.id}</option>`).join('');
-        }
-    }
-
-    function saveAll() { localStorage.setItem('lspd_v15_data', JSON.stringify(cases)); }
-    function notify(m) {
-        const c = document.getElementById('notification-container');
-        const t = document.createElement('div'); t.className = 'toast show'; t.innerHTML = m;
-        c.appendChild(t); setTimeout(()=>t.remove(), 3000);
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        b.classList.add('active');
     }
 
     init();
