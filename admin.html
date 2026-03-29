@@ -18,19 +18,16 @@
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg-dark); color: white; margin: 0; display: flex; height: 100vh; overflow: hidden; }
         .sidebar { width: 250px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 20px; }
         .main { flex-grow: 1; padding: 30px; overflow-y: auto; }
-        
         .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
         .stat-card { background: var(--card-bg); border: 1px solid var(--border); padding: 20px; border-radius: 8px; border-bottom: 3px solid var(--accent-blue); }
         .stat-val { font-size: 32px; font-weight: bold; margin-top: 5px; }
-        
         .card { background: var(--card-bg); border: 1px solid var(--border); padding: 20px; border-radius: 6px; margin-bottom: 25px; }
         table { width: 100%; border-collapse: collapse; }
         th { text-align: left; padding: 12px; color: #9ba3af; border-bottom: 2px solid var(--border); font-size: 11px; text-transform: uppercase; }
         td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 13px; }
-        
         .btn-act { padding: 6px 10px; border: none; border-radius: 3px; cursor: pointer; font-size: 11px; font-weight: bold; transition: 0.2s; }
         .nav-back { color: var(--accent-blue); text-decoration: none; display: block; margin-bottom: 30px; font-size: 13px; }
-        .history-item { font-size: 12px; color: #9ba3af; padding: 5px 0; border-bottom: 1px solid #252a33; }
+        .history-item { font-size: 12px; color: #9ba3af; padding: 5px 0; border-bottom: 1px solid #252a33; font-family: monospace; }
     </style>
 </head>
 <body>
@@ -70,7 +67,10 @@
     </div>
 
     <div class="card">
-        <h3><i class="fa-solid fa-history"></i> Historie Systémových Akcí</h3>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h3 style="margin:0;"><i class="fa-solid fa-history"></i> Historie Systémových Akcí</h3>
+            <button onclick="clearHistory()" style="background: none; border: 1px solid var(--danger); color: var(--danger); font-size: 10px; padding: 4px 8px; border-radius: 3px; cursor: pointer;">VYMAZAT LOGY</button>
+        </div>
         <div id="history-log"></div>
     </div>
 </div>
@@ -84,56 +84,69 @@
 
         if(logged) document.getElementById('adm-user').innerText = logged.name;
         
-        // Stats
         document.getElementById('st-total').innerText = cases.length;
         document.getElementById('st-users').innerText = members.length;
         document.getElementById('st-work').innerText = cases.filter(c => c.status !== 'UZAVŘENÝ').length;
         document.getElementById('st-done').innerText = cases.filter(c => c.status === 'UZAVŘENÝ').length;
 
-        // Table
         const tbody = document.getElementById('admin-case-table');
-        tbody.innerHTML = cases.map((c, i) => `
-            <tr>
-                <td><b>${c.id}</b></td>
-                <td>${c.title}</td>
-                <td>${c.author}</td>
-                <td><span style="color:${c.status === 'UZAVŘENÝ' ? 'var(--success)' : 'var(--gold)'}">${c.status}</span></td>
-                <td>
-                    <button class="btn-act" style="background:var(--success); color:black;" onclick="closeCase(${i})">UZAVŘÍT</button>
-                    <button class="btn-act" style="background:var(--danger); color:white; margin-left:5px;" onclick="deleteCase(${i})">SMAZAT</button>
-                </td>
-            </tr>
-        `).join('');
+        if (cases.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 20px; color: gray;">Žádné spisy v databázi</td></tr>';
+        } else {
+            tbody.innerHTML = cases.map((c, i) => `
+                <tr>
+                    <td><b>${c.id}</b></td>
+                    <td>${c.title}</td>
+                    <td>${c.author}</td>
+                    <td><span style="color:${c.status === 'UZAVŘENÝ' ? 'var(--success)' : 'var(--gold)'}">${c.status}</span></td>
+                    <td>
+                        ${c.status !== 'UZAVŘENÝ' ? `<button class="btn-act" style="background:var(--success); color:black;" onclick="closeCase(${i})">UZAVŘÍT</button>` : ''}
+                        <button class="btn-act" style="background:var(--danger); color:white; margin-left:5px;" onclick="deleteCase(${i})">SMAZAT</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
 
-        // History
-        document.getElementById('history-log').innerHTML = history.slice(0, 20).map(h => `
-            <div class="history-item">${h}</div>
-        `).join('');
+        const logDiv = document.getElementById('history-log');
+        logDiv.innerHTML = history.slice(0, 30).map(h => {
+            // Ochrana proti [object Object]
+            const logText = typeof h === 'object' ? "Systémová chyba zápisu" : h;
+            return `<div class="history-item">${logText}</div>`;
+        }).join('');
     }
 
     function logAction(msg) {
         let history = JSON.parse(localStorage.getItem('lspd_history')) || [];
         let logged = JSON.parse(localStorage.getItem('lspd_logged_session'));
         const time = new Date().toLocaleString('cs-CZ');
-        history.unshift(`[${time}] ${logged.name}: ${msg}`);
+        const entry = `[${time}] ${logged.name}: ${msg}`;
+        history.unshift(entry);
         localStorage.setItem('lspd_history', JSON.stringify(history));
         render();
     }
 
     function closeCase(i) {
         let cases = JSON.parse(localStorage.getItem('lspd_v15_data'));
+        const caseId = cases[i].id;
         cases[i].status = "UZAVŘENÝ";
         localStorage.setItem('lspd_v15_data', JSON.stringify(cases));
-        logAction(`Uzavřel spis ${cases[i].id}`);
+        logAction(`Uzavřel spis ${caseId}`);
     }
 
     function deleteCase(i) {
         let cases = JSON.parse(localStorage.getItem('lspd_v15_data'));
-        if(confirm("Opravdu smazat spis " + cases[i].id + "?")) {
-            const id = cases[i].id;
+        const caseId = cases[i].id;
+        if(confirm(`Opravdu smazat spis ${caseId}?`)) {
             cases.splice(i, 1);
             localStorage.setItem('lspd_v15_data', JSON.stringify(cases));
-            logAction(`Nenávratně smazal spis ${id}`);
+            logAction(`Smazal spis ${caseId}`);
+        }
+    }
+
+    function clearHistory() {
+        if(confirm("Opravdu vymazat celou historii logů?")) {
+            localStorage.setItem('lspd_history', JSON.stringify([]));
+            render();
         }
     }
 
