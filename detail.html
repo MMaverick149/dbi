@@ -2,51 +2,81 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>Evidence Operativních Prostředků</title>
+    <title>SASP - Detail záznamu</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --bg-dark: #0b0e14; --sidebar-bg: #151921; --card-bg: #1c212b; --accent-blue: #4a9eff; --border: #2d333b; --gold: #d4af37; --danger: #f85149; --success: #2ea043; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg-dark); color: white; margin: 0; display: flex; height: 100vh; }
         .sidebar { width: 180px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 10px; display: flex; flex-direction: column; }
         .main { flex-grow: 1; padding: 25px; overflow-y: auto; }
-        .card { background: var(--card-bg); border: 1px solid var(--border); padding: 20px; border-radius: 4px; }
+        .card { background: var(--card-bg); border: 1px solid var(--border); padding: 20px; border-radius: 4px; margin-bottom: 20px; }
         .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 20px; }
         label { color: var(--accent-blue); font-size: 11px; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 5px; }
         input, select, textarea { width: 100%; background: #0b0e14; border: 1px solid var(--border); color: white; padding: 10px; border-radius: 3px; font-size: 13px; box-sizing: border-box; }
-        .sys-record { border: 1px dashed var(--border); color: #9ba3af; font-size: 12px; font-style: italic; min-height: 80px; }
+        
+        /* Styl pro poznámky */
+        .notes-area { border-left: 3px solid var(--gold); padding-left: 15px; margin-top: 20px; }
+        textarea { min-height: 100px; font-family: inherit; }
+        
         .btn-row { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
         .btn { border: none; padding: 12px 25px; border-radius: 4px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; }
         .btn-resolve { background: var(--success); color: white; }
-        .btn-archive { background: var(--accent-blue); color: black; }
+        .btn-save { background: var(--accent-blue); color: black; }
         .locked-banner { background: var(--success); color: white; padding: 10px; border-radius: 4px; text-align: center; margin-bottom: 20px; display: none; font-weight: bold; }
     </style>
 </head>
 <body>
-<div class="sidebar"><a href="index.html" style="color: var(--accent-blue); text-decoration: none; font-size: 12px;"><i class="fa-solid fa-arrow-left"></i> Zpět</a></div>
+<div class="sidebar"><a href="index.html" style="color: var(--accent-blue); text-decoration: none; font-size: 12px;"><i class="fa-solid fa-arrow-left"></i> Zpět do Commandu</a></div>
 <div class="main">
-    <div id="locked-msg" class="locked-banner"><i class="fa-solid fa-check-circle"></i> TENTO ZÁZNAM JE JIŽ VYŘEŠEN A UZAVŘEN</div>
+    <div id="locked-msg" class="locked-banner"><i class="fa-solid fa-lock"></i> TENTO ZÁZNAM JE UZAVŘEN A NENÍ MOŽNÉ JEJ EDITOVAT</div>
     <h2>Evidence Operativních Prostředků</h2>
+    
     <div class="card">
         <div class="grid-3">
-            <div><label>Vyšetřující detektiv</label><input type="text" id="det-name"></div>
-            <div><label>Hodnost</label><select id="det-rank"><option>DBI Trainee</option><option>Detective</option></select></div>
+            <div><label>Vyšetřující detektiv</label><input type="text" id="det-name" placeholder="Jméno Příjmení"></div>
+            <div><label>Hodnost</label>
+                <select id="det-rank">
+                    <option>DBI Trainee</option>
+                    <option>Detective I</option>
+                    <option>Detective II</option>
+                    <option>Command</option>
+                </select>
+            </div>
             <div><label>Case ID</label><input type="text" id="case-id" placeholder="#2026-XXXX"></div>
         </div>
+        
         <div class="grid-3">
-            <div><label>Subjekt (Jméno Příjmení)</label><input type="text" id="sub-name"></div>
-            <div><label>Datum narození</label><input type="text" id="sub-dob"></div>
-            <div><label>MDT ID</label><input type="text" id="mdt-id"></div>
+            <div><label>Subjekt (Jméno Příjmení)</label><input type="text" id="sub-name" placeholder="John Doe"></div>
+            <div><label>Datum narození</label><input type="text" id="sub-dob" placeholder="DD/MM/YYYY"></div>
+            <div><label>MDT ID</label><input type="text" id="mdt-id" placeholder="8xxx"></div>
         </div>
-        <label>Zjištěné skutečnosti (Systémový záznam)</label>
-        <textarea class="sys-record" readonly>Na základě prvotního ohledání místa činu bylo zjištěno...</textarea>
-        <label style="margin-top: 20px;">Doplňující odůvodnění</label>
-        <textarea id="user-note"></textarea>
+
+        <div style="margin-bottom: 20px;">
+            <label>Právní kvalifikace</label>
+            <select id="legal">
+                <option>Vražda (§ 140 TZ)</option>
+                <option>Loupež (§ 173 TZ)</option>
+                <option>Obchod s drogami</option>
+            </select>
+        </div>
+
+        <div class="notes-area">
+            <label style="color: var(--gold);"><i class="fa-solid fa-pen-to-square"></i> Poznámky k vyšetřování</label>
+            <textarea id="case-notes" placeholder="Sem vkládejte průběžné poznámky, seznam stop nebo výpovědi..."></textarea>
+        </div>
+
+        <div style="margin-top: 20px;">
+            <label>Doplňující odůvodnění (Pro archív)</label>
+            <textarea id="user-note" placeholder="Závěrečné odůvodnění nasazení operativních prostředků..."></textarea>
+        </div>
+
         <div class="btn-row" id="action-buttons">
-            <button class="btn btn-archive" onclick="saveData('OTEVŘENO')"><i class="fa-solid fa-save"></i> ULOŽIT ROZPRACAVANÉ</button>
-            <button class="btn btn-resolve" onclick="saveData('VYŘEŠENO')"><i class="fa-solid fa-check"></i> VYŘEŠIT PŘÍPAD</button>
+            <button class="btn btn-save" onclick="saveData('OTEVŘENO')"><i class="fa-solid fa-save"></i> ULOŽIT ROZPRACAVANÉ</button>
+            <button class="btn btn-resolve" onclick="saveData('VYŘEŠENO')"><i class="fa-solid fa-check-double"></i> UZAVŘÍT A VYŘEŠIT</button>
         </div>
     </div>
 </div>
+
 <script>
     const urlParams = new URLSearchParams(window.location.search);
     const caseIndex = urlParams.get('id');
@@ -54,10 +84,12 @@
 
     if(caseIndex !== null && cases[caseIndex]) {
         let c = cases[caseIndex];
-        document.getElementById('det-name').value = c.author;
-        document.getElementById('case-id').value = c.id;
-        document.getElementById('sub-name').value = c.subject;
+        document.getElementById('det-name').value = c.author || '';
+        document.getElementById('case-id').value = c.id || '';
+        document.getElementById('sub-name').value = c.subject || '';
+        document.getElementById('case-notes').value = c.notes || '';
         document.getElementById('user-note').value = c.note || '';
+        
         if(c.status === 'VYŘEŠENO') {
             document.querySelectorAll('input, select, textarea').forEach(el => el.disabled = true);
             document.getElementById('locked-msg').style.display = 'block';
@@ -66,17 +98,19 @@
     }
 
     function saveData(status) {
-        let newCase = {
-            id: document.getElementById('case-id').value || 'DB-NEW',
+        let entry = {
+            id: document.getElementById('case-id').value || 'TBD',
             author: document.getElementById('det-name').value,
             subject: document.getElementById('sub-name').value,
+            notes: document.getElementById('case-notes').value,
             note: document.getElementById('user-note').value,
             status: status
         };
-        if(caseIndex !== null) cases[caseIndex] = newCase; else cases.push(newCase);
+        
+        if(caseIndex !== null) cases[caseIndex] = entry; else cases.push(entry);
         
         let logs = JSON.parse(localStorage.getItem('lspd_history')) || [];
-        logs.push(`[${new Date().toLocaleString()}] Případ ${newCase.id} nastaven jako ${status}`);
+        logs.push(`[${new Date().toLocaleString()}] Aktualizace spisu ${entry.id} (${status})`);
         
         localStorage.setItem('lspd_v15_data', JSON.stringify(cases));
         localStorage.setItem('lspd_history', JSON.stringify(logs));
