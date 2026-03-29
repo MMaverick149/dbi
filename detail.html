@@ -2,121 +2,150 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>SASP - Detail Spisu</title>
+    <title>SASP - Evidence Operativních Prostředků</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --bg-dark: #0b0e14; --sidebar-bg: #151921; --card-bg: #1c212b; --accent-blue: #4a9eff; --border: #2d333b; --gold: #d4af37; --danger: #f85149; --success: #2ea043; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg-dark); color: white; margin: 0; display: flex; height: 100vh; }
-        .sidebar { width: 200px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 10px; display: flex; flex-direction: column; }
+        
+        .sidebar { width: 180px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 10px; display: flex; flex-direction: column; flex-shrink: 0; }
         .main { flex-grow: 1; padding: 25px; overflow-y: auto; }
-        .grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
-        .card { background: var(--card-bg); border: 1px solid var(--border); padding: 20px; border-radius: 6px; margin-bottom: 20px; }
-        textarea, input { width: 100%; background: #0b0e14; border: 1px solid var(--border); color: white; padding: 10px; border-radius: 4px; box-sizing: border-box; outline: none; margin-top: 5px; }
-        .btn-save { background: var(--success); color: white; border: none; padding: 12px 25px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .tag-input-group { display: flex; gap: 5px; }
-        .btn-add { background: var(--accent-blue); color: black; border: none; padding: 0 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .list-item { background: #0b0e14; padding: 8px; border-radius: 4px; margin-top: 5px; display: flex; justify-content: space-between; font-size: 13px; border-left: 3px solid var(--gold); }
-        @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.05); } 100% { opacity: 1; transform: scale(1); } }
+        
+        .card { background: var(--card-bg); border: 1px solid var(--border); padding: 20px; border-radius: 4px; margin-bottom: 20px; }
+        h2 { font-size: 22px; font-weight: 300; margin-top: 0; margin-bottom: 20px; }
+        
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .field-group { display: flex; flex-direction: column; gap: 5px; }
+        label { color: var(--accent-blue); font-size: 11px; font-weight: bold; text-transform: uppercase; }
+        
+        input, select, textarea { background: #0b0e14; border: 1px solid var(--border); color: white; padding: 10px; border-radius: 3px; font-size: 13px; outline: none; }
+        textarea { resize: vertical; min-height: 100px; font-family: 'Segoe UI', sans-serif; }
+        
+        .sys-record { background: transparent; border: 1px dashed var(--border); color: #9ba3af; font-size: 12px; font-style: italic; }
+        
+        .btn-approve { background: var(--accent-blue); color: black; border: none; padding: 12px 25px; border-radius: 4px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 8px; margin-left: auto; }
+        .btn-approve:hover { filter: brightness(1.1); }
+
+        /* Wanted Alert */
+        .wanted-alert { position:fixed; inset:0; background:rgba(139,0,0,0.98); z-index:9999; display:none; flex-direction:column; align-items:center; justify-content:center; text-align:center; }
+        @keyframes pulse-red { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
     </style>
 </head>
 <body>
+
+<div id="alertBox" class="wanted-alert">
+    <i class="fa-solid fa-triangle-exclamation" style="font-size:100px; animation: pulse-red 1s infinite;"></i>
+    <h1 style="font-size:60px; margin: 20px 0;">HLEDANÁ OSOBA!</h1>
+    <h2 id="alertName" style="font-size:50px; text-decoration: underline; color: var(--gold); margin: 0;">--</h2>
+    <p id="alertStatus" style="font-size:24px; margin-top: 10px;">--</p>
+    <button onclick="document.getElementById('alertBox').style.display='none'" style="margin-top:40px; padding:15px 50px; background:white; color:black; border:none; font-weight:bold; cursor:pointer; border-radius:4px;">ZAVŘÍT VAROVÁNÍ</button>
+</div>
+
 <div class="sidebar">
-    <a href="index.html" style="color: var(--accent-blue); text-decoration: none; font-size: 12px;"><i class="fa-solid fa-arrow-left"></i> Zpět</a>
-    <h3 id="side-id" style="color: var(--gold); margin-top: 20px; font-size: 16px;">--</h3>
+    <a href="index.html" style="color: var(--accent-blue); text-decoration: none; font-size: 11px;"><i class="fa-solid fa-arrow-left"></i> ZPĚT</a>
     <div style="flex-grow: 1;"></div>
-    <button onclick="logout()" style="background:none; border:1px solid var(--danger); color:var(--danger); padding:10px; width:100%; border-radius:4px; cursor:pointer;"><i class="fa-solid fa-power-off"></i> ODHLÁSIT</button>
+    <button onclick="logout()" style="background:none; border:1px solid var(--danger); color:var(--danger); padding:10px; border-radius:4px; cursor:pointer; font-size:11px;">ODHLÁSIT</button>
 </div>
+
 <div class="main">
-    <div id="lock-banner" style="background: var(--danger); color: white; padding: 10px; border-radius: 4px; text-align: center; font-weight: bold; margin-bottom: 20px; display: none;"><i class="fa-solid fa-lock"></i> ARCHIVOVANÝ SPIS</div>
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h1 id="head-title" style="margin:0;">--</h1>
-        <button id="save-btn" class="btn-save" onclick="saveCase()">ULOŽIT SPIS</button>
-    </div>
-    <div class="grid">
-        <div class="left-col">
-            <div class="card"><h3>Zpráva o incidentu</h3><textarea id="case-desc" style="height: 500px;"></textarea></div>
-        </div>
-        <div class="right-col">
-            <div class="card">
-                <h3>Osoby</h3>
-                <div class="tag-input-group editor-only"><input type="text" id="in-person"><button class="btn-add" onclick="addItem('persons', 'in-person')">+</button></div>
-                <div id="list-persons"></div>
+    <h2>Evidence Operativních Prostředků</h2>
+    
+    <div class="card">
+        <div class="grid-3">
+            <div class="field-group">
+                <label>Vyšetřující detektiv</label>
+                <input type="text" id="det-name" placeholder="Jméno Příjmení">
             </div>
-            <div class="card">
-                <h3>Vozidla</h3>
-                <div class="tag-input-group editor-only"><input type="text" id="in-vehicle"><button class="btn-add" onclick="addItem('vehicles', 'in-vehicle')">+</button></div>
-                <div id="list-vehicles"></div>
+            <div class="field-group">
+                <label>Hodnost</label>
+                <select id="det-rank">
+                    <option>DBI Trainee</option>
+                    <option>Detective I</option>
+                    <option>Detective II</option>
+                    <option>Detective III</option>
+                </select>
+            </div>
+            <div class="field-group">
+                <label>Case ID</label>
+                <input type="text" id="case-id" placeholder="#2026-XXXX">
             </div>
         </div>
+
+        <div class="grid-3">
+            <div class="field-group">
+                <label>Subjekt (Jméno Příjmení)</label>
+                <input type="text" id="sub-name" placeholder="John Doe" onchange="checkWanted(this.value)">
+            </div>
+            <div class="field-group">
+                <label>Datum narození</label>
+                <input type="text" id="sub-dob" placeholder="DD/MM/YYYY">
+            </div>
+            <div class="field-group">
+                <label>MDT ID</label>
+                <input type="text" id="mdt-id" placeholder="např. 8421">
+            </div>
+        </div>
+
+        <div class="field-group" style="margin-bottom: 20px;">
+            <label>Právní kvalifikace</label>
+            <select id="crime-type">
+                <option>Vražda (§ 140 TZ)</option>
+                <option>Loupež (§ 173 TZ)</option>
+                <option>Obchod s drogami</option>
+                <option>Organizovaný zločin</option>
+            </select>
+        </div>
+
+        <div class="field-group" style="margin-bottom: 20px;">
+            <label>Typ OPP</label>
+            <select id="opp-type">
+                <option>Prověrka majetku a finančních prostředků</option>
+                <option>Odposlech a záznam telekomunikačního provozu</option>
+                <option>Sledování osob a věcí</option>
+            </select>
+        </div>
+
+        <div class="field-group" style="margin-bottom: 20px;">
+            <label>Zjištěné skutečnosti (Systémový záznam)</label>
+            <textarea id="sys-note" class="sys-record" readonly>Na základě prvotního ohledání místa činu bylo zjištěno, že došlo k násilnému trestnému činu, při kterém byly nalezeny osoby bez známek života s poraněními odpovídajícími násilnému útoku. V rámci probíhajícího vyšetřování byly zajištěny důkazní materiály a probíhá analýza stop z místa činu...</textarea>
+        </div>
+
+        <div class="field-group" style="margin-bottom: 25px;">
+            <label>Doplňující odůvodnění (Vlastní text)</label>
+            <textarea id="user-note" placeholder="Zde uveďte vaše doplňující odůvodnění..."></textarea>
+        </div>
+
+        <button class="btn-approve" onclick="archiveCase()">
+            <i class="fa-solid fa-user-check"></i> SCHVÁLIT A ARCHIVOVAT
+        </button>
     </div>
 </div>
+
 <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const caseIndex = urlParams.get('id');
-    let cases = JSON.parse(localStorage.getItem('lspd_v15_data')) || [];
-    let currentCase = cases[caseIndex];
-
-    function init() {
-        if(!currentCase) return window.location.href = 'index.html';
-        document.getElementById('side-id').innerText = currentCase.id;
-        document.getElementById('head-title').innerText = currentCase.title;
-        document.getElementById('case-desc').value = currentCase.description || "";
-        if(currentCase.status === "UZAVŘENÝ") {
-            document.getElementById('case-desc').readOnly = true;
-            document.getElementById('lock-banner').style.display = 'block';
-            document.getElementById('save-btn').style.display = 'none';
-            document.querySelectorAll('.editor-only').forEach(el => el.style.display = 'none');
-        }
-        renderLists();
-    }
-
-    function renderLists() {
-        const isLocked = currentCase.status === "UZAVŘENÝ";
-        ['persons', 'vehicles'].forEach(type => {
-            document.getElementById(`list-${type}`).innerHTML = (currentCase[type] || []).map((item, i) => `
-                <div class="list-item">
-                    ${item}
-                    ${!isLocked ? `<i class="fa-solid fa-times" onclick="removeItem('${type}', ${i})" style="color:var(--danger); cursor:pointer;"></i>` : ''}
-                </div>`).join('');
-        });
-    }
-
-    function addItem(type, inputId) {
-        const val = document.getElementById(inputId).value;
+    let loggedUser = JSON.parse(localStorage.getItem('lspd_logged_session'));
+    
+    function checkWanted(val) {
         if(!val) return;
-        if(type === 'persons') {
-            let wantedList = JSON.parse(localStorage.getItem('sasp_wanted')) || [];
-            let found = wantedList.find(p => p.name.toLowerCase() === val.toLowerCase());
-            if(found) showWantedAlert(found);
+        let wantedList = JSON.parse(localStorage.getItem('sasp_wanted')) || [];
+        let found = wantedList.find(p => p.name.toLowerCase() === val.toLowerCase());
+        if(found) {
+            document.getElementById('alertName').innerText = found.name;
+            document.getElementById('alertStatus').innerText = found.status;
+            document.getElementById('alertBox').style.display = 'flex';
         }
-        if(!currentCase[type]) currentCase[type] = [];
-        currentCase[type].push(val);
-        document.getElementById(inputId).value = "";
-        renderLists();
     }
 
-    function showWantedAlert(person) {
-        const alertDiv = document.createElement('div');
-        alertDiv.style = "position:fixed; inset:0; background:rgba(139,0,0,0.95); z-index:9999; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; text-align:center;";
-        alertDiv.innerHTML = `
-            <i class="fa-solid fa-triangle-exclamation" style="font-size:80px; margin-bottom:20px; animation: pulse 1s infinite;"></i>
-            <h1 style="font-size:50px; margin:0;">VAROVÁNÍ: DETEKCE OSOBY</h1>
-            <h2 style="font-size:40px; color:var(--gold); text-transform:uppercase; animation: pulse 0.5s infinite;">${person.name}</h2>
-            <p style="font-size:24px;">Tato osoba je vedená jako: ${person.status}</p>
-            <button onclick="this.parentElement.remove()" style="margin-top:30px; padding:15px 40px; background:white; color:black; border:none; font-weight:bold; cursor:pointer; border-radius:4px;">ZAVŘÍT</button>
-        `;
-        document.body.appendChild(alertDiv);
+    function archiveCase() {
+        alert("Dokument byl schválen a archivován v systému.");
+        window.location.href = 'index.html';
     }
 
-    function removeItem(type, i) { currentCase[type].splice(i, 1); renderLists(); }
-    function saveCase() {
-        currentCase.description = document.getElementById('case-desc').value;
-        cases[caseIndex] = currentCase;
-        localStorage.setItem('lspd_v15_data', JSON.stringify(cases));
-        alert("Uloženo!");
-    }
     function logout() { localStorage.removeItem('lspd_logged_session'); window.location.href = 'login.html'; }
-    init();
+
+    // Předvyplnění detektiva
+    if(loggedUser) {
+        document.getElementById('det-name').value = loggedUser.name;
+    }
 </script>
 </body>
 </html>
