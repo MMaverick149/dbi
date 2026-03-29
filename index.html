@@ -16,6 +16,7 @@
             --border: #30363d;
             --input-bg: #0d1117;
             --danger: #f85149;
+            --success: #238636;
         }
 
         body {
@@ -28,7 +29,6 @@
             overflow: hidden;
         }
 
-        /* SIDEBAR */
         .sidebar {
             width: 260px;
             background-color: var(--sidebar-bg);
@@ -45,7 +45,6 @@
             border-left: 4px solid var(--accent-blue);
         }
 
-        /* MAIN CONTENT */
         .main { flex-grow: 1; padding: 30px; overflow-y: auto; }
 
         .grid {
@@ -69,7 +68,6 @@
         }
         .btn-blue { background: var(--accent-blue); color: #0d1117; }
 
-        /* TABLE */
         table { width: 100%; border-collapse: collapse; background: var(--card-bg); margin-top: 20px; border-radius: 8px; overflow: hidden; }
         th { text-align: left; padding: 12px; color: var(--text-gray); border-bottom: 1px solid var(--border); font-size: 11px; }
         td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 13px; }
@@ -77,35 +75,31 @@
         .action-btns { display: flex; gap: 5px; }
         .btn-sm { padding: 6px 10px; border-radius: 4px; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--text-white); font-size: 11px; }
         .btn-view { border-color: var(--accent-blue); color: var(--accent-blue); }
+        .btn-copy { border-color: var(--success); color: var(--success); }
         .btn-pdf { border-color: var(--danger); color: var(--danger); }
 
-        /* NOVÝ MODÁL - DOKUMENT */
+        /* MODAL */
         #modal {
             position: fixed; top:0; left:0; width:100%; height:100%;
             background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 1000;
         }
         .doc-preview {
             background: #fdfdfd; color: #1a1a1a; width: 650px; padding: 40px; border-radius: 2px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; max-height: 90vh; overflow-y: auto;
+            position: relative; max-height: 90vh; overflow-y: auto;
         }
-        .doc-header { border-bottom: 2px solid #1a1a1a; padding-bottom: 10px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
-        .doc-title { font-weight: 800; font-size: 20px; text-transform: uppercase; letter-spacing: 1px; }
+        .doc-header { border-bottom: 2px solid #1a1a1a; padding-bottom: 10px; margin-bottom: 20px; display: flex; justify-content: space-between; }
         .doc-section { margin-bottom: 15px; }
-        .doc-label { font-size: 10px; color: #666; font-weight: bold; text-transform: uppercase; margin-bottom: 2px; }
-        .doc-value { font-size: 14px; border-bottom: 1px dotted #ccc; padding-bottom: 2px; }
-        .doc-facts { font-size: 13px; line-height: 1.5; background: #f5f5f5; padding: 15px; border-radius: 4px; min-height: 100px; }
-        .doc-signature-box { margin-top: 30px; display: flex; justify-content: flex-end; }
-        .doc-sign { text-align: center; width: 200px; }
-        .mea-culpa-font { font-family: 'Times New Roman', serif; font-style: italic; font-size: 28px; color: #1a2a6c; margin-bottom: -5px; }
-        
-        .close-btn { position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 20px; cursor: pointer; color: #999; }
+        .doc-label { font-size: 10px; color: #666; font-weight: bold; text-transform: uppercase; }
+        .doc-value { font-size: 14px; border-bottom: 1px dotted #ccc; }
+        .doc-facts { font-size: 13px; background: #f5f5f5; padding: 15px; border-radius: 4px; }
+        .mea-culpa-font { font-family: 'Times New Roman', serif; font-style: italic; font-size: 28px; color: #1a2a6c; }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
     <div class="menu-item">
-        <i class="fa-solid fa-file-shield"></i>
+        <i class="fa-solid fa-file-signature"></i>
         <span>LSPD - EVIDENCE OPP</span>
     </div>
 </div>
@@ -116,7 +110,11 @@
     <div class="grid">
         <div class="field">
             <label>Vyžadující příslušník</label>
-            <input type="text" id="officer" placeholder="např. kpt. Jan Novák">
+            <input type="text" id="officer" placeholder="např. Marcus Conway">
+        </div>
+        <div class="field">
+            <label>Vaše Pozice / Hodnost</label>
+            <input type="text" id="rank" placeholder="např. Lead Senior Trooper">
         </div>
         <div class="field">
             <label>Identifikace subjektu</label>
@@ -128,7 +126,7 @@
                 <option value="Vražda (§ 140 TZ)">Vražda (§ 140 TZ)</option>
                 <option value="Loupež (§ 173 TZ)">Loupež (§ 173 TZ)</option>
                 <option value="Drogy / OPL">Drogy / OPL</option>
-                <option value="Hospodářská kriminalita">Hospodářská kriminalita</option>
+                <option value="Únos / Omezení svobody">Únos / Omezení svobody</option>
             </select>
         </div>
         <div class="field">
@@ -142,12 +140,12 @@
         </div>
         <div class="field full">
             <label>Odůvodnění žádosti</label>
-            <textarea id="facts" rows="4"></textarea>
+            <textarea id="facts" rows="4" placeholder="Zde uveďte důvody k nasazení..."></textarea>
         </div>
     </div>
 
     <div class="btn-group">
-        <button class="btn btn-blue" onclick="processAndSave()"><i class="fa-solid fa-check"></i> Uložit a Schválit</button>
+        <button class="btn btn-blue" onclick="processAndSave()"><i class="fa-solid fa-save"></i> Uložit a Schválit</button>
     </div>
 
     <table>
@@ -156,7 +154,7 @@
                 <th>DATUM</th>
                 <th>SUBJEKT</th>
                 <th>PŘÍSLUŠNÍK</th>
-                <th>SPRÁVA</th>
+                <th>SPRÁVA (DOJ / PDF)</th>
             </tr>
         </thead>
         <tbody id="history-rows"></tbody>
@@ -164,47 +162,19 @@
 </div>
 
 <div id="modal">
-    <div class="doc-preview">
-        <button class="close-btn" onclick="document.getElementById('modal').style.display='none'">&times;</button>
+    <div class="doc-preview" id="doc-content">
+        <button style="position:absolute; top:10px; right:10px;" onclick="document.getElementById('modal').style.display='none'">Zavřít</button>
         <div class="doc-header">
-            <div class="doc-title">Protokol žádosti OPP</div>
-            <div style="font-size: 10px; text-align: right; color: #666;">
-                MDT SYSTEM v4.0<br>STAV: SCHVÁLENO
-            </div>
+            <div style="font-weight: 800; font-size: 20px;">PROTOKOL ŽÁDOSTI OPP</div>
+            <div style="font-size: 10px; text-align: right;">LSPD MDT SYSTEM</div>
         </div>
-
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-            <div class="doc-section">
-                <div class="doc-label">Příslušník</div>
-                <div class="doc-value" id="view-officer"></div>
-            </div>
-            <div class="doc-section">
-                <div class="doc-label">Datum vystavení</div>
-                <div class="doc-value" id="view-date"></div>
-            </div>
-        </div>
-
-        <div class="doc-section">
-            <div class="doc-label">Subjekt šetření</div>
-            <div class="doc-value" id="view-subject"></div>
-        </div>
-
-        <div class="doc-section">
-            <div class="doc-label">Druh opatření a Klasifikace</div>
-            <div class="doc-value"><span id="view-type" style="font-weight: bold;"></span> | <span id="view-crime"></span></div>
-        </div>
-
-        <div class="doc-section">
-            <div class="doc-label">Odůvodnění a zjištěné skutečnosti</div>
-            <div class="doc-facts" id="view-facts"></div>
-        </div>
-
-        <div class="doc-signature-box">
-            <div class="doc-sign">
+        <div class="doc-section"><div class="doc-label">Vystavitel</div><div class="doc-value" id="view-officer"></div></div>
+        <div class="doc-section"><div class="doc-label">Subjekt</div><div class="doc-value" id="view-subject"></div></div>
+        <div class="doc-section"><div class="doc-label">Odůvodnění</div><div class="doc-facts" id="view-facts"></div></div>
+        <div style="display: flex; justify-content: flex-end; margin-top: 30px;">
+            <div style="text-align: center;">
                 <div class="mea-culpa-font" id="view-sign"></div>
-                <div style="border-top: 1px solid #1a1a1a; font-size: 9px; padding-top: 5px;">
-                    Digitální podpis vystavitele
-                </div>
+                <div style="border-top: 1px solid #000; font-size: 9px; width: 180px;" id="view-rank-sign"></div>
             </div>
         </div>
     </div>
@@ -212,11 +182,12 @@
 
 <script>
     const DISCORD_WEBHOOK_URL = "SEM_VLOZ_TVUJ_WEBHOOK_URL";
-    let historyLog = JSON.parse(localStorage.getItem('lspd_history_v4')) || [];
+    let historyLog = JSON.parse(localStorage.getItem('lspd_history_v5')) || [];
     updateTable();
 
-    async function processAndSave() {
+    function processAndSave() {
         const officer = document.getElementById('officer').value;
+        const rank = document.getElementById('rank').value;
         const subject = document.getElementById('subject').value;
         const type = document.getElementById('type').value;
         const facts = document.getElementById('facts').value;
@@ -227,21 +198,22 @@
         const data = {
             id: Date.now(),
             date: new Date().toLocaleString('cs-CZ'),
-            officer, subject, type, facts, crime
+            officer, rank, subject, type, facts, crime
         };
 
         historyLog.unshift(data);
-        localStorage.setItem('lspd_history_v4', JSON.stringify(historyLog));
+        localStorage.setItem('lspd_history_v5', JSON.stringify(historyLog));
         updateTable();
 
-        // Discord Webhook
+        // Tichý Discord Webhook (interní log)
         if(DISCORD_WEBHOOK_URL !== "SEM_VLOZ_TVUJ_WEBHOOK_URL") {
             fetch(DISCORD_WEBHOOK_URL, {
                 method: 'POST', headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ embeds: [{ title: "Nová žádost OPP", fields: [{name: "Subjekt", value: subject}, {name: "Typ", value: type}] }] })
+                body: JSON.stringify({ embeds: [{ title: "Nová žádost uložena", description: `Subjekt: ${subject}\nPříslušník: ${officer}` }] })
             });
         }
-        viewDetail(data.id);
+        
+        alert("Záznam byl úspěšně uložen do archivu.");
     }
 
     function updateTable() {
@@ -251,30 +223,50 @@
                 <td>${r.subject}</td>
                 <td>${r.officer}</td>
                 <td class="action-btns">
-                    <button class="btn-sm btn-view" onclick="viewDetail(${r.id})"><i class="fa-solid fa-file-lines"></i> Náhled</button>
-                    <button class="btn-sm btn-pdf" onclick="generatePDF(${r.id})"><i class="fa-solid fa-download"></i> PDF</button>
-                    <button class="btn-sm" style="color:#666" onclick="deleteEntry(${r.id})">Smazat</button>
+                    <button class="btn-sm btn-view" onclick="viewDetail(${r.id})">Náhled</button>
+                    <button class="btn-sm btn-copy" onclick="copyForDOJ(${r.id})"><i class="fa-brands fa-discord"></i> DOJ Verze</button>
+                    <button class="btn-sm btn-pdf" onclick="generatePDF(${r.id})">PDF</button>
+                    <button class="btn-sm" style="color:#666" onclick="deleteEntry(${r.id})">&times;</button>
                 </td>
             </tr>
         `).join('');
     }
 
+    function copyForDOJ(id) {
+        const r = historyLog.find(x => x.id === id);
+        const discordText = `**ŽÁDOST O SCHVÁLENÍ OPERATIVNÍCH PROSTŘEDKŮ (OPP)**
+\`\`\`
+Žadatel: ${r.officer}
+Pozice:  ${r.rank}
+Subjekt: ${r.subject}
+Čin:     ${r.crime}
+Typ OPP: ${r.type}
+
+ODŮVODNĚNÍ:
+${r.facts}
+
+Vystaveno dne: ${r.date}
+\`\`\`
+*Prosím o vyjádření Department of Justice.*`;
+        
+        navigator.clipboard.writeText(discordText);
+        alert("Text pro Discord (DOJ) byl zkopírován do schránky!");
+    }
+
     function viewDetail(id) {
         const r = historyLog.find(x => x.id === id);
         document.getElementById('view-officer').innerText = r.officer;
-        document.getElementById('view-date').innerText = r.date;
         document.getElementById('view-subject').innerText = r.subject;
-        document.getElementById('view-type').innerText = r.type;
-        document.getElementById('view-crime').innerText = r.crime;
         document.getElementById('view-facts').innerText = r.facts;
         document.getElementById('view-sign').innerText = r.officer;
+        document.getElementById('view-rank-sign').innerText = r.rank;
         document.getElementById('modal').style.display = 'flex';
     }
 
     function deleteEntry(id) {
-        if(confirm("Smazat záznam?")) {
+        if(confirm("Smazat?")) {
             historyLog = historyLog.filter(x => x.id !== id);
-            localStorage.setItem('lspd_history_v4', JSON.stringify(historyLog));
+            localStorage.setItem('lspd_history_v5', JSON.stringify(historyLog));
             updateTable();
         }
     }
@@ -283,17 +275,21 @@
         const r = historyLog.find(x => x.id === id);
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-        
         doc.setFont("helvetica", "bold");
-        doc.text("LSPD - ZADOST O OPP", 105, 20, {align: "center"});
-        doc.setFontSize(10);
-        doc.setFont("helvetica", "normal");
-        doc.text(`Subjekt: ${r.subject}`, 20, 40);
-        doc.text(`Duvod: ${r.type}`, 20, 50);
-        doc.text("________________________________________________", 20, 160);
-        doc.setFont("times", "italic");
-        doc.setFontSize(20);
-        doc.text(r.officer, 140, 155);
+        doc.text("LSPD - PROTOKOL OPP", 105, 20, {align: "center"});
+        doc.setFontSize(10); doc.setFont("helvetica", "normal");
+        doc.text(`Zadatel: ${r.officer} (${r.rank})`, 20, 40);
+        doc.text(`Subjekt: ${r.subject}`, 20, 50);
+        doc.text(`Typ: ${r.type}`, 20, 60);
+        doc.text("Oduvodneni:", 20, 75);
+        doc.text(doc.splitTextToSize(r.facts, 160), 20, 85);
+        
+        doc.line(130, 150, 190, 150);
+        doc.setFont("times", "italic"); doc.setFontSize(20);
+        doc.text(r.officer, 140, 145);
+        doc.setFont("helvetica", "normal"); doc.setFontSize(8);
+        doc.text(r.rank, 140, 155);
+        
         doc.save(`OPP_${r.subject}.pdf`);
     }
 </script>
