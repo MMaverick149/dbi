@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>LSPD - Detective Bureau Case Manager v11</title>
+    <title>LSPD - Case Management System v12</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -16,11 +16,13 @@
             --input-bg: #0b0e14;
             --gold: #d4af37;
             --danger: #f85149;
+            --success: #2ea043;
         }
 
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-dark); color: var(--text-white); margin: 0; display: flex; height: 100vh; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-dark); color: var(--text-white); margin: 0; display: flex; height: 100vh; overflow: hidden; }
         
-        .sidebar { width: 280px; background-color: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; flex-shrink: 0; }
+        /* SIDEBAR */
+        .sidebar { width: 260px; background-color: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 20px; display: flex; flex-direction: column; flex-shrink: 0; }
         .nav-btn { 
             background: none; border: 1px solid transparent; color: var(--text-gray); 
             padding: 12px; text-align: left; cursor: pointer; margin-bottom: 5px; border-radius: 4px;
@@ -29,289 +31,262 @@
         .nav-btn:hover { background: #1c212b; color: white; }
         .nav-btn.active { background: var(--accent-blue); color: #0b0e14; font-weight: bold; }
 
-        .main { flex-grow: 1; padding: 30px; overflow-y: auto; }
+        /* MAIN CONTENT */
+        .main { flex-grow: 1; padding: 30px; overflow-y: auto; position: relative; }
         .view { display: none; }
         .view.active { display: block; }
 
-        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; background: var(--card-bg); padding: 25px; border-radius: 4px; border: 1px solid var(--border); margin-bottom: 20px; }
-        .field { display: flex; flex-direction: column; gap: 5px; }
-        .full { grid-column: span 3; }
+        /* TABLES */
+        table { width: 100%; border-collapse: collapse; background: var(--card-bg); border: 1px solid var(--border); border-radius: 4px; }
+        th { text-align: left; padding: 15px; color: var(--text-gray); border-bottom: 2px solid var(--border); font-size: 11px; text-transform: uppercase; }
+        td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 13px; }
+
+        /* FULLSCREEN DETAIL OVERLAY */
+        #case-detail-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-dark); z-index: 1000; display: none;
+            flex-direction: column;
+        }
+        .detail-header {
+            padding: 20px 40px; background: var(--sidebar-bg); border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .detail-content { padding: 40px; overflow-y: auto; flex-grow: 1; display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
+
+        /* UI ELEMENTS */
+        .section-card { background: var(--card-bg); border: 1px solid var(--border); padding: 20px; border-radius: 4px; margin-bottom: 20px; }
+        .field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 15px; }
         label { color: var(--accent-blue); font-size: 11px; font-weight: bold; text-transform: uppercase; }
-        
         input, select, textarea { background-color: var(--input-bg); border: 1px solid var(--border); color: var(--text-white); padding: 10px; border-radius: 3px; font-size: 13px; outline: none; }
         
-        .btn-main { background: var(--accent-blue); color: #0b0e14; padding: 12px 25px; border: none; border-radius: 3px; cursor: pointer; font-weight: bold; text-transform: uppercase; font-size: 12px; }
-        .btn-sec { background: #2d333b; color: white; border: 1px solid var(--border); padding: 8px 15px; border-radius: 3px; cursor: pointer; font-size: 11px; }
-
-        table { width: 100%; border-collapse: collapse; background: var(--card-bg); border: 1px solid var(--border); margin-top: 10px; }
-        th { text-align: left; padding: 12px; color: var(--text-gray); border-bottom: 2px solid var(--border); font-size: 11px; text-transform: uppercase; }
-        td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 13px; }
-
-        .evidence-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px; }
-        .photo-card { border: 1px solid var(--border); border-radius: 4px; overflow: hidden; background: var(--input-bg); }
-        .photo-card img { width: 100%; height: 100px; object-fit: cover; }
+        .btn-main { background: var(--accent-blue); color: #0b0e14; padding: 10px 20px; border: none; border-radius: 3px; cursor: pointer; font-weight: bold; font-size: 12px; }
+        .btn-close { background: var(--danger); color: white; padding: 10px 20px; border: none; border-radius: 3px; cursor: pointer; }
         
-        .person-tag { display: inline-block; background: #343942; padding: 5px 10px; border-radius: 20px; font-size: 11px; margin-right: 5px; border: 1px solid var(--border); }
-        
-        .badge-area { text-align: center; margin-bottom: 30px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
-        .badge-icon { font-size: 35px; color: var(--gold); }
+        .tag { background: #343942; padding: 5px 12px; border-radius: 4px; font-size: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; border: 1px solid var(--border); }
+        .tag i { cursor: pointer; color: var(--danger); }
+
+        .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+        .photo-item { position: relative; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+        .photo-item img { width: 100%; height: 120px; object-fit: cover; }
+        .photo-item .del-img { position: absolute; top: 5px; right: 5px; background: rgba(248, 81, 73, 0.8); border: none; color: white; border-radius: 3px; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
-    <div class="badge-area">
-        <div class="badge-icon"><i class="fa-solid fa-shield-halved"></i></div>
-        <div style="font-weight: bold; letter-spacing: 1px; margin-top: 5px;">DETEKTIVNÍ TERMINÁL</div>
-        <div style="font-size: 9px; color: var(--text-gray);">LOS SANTOS POLICE DEPT.</div>
+    <div style="text-align: center; margin-bottom: 30px;">
+        <i class="fa-solid fa-folder-tree" style="font-size: 40px; color: var(--gold);"></i>
+        <h3 style="margin: 10px 0 0 0; letter-spacing: 2px;">DB TERMINAL</h3>
+        <span style="font-size: 10px; color: var(--text-gray);">LOS SANTOS POLICE DEPT.</span>
     </div>
-    <button class="nav-btn active" onclick="switchTab('cases', this)"><i class="fa-solid fa-folder-open"></i> Správa Spisů</button>
-    <button class="nav-btn" onclick="switchTab('opp', this)"><i class="fa-solid fa-file-invoice"></i> OPP Generátor</button>
+    <button class="nav-btn active" onclick="switchTab('list', this)"><i class="fa-solid fa-list-ul"></i> Seznam Spisů</button>
+    <button class="nav-btn" onclick="createNewCase()"><i class="fa-solid fa-plus"></i> Nový Spis</button>
+    <button class="nav-btn" onclick="switchTab('opp', this)"><i class="fa-solid fa-file-contract"></i> OPP Žádosti</button>
 </div>
 
 <div class="main">
-    
-    <div id="view-cases" class="view active">
-        <h2 style="font-weight: 300;">Vyšetřovací Spis</h2>
-        <div class="grid">
-            <div class="field"><label>Case ID</label><input type="text" id="case-id" placeholder="#2026-XXX"></div>
-            <div class="field"><label>Název případu</label><input type="text" id="case-title"></div>
-            <div class="field">
-                <label>Status</label>
-                <select id="case-status">
-                    <option value="OTEVŘENÝ">OTEVŘENÝ</option>
-                    <option value="V ŠETŘENÍ">V ŠETŘENÍ</option>
-                    <option value="UZAVŘENÝ">UZAVŘENÝ (ARCHIV)</option>
-                </select>
-            </div>
-            
-            <div class="field full" style="border: 1px solid #2d333b; padding: 15px; border-radius: 4px; background: #151921;">
-                <label>Osoby v případu (Podezřelí/Svědci)</label>
-                <div style="display: flex; gap: 10px; margin-top: 10px;">
-                    <input type="text" id="p-name" placeholder="Jméno Příjmení" style="flex:2">
-                    <input type="text" id="p-mdt" placeholder="MDT ID" style="flex:1">
-                    <button class="btn-sec" onclick="addPersonToCase()"><i class="fa-solid fa-plus"></i> Přidat</button>
-                </div>
-                <div id="person-list-display" style="margin-top: 10px;"></div>
-            </div>
-
-            <div class="field full" style="border: 1px solid #2d333b; padding: 15px; border-radius: 4px; background: #151921;">
-                <label>Fotodokumentace (FiveManager Odkazy)</label>
-                <div style="display: flex; gap: 10px; margin-top: 10px;">
-                    <input type="text" id="p-url" placeholder="https://fivemanager.com/..." style="flex:1">
-                    <button class="btn-sec" onclick="addPhotoToCase()"><i class="fa-solid fa-camera"></i> Vložit fotku</button>
-                </div>
-                <div id="photo-list-display" class="evidence-grid"></div>
-            </div>
-
-            <div class="field full"><label>Detaily vyšetřování & Důkazy</label><textarea id="case-desc" rows="6"></textarea></div>
-            <div class="field full" style="text-align: right;"><button class="btn-main" onclick="saveCaseFile()">Uložit a Archivovat Spis</button></div>
-        </div>
-        
+    <div id="view-list" class="view active">
+        <h2 style="font-weight: 300;">Databáze Vyšetřování</h2>
         <table>
-            <thead><tr><th>CASE ID</th><th>NÁZEV</th><th>OSOBY</th><th>STATUS</th><th>AKCE</th></tr></thead>
-            <tbody id="case-list-table"></tbody>
+            <thead><tr><th>CASE ID</th><th>NÁZEV</th><th>STATUS</th><th>VYŠETŘOVATEL</th><th>AKCE</th></tr></thead>
+            <tbody id="main-case-list"></tbody>
         </table>
     </div>
 
     <div id="view-opp" class="view">
-        <h2 style="font-weight: 300;">Žádost o Operativní Prostředek</h2>
-        
-        <div style="background: #1c212b; padding: 20px; border-radius: 4px; border-bottom: 3px solid var(--accent-blue); margin-bottom: 20px;">
-            <label>1. VYBERTE SPIS K PROPOJENÍ</label><br>
-            <select id="import-case" style="width: 100%; margin-top: 10px;" onchange="handleCaseImport()">
-                <option value="">-- Žádný (Manuální zadání) --</option>
-            </select>
+        <h2 style="font-weight: 300;">OPP Agenda</h2>
+        <p style="color: var(--text-gray);">Zde se spravují schválené žádosti pro DOJ.</p>
+    </div>
+</div>
+
+<div id="case-detail-overlay">
+    <div class="detail-header">
+        <div>
+            <span id="det-case-id" style="color: var(--accent-blue); font-weight: bold; font-size: 20px;"></span>
+            <span id="det-case-title" style="margin-left: 15px; font-weight: 300; font-size: 20px;"></span>
         </div>
-
-        <div class="grid">
-            <div class="field"><label>Detektiv</label><input type="text" id="opp-off"></div>
-            <div class="field"><label>Hodnost</label><input type="text" id="opp-rank"></div>
-            <div class="field"><label>Case ID</label><input type="text" id="opp-caseid"></div>
-            
-            <div class="field">
-                <label>Subjekt (Vyberte ze spisu)</label>
-                <select id="opp-sub-select"></select>
-            </div>
-            <div class="field"><label>Datum narození</label><input type="text" id="opp-birth"></div>
-            <div class="field"><label>MDT ID</label><input type="text" id="opp-mdt"></div>
-
-            <div class="field full">
-                <label>Právní Kvalifikace (Penal Code)</label>
-                <select id="opp-crime-select">
-                    </select>
-            </div>
-
-            <div class="field full"><label>Odůvodnění pro DOJ</label><textarea id="opp-reason" rows="6"></textarea></div>
-            <div class="field full" style="text-align: right;"><button class="btn-main" onclick="generateOPP()">Vytvořit Žádost</button></div>
+        <div style="display: flex; gap: 10px;">
+            <button class="btn-main" style="background: var(--success); color: white;" onclick="saveCurrentCase()"><i class="fa-solid fa-floppy-disk"></i> ULOŽIT SPIS</button>
+            <button class="btn-close" onclick="closeDetail()"><i class="fa-solid fa-xmark"></i> ZAVŘÍT</button>
         </div>
-
-        <h3 style="font-weight: 300; margin-top: 40px;">Archiv žádostí</h3>
-        <table id="opp-table">
-            <thead><tr><th>SPIS</th><th>SUBJEKT</th><th>KVALIFIKACE</th><th>SPRÁVA</th></tr></thead>
-            <tbody id="opp-list-table"></tbody>
-        </table>
     </div>
 
+    <div class="detail-content">
+        <div class="left-col">
+            <div class="section-card">
+                <label>Shrnutí případu a důkazní situace</label>
+                <textarea id="det-desc" rows="15" style="width: 100%; margin-top: 10px; box-sizing: border-box; resize: vertical;"></textarea>
+            </div>
+            <div class="section-card">
+                <label>Fotodokumentace (Odkazy na FiveManager)</label>
+                <div style="display: flex; gap: 10px; margin: 10px 0;">
+                    <input type="text" id="det-photo-input" placeholder="Vložte URL obrázku..." style="flex-grow: 1;">
+                    <button class="btn-main" onclick="addPhoto()">PŘIDAT</button>
+                </div>
+                <div id="det-photo-grid" class="photo-grid"></div>
+            </div>
+        </div>
+
+        <div class="right-col">
+            <div class="section-card">
+                <label>Status Případu</label>
+                <select id="det-status" style="width: 100%; margin-top: 10px;">
+                    <option value="OTEVŘENÝ">OTEVŘENÝ</option>
+                    <option value="V ŠETŘENÍ">V ŠETŘENÍ</option>
+                    <option value="UZAVŘENÝ">UZAVŘENÝ</option>
+                </select>
+            </div>
+
+            <div class="section-card">
+                <label><i class="fa-solid fa-users"></i> Osoby (Podezřelí/Svědci)</label>
+                <div style="display: flex; flex-direction: column; gap: 5px; margin-top: 10px;">
+                    <input type="text" id="det-p-name" placeholder="Jméno a Příjmení">
+                    <input type="text" id="det-p-mdt" placeholder="MDT ID">
+                    <button class="btn-sec" onclick="addPerson()" style="margin-bottom: 10px; cursor:pointer;">+ PŘIDAT OSOBU</button>
+                </div>
+                <div id="det-person-list"></div>
+            </div>
+
+            <div class="section-card">
+                <label><i class="fa-solid fa-car"></i> Vozidla</label>
+                <div style="display: flex; flex-direction: column; gap: 5px; margin-top: 10px;">
+                    <input type="text" id="det-v-plate" placeholder="SPZ / RZ">
+                    <input type="text" id="det-v-model" placeholder="Model a Barva">
+                    <button class="btn-sec" onclick="addVehicle()" style="margin-bottom: 10px; cursor:pointer;">+ PŘIDAT VOZIDLO</button>
+                </div>
+                <div id="det-vehicle-list"></div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
-    // --- DATA & KONSTANTY ---
-    let dbCases = JSON.parse(localStorage.getItem('db_cases_v11')) || [];
-    let dbOPP = JSON.parse(localStorage.getItem('db_opp_v11')) || [];
-    
-    let currentCasePersons = [];
-    let currentCasePhotos = [];
+    let cases = JSON.parse(localStorage.getItem('lspd_v12_cases')) || [];
+    let currentCaseId = null;
 
-    const CRIMES = [
-        "§10 Zabití", "§11 Pokus o vraždu", "§12 (A) Vražda - Úmyslná", "§12 (B) Vražda - Plánovaná",
-        "§13 Obchodování s lidmi", "§14 (A) Omezování svobody (bez přesunu)", "§14 (B) Omezování svobody (Únos)",
-        "§14 (C) Omezování svobody (státní zaměstnanec)", "§15 (B) Vyhrožování (úřední osoba)",
-        "§17 (B,C) Neoprávněné nakládání s údaji", "§18 (A,B) Zneužití pravomoci", "§23 (D) Pedofilní jednání",
-        "§24 Znásilnění", "§25 (B,C,D) Krádež", "§28 (B,C,D) Zpronevěra", "§30 (B,C,D) Podvod",
-        "§44 Obecné ohrožení", "§48 Výroba drog", "§52 Dealing a prodej", "§102 Terorismus"
-    ];
-
-    // Inicializace Crime Selectů
-    const cSelect = document.getElementById('opp-crime-select');
-    CRIMES.forEach(c => { let opt = new Option(c, c); cSelect.add(opt); });
-
-    // --- LOGIKA SPISŮ ---
-    function addPersonToCase() {
-        const name = document.getElementById('p-name').value;
-        const mdt = document.getElementById('p-mdt').value;
-        if(!name) return;
-        currentCasePersons.push({ name, mdt });
-        renderCaseHelpers();
-        document.getElementById('p-name').value = ""; document.getElementById('p-mdt').value = "";
-    }
-
-    function addPhotoToCase() {
-        const url = document.getElementById('p-url').value;
-        if(!url) return;
-        currentCasePhotos.push(url);
-        renderCaseHelpers();
-        document.getElementById('p-url').value = "";
-    }
-
-    function renderCaseHelpers() {
-        document.getElementById('person-list-display').innerHTML = currentCasePersons.map(p => `<span class="person-tag">${p.name} (${p.mdt})</span>`).join('');
-        document.getElementById('photo-list-display').innerHTML = currentCasePhotos.map(url => `<div class="photo-card"><img src="${url}"></div>`).join('');
-    }
-
-    function saveCaseFile() {
-        const id = document.getElementById('case-id').value;
-        if(!id) return alert("Zadejte Case ID!");
-
-        const caseData = {
-            id,
-            title: document.getElementById('case-title').value,
-            status: document.getElementById('case-status').value,
-            desc: document.getElementById('case-desc').value,
-            persons: [...currentCasePersons],
-            photos: [...currentCasePhotos],
-            date: new Date().toLocaleDateString()
-        };
-
-        const idx = dbCases.findIndex(c => c.id === id);
-        if(idx > -1) dbCases[idx] = caseData; else dbCases.unshift(caseData);
-
-        localStorage.setItem('db_cases_v11', JSON.stringify(dbCases));
-        currentCasePersons = []; currentCasePhotos = [];
-        renderCaseHelpers();
-        refreshAll();
-        alert("Spis uložen.");
-    }
-
-    // --- LOGIKA OPP ---
-    function handleCaseImport() {
-        const cid = document.getElementById('import-case').value;
-        if(!cid) return;
-        const c = dbCases.find(x => x.id === cid);
-        
-        document.getElementById('opp-caseid').value = c.id;
-        document.getElementById('opp-reason').value = `Na základě vyšetřování spisu ${c.title}:\n${c.desc}`;
-        
-        const subSel = document.getElementById('opp-sub-select');
-        subSel.innerHTML = c.persons.map(p => `<option value="${p.name}" data-mdt="${p.mdt}">${p.name} (MDT: ${p.mdt})</option>`).join('');
-        
-        // Auto-fill MDT prvního člověka
-        if(c.persons.length > 0) document.getElementById('opp-mdt').value = c.persons[0].mdt;
-    }
-
-    function generateOPP() {
-        const data = {
-            uid: Date.now(),
-            off: document.getElementById('opp-off').value,
-            rank: document.getElementById('opp-rank').value,
-            cid: document.getElementById('opp-caseid').value,
-            sub: document.getElementById('opp-sub-select').value,
-            mdt: document.getElementById('opp-mdt').value,
-            birth: document.getElementById('opp-birth').value,
-            crime: document.getElementById('opp-crime-select').value,
-            reason: document.getElementById('opp-reason').value
-        };
-        dbOPP.unshift(data);
-        localStorage.setItem('db_opp_v11', JSON.stringify(dbOPP));
-        refreshAll();
-        alert("OPP žádost vytvořena.");
-    }
-
-    // --- GLOBÁLNÍ FUNKCE ---
+    // --- NAVIGACE ---
     function switchTab(tabId, btn) {
         document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         document.getElementById('view-' + tabId).classList.add('active');
         btn.classList.add('active');
-        refreshAll();
+        renderList();
     }
 
-    function refreshAll() {
-        // Tabulka spisů
-        document.getElementById('case-list-table').innerHTML = dbCases.map(c => `
+    // --- LISTING ---
+    function renderList() {
+        const tbody = document.getElementById('main-case-list');
+        tbody.innerHTML = cases.map(c => `
             <tr>
-                <td><b>${c.id}</b></td>
+                <td><b style="color:var(--accent-blue)">${c.id}</b></td>
                 <td>${c.title}</td>
-                <td>${c.persons.length} osob</td>
                 <td><span style="color:var(--accent-blue)">${c.status}</span></td>
-                <td><button class="btn-sec" onclick="loadCaseToForm('${c.id}')">Otevřít</button></td>
-            </tr>
-        `).join('');
-
-        // Import do OPP
-        document.getElementById('import-case').innerHTML = '<option value="">-- Manuální zadání --</option>' + 
-            dbCases.map(c => `<option value="${c.id}">${c.id} - ${c.title}</option>`).join('');
-
-        // Tabulka OPP
-        document.getElementById('opp-list-table').innerHTML = dbOPP.map(o => `
-            <tr>
-                <td>${o.cid}</td>
-                <td>${o.sub}</td>
-                <td style="font-size:11px">${o.crime}</td>
-                <td><button class="btn-sec" style="color:var(--accent-blue)" onclick="copyDOJ(${o.uid})">Discord Copy</button></td>
+                <td>${c.officer || 'Nezadaný'}</td>
+                <td><button class="btn-main" onclick="openCase('${c.id}')">OTEVŘÍT SPIS</button></td>
             </tr>
         `).join('');
     }
 
-    function loadCaseToForm(id) {
-        const c = dbCases.find(x => x.id === id);
-        document.getElementById('case-id').value = c.id;
-        document.getElementById('case-title').value = c.title;
-        document.getElementById('case-desc').value = c.desc;
-        document.getElementById('case-status').value = c.status;
-        currentCasePersons = [...c.persons];
-        currentCasePhotos = [...c.photos];
-        renderCaseHelpers();
+    // --- CASE LOGIC ---
+    function createNewCase() {
+        const id = prompt("Zadejte CASE ID (např. #2026-005):");
+        const title = prompt("Zadejte název případu:");
+        if(!id || !title) return;
+
+        const newCase = {
+            id, title, status: 'OTEVŘENÝ', officer: 'Detektiv',
+            desc: '', persons: [], vehicles: [], photos: []
+        };
+        cases.unshift(newCase);
+        saveToDB();
+        openCase(id);
     }
 
-    function copyDOJ(uid) {
-        const o = dbOPP.find(x => x.uid === uid);
-        const msg = `**LSPD DETECTIVE BUREAU - ŽÁDOST O OPP**\n---\n**CASE ID:** \`${o.cid}\`\n**VYŠETŘOVATEL:** ${o.off} (${o.rank})\n**SUBJEKT:** ${o.sub} (MDT: ${o.mdt}, Nar: ${o.birth})\n**KVALIFIKACE:** ${o.crime}\n\n**ODŮVODNĚNÍ:**\n\`\`\`\n${o.reason}\n\`\`\``;
-        navigator.clipboard.writeText(msg);
-        alert("Zkopírováno pro Discord DOJ!");
+    function openCase(id) {
+        currentCaseId = id;
+        const c = cases.find(x => x.id === id);
+        
+        document.getElementById('det-case-id').innerText = c.id;
+        document.getElementById('det-case-title').innerText = c.title;
+        document.getElementById('det-desc').value = c.desc;
+        document.getElementById('det-status').value = c.status;
+        
+        renderDetails();
+        document.getElementById('case-detail-overlay').style.display = 'flex';
     }
 
-    refreshAll();
+    function closeDetail() {
+        document.getElementById('case-detail-overlay').style.display = 'none';
+        renderList();
+    }
+
+    function renderDetails() {
+        const c = cases.find(x => x.id === currentCaseId);
+        
+        // Osoby
+        document.getElementById('det-person-list').innerHTML = c.persons.map((p, i) => `
+            <div class="tag">${p.name} (${p.mdt}) <i class="fa-solid fa-trash" onclick="removeEntity('persons', ${i})"></i></div>
+        `).join('');
+
+        // Vozidla
+        document.getElementById('det-vehicle-list').innerHTML = c.vehicles.map((v, i) => `
+            <div class="tag">${v.plate} - ${v.model} <i class="fa-solid fa-trash" onclick="removeEntity('vehicles', ${i})"></i></div>
+        `).join('');
+
+        // Fotky
+        document.getElementById('det-photo-grid').innerHTML = c.photos.map((url, i) => `
+            <div class="photo-item">
+                <img src="${url}">
+                <button class="del-img" onclick="removeEntity('photos', ${i})">×</button>
+            </div>
+        `).join('');
+    }
+
+    // --- ADD / REMOVE ---
+    function addPerson() {
+        const name = document.getElementById('det-p-name').value;
+        const mdt = document.getElementById('det-p-mdt').value;
+        if(!name) return;
+        cases.find(x => x.id === currentCaseId).persons.push({name, mdt});
+        document.getElementById('det-p-name').value = ''; document.getElementById('det-p-mdt').value = '';
+        renderDetails();
+    }
+
+    function addVehicle() {
+        const plate = document.getElementById('det-v-plate').value;
+        const model = document.getElementById('det-v-model').value;
+        if(!plate) return;
+        cases.find(x => x.id === currentCaseId).vehicles.push({plate, model});
+        document.getElementById('det-v-plate').value = ''; document.getElementById('det-v-model').value = '';
+        renderDetails();
+    }
+
+    function addPhoto() {
+        const url = document.getElementById('det-photo-input').value;
+        if(!url) return;
+        cases.find(x => x.id === currentCaseId).photos.push(url);
+        document.getElementById('det-photo-input').value = '';
+        renderDetails();
+    }
+
+    function removeEntity(type, index) {
+        cases.find(x => x.id === currentCaseId)[type].splice(index, 1);
+        renderDetails();
+    }
+
+    function saveCurrentCase() {
+        const c = cases.find(x => x.id === currentCaseId);
+        c.desc = document.getElementById('det-desc').value;
+        c.status = document.getElementById('det-status').value;
+        saveToDB();
+        alert("Změny ve spisu byly uloženy do databáze.");
+    }
+
+    function saveToDB() {
+        localStorage.setItem('lspd_v12_cases', JSON.stringify(cases));
+    }
+
+    renderList();
 </script>
 
 </body>
