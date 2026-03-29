@@ -7,146 +7,120 @@
     <style>
         :root { --bg-dark: #0b0e14; --sidebar-bg: #151921; --card-bg: #1c212b; --accent-blue: #4a9eff; --border: #2d333b; --gold: #d4af37; --danger: #f85149; --success: #2ea043; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg-dark); color: white; margin: 0; display: flex; height: 100vh; }
-        .sidebar { width: 180px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 10px; display: flex; flex-direction: column; }
-        .main { flex-grow: 1; padding: 25px; overflow-y: auto; }
-        .card { background: var(--card-bg); border: 1px solid var(--border); padding: 20px; border-radius: 4px; margin-bottom: 20px; }
+        .sidebar { width: 180px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 10px; display: flex; flex-direction: column; flex-shrink: 0; }
+        .main { flex-grow: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; }
+        .container { width: 100%; max-width: 1100px; }
+        .card { background: var(--card-bg); border: 1px solid var(--border); padding: 20px; border-radius: 4px; margin-bottom: 20px; width: 100%; box-sizing: border-box; }
         .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 20px; }
         label { color: var(--accent-blue); font-size: 11px; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 5px; }
         input, select, textarea { width: 100%; background: #0b0e14; border: 1px solid var(--border); color: white; padding: 10px; border-radius: 3px; font-size: 13px; box-sizing: border-box; }
-        
+        .full-width { grid-column: span 3; margin-bottom: 20px; }
+        .sys-record { border: 1px dashed var(--border); color: #9ba3af; font-size: 12px; font-style: italic; min-height: 120px; line-height: 1.4; background: rgba(0,0,0,0.2); }
         .notes-card { border-top: 2px solid var(--gold); }
         .notes-header { display: flex; align-items: center; gap: 10px; color: var(--gold); margin-bottom: 15px; font-weight: bold; text-transform: uppercase; font-size: 12px; }
-        
-        textarea#case-notes { min-height: 250px; font-family: 'Consolas', monospace; line-height: 1.5; border-color: #3d444d; }
-        .sys-record { border: 1px dashed var(--border); color: #9ba3af; font-size: 12px; font-style: italic; min-height: 140px; line-height: 1.4; background: rgba(0,0,0,0.2); margin-bottom: 15px; }
-        
-        .btn-row { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; margin-bottom: 30px; }
+        textarea#case-notes { min-height: 250px; font-family: 'Consolas', monospace; border-color: #3d444d; }
+        .btn-row { display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 40px; }
         .btn { border: none; padding: 12px 25px; border-radius: 4px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; }
         .btn-resolve { background: var(--success); color: white; }
         .btn-save { background: var(--accent-blue); color: black; }
-        .locked-banner { background: var(--success); color: white; padding: 10px; border-radius: 4px; text-align: center; margin-bottom: 20px; display: none; font-weight: bold; }
+        .locked-banner { background: var(--success); color: white; padding: 10px; border-radius: 4px; text-align: center; margin-bottom: 20px; display: none; width: 100%; }
     </style>
 </head>
 <body>
 <div class="sidebar"><a href="index.html" style="color: var(--accent-blue); text-decoration: none; font-size: 12px;"><i class="fa-solid fa-arrow-left"></i> Zpět do Commandu</a></div>
 <div class="main">
-    <div id="locked-msg" class="locked-banner"><i class="fa-solid fa-lock"></i> TENTO ZÁZNAM JE UZAVŘEN A NENÍ MOŽNÉ JEJ EDITOVAT</div>
-    
-    <h2 style="font-weight: 300; margin-bottom: 20px;">Evidence Operativních Prostředků</h2>
-    
-    <div class="card">
-        <div class="grid-3">
-            <div><label>Vyšetřující detektiv</label><input type="text" id="det-name" placeholder="Jméno Příjmení"></div>
-            <div><label>Hodnost</label>
-                <select id="det-rank">
-                    <option>DBI Trainee</option>
-                    <option>Detective I</option>
-                    <option>Detective II</option>
-                    <option>Command</option>
-                </select>
-            </div>
-            <div><label>Case ID</label><input type="text" id="case-id" placeholder="#2026-XXXX"></div>
-        </div>
+    <div class="container">
+        <div id="locked-msg" class="locked-banner"><i class="fa-solid fa-lock"></i> TENTO ZÁZNAM JE UZAVŘEN A NENÍ MOŽNÉ JEJ EDITOVAT</div>
+        <h2 style="font-weight: 300; margin-bottom: 25px; color: var(--gold);">Evidence Operativních Prostředků</h2>
         
-        <div class="grid-3">
-            <div><label>Subjekt (Jméno Příjmení)</label><input type="text" id="sub-name" placeholder="John Doe"></div>
-            <div><label>Datum narození</label><input type="text" id="sub-dob" placeholder="DD/MM/YYYY"></div>
-            <div><label>MDT ID</label><input type="text" id="mdt-id" placeholder="8xxx"></div>
-        </div>
-
-        <div class="grid-3" style="grid-template-columns: 1fr 1fr;">
-            <div>
-   <div>
-    <label>Právní kvalifikace (Všechny Trestné činy dle PC SA)</label>
-    <select id="legal-qual" style="font-size: 11px; height: 35px;">
-        <optgroup label="Zločiny v organizaci">
-            <option value="6a">§6 a) Zločin v organizaci (15 let - doživotí)</option>
-            <option value="6b">§6 b) Zločin v organizaci s naplněním (Doživotí)</option>
-        </optgroup>
-
-        <optgroup label="Ublížení na zdraví">
-            <option value="7a">§7 a) Ublížení - neúmyslně zbraní (1-5 let)</option>
-            <option value="7b">§7 b) Ublížení - úmyslně zbraní (1-5 let)</option>
-            <option value="7c">§7 c) Ublížení - úmyslně střelnou zbraní (3-10 let)</option>
-            <option value="7d">§7 d) Ublížení - proti úřední osobě (5-15 let)</option>
-            <option value="7e">§7 e) Ublížení - proti IZS (10-20 let)</option>
-        </optgroup>
-
-        <optgroup label="Vražda a Zabití">
-            <option value="9">§9 Vražda (Doživotí)</option>
-            <option value="11">§11 Pokus o vraždu (20-30 let)</option>
-            <option value="12">§12 Zabití (15-20 let)</option>
-            <option value="13">§13 Napadení se smrtícím účinkem (10-20 let)</option>
-        </optgroup>
-
-        <optgroup label="Osobní svoboda">
-            <option value="14">§14 Únos (10-20 let)</option>
-            <option value="15">§15 Braní rukojmí (15-25 let)</option>
-            <option value="16">§16 Omezování osobní svobody (2-10 let)</option>
-        </optgroup>
-
-        <optgroup label="Majetkové činy">
-            <option value="18">§18 Loupežné přepadení (10-20 let)</option>
-            <option value="19a">§19 a) Krádež vniknutím (5-15 let)</option>
-            <option value="19b">§19 b) Krádež bez vniknutí (2-10 let)</option>
-            <option value="20a">§20 a) Vloupání do obydlí (10-20 let)</option>
-            <option value="20b">§20 b) Vloupání do objektu (5-15 let)</option>
-            <option value="23">§23 Žhářství (10-20 let)</option>
-        </optgroup>
-
-        <optgroup label="Drogy a látky">
-            <option value="28">§28 Držení omamných látek (2-10 let)</option>
-            <option value="29">§29 Výroba a distribuce drog (10-20 let)</option>
-            <option value="30">§30 Přechovávání za účelem prodeje (5-15 let)</option>
-            <option value="31">§31 Navádění k užívání (1-5 let)</option>
-        </optgroup>
-
-        <optgroup label="Zbraně">
-            <option value="34">§34 Nelegální ozbrojování (5-15 let)</option>
-            <option value="36">§36 Obchodování se zbraněmi (15-25 let)</option>
-            <option value="37">§37 Nedovolené ozbrojování skupiny (20-30 let)</option>
-        </optgroup>
-
-        <optgroup label="Stát a úřady">
-            <option value="42">§42 Úplatkářství (5-15 let)</option>
-            <option value="45">§45 Maření spravedlnosti (2-10 let)</option>
-            <option value="50">§50 Útok na úřední osobu (5-15 let)</option>
-            <option value="57">§57 Terorismus (Doživotí)</option>
-            <option value="58">§58 Vlastizrada (Doživotí)</option>
-        </optgroup>
-    </select>
-</div>
-            <div>
-                <label>Typ OPP</label>
-                <select id="opp-type">
-                    <option>Prověrka majetku a finančních prostředků</option>
-                    <option>Sledování osob a věcí</option>
-                    <option>Odposlech a záznam telekomunikačního provozu</option>
-                    <option>Využití agenta</option>
-                </select>
+        <div class="card">
+            <div class="grid-3">
+                <div><label>Vyšetřující detektiv</label><input type="text" id="det-name" placeholder="Jméno Příjmení"></div>
+                <div><label>Hodnost</label>
+                    <select id="det-rank">
+                        <option>DBI Trainee</option><option>Detective I</option><option>Detective II</option><option>Command</option>
+                    </select>
+                </div>
+                <div><label>Case ID</label><input type="text" id="case-id" placeholder="#2026-XXXX"></div>
             </div>
-        </div>
+            
+            <div class="grid-3">
+                <div><label>Subjekt (Jméno Příjmení)</label><input type="text" id="sub-name" placeholder="John Doe"></div>
+                <div><label>Datum narození</label><input type="text" id="sub-dob" placeholder="DD/MM/YYYY"></div>
+                <div><label>MDT ID</label><input type="text" id="mdt-id" placeholder="8xxx"></div>
+            </div>
 
-        <label>Zjištěné skutečnosti (Systémový záznam)</label>
-        <textarea class="sys-record" readonly>Na základě prvotního ohledání místa činu bylo zjištěno, že došlo k násilnému trestnému činu, při kterém byly nalezeny osoby bez známek života s poraněními odpovídajícími násilnému útoku. V rámci probíhajícího vyšetřování byly zajištěny důkazní materiály a probíhá analýza stop z místa činu.
+            <div class="grid-3">
+                <div style="grid-column: span 2;">
+                    <label>Právní kvalifikace (Dle Penal Code SA)</label>
+                    <select id="legal-qual">
+                        <optgroup label="§6 Zločin v organizaci či skupině">
+                            <option>§6 a) Zločin v organizaci (15 let - doživotí)</option>
+                            <option>§6 b) Zločin v organizaci s naplněním (§9, §11..) (Doživotí)</option>
+                        </optgroup>
+                        <optgroup label="§7 Ublížení na zdraví">
+                            <option>§7 a) Neúmyslně a zbraní (1-5 let)</option>
+                            <option>§7 b) Úmyslně a zbraní (1-5 let)</option>
+                            <option>§7 c) Úmyslně a střelnou zbraní (3-10 let)</option>
+                            <option>§7 d) Úmyslně a zbraní proti úřední osobě (5-15 let)</option>
+                            <option>§7 e) Úmyslně proti IZS při výkonu (10-20 let)</option>
+                        </optgroup>
+                        <optgroup label="Násilné trestné činy">
+                            <option>§9 Vražda (Doživotí)</option>
+                            <option>§11 Pokus o vraždu (20-30 let)</option>
+                            <option>§12 Zabití (15-20 let)</option>
+                            <option>§13 Napadení se smrtícím účinkem (10-20 let)</option>
+                            <option>§14 Únos (10-20 let)</option>
+                            <option>§15 Braní rukojmí (15-25 let)</option>
+                        </optgroup>
+                        <optgroup label="Majetkové trestné činy">
+                            <option>§18 Loupežné přepadení (10-20 let)</option>
+                            <option>§19 a) Krádež vniknutím (5-15 let)</option>
+                            <option>§19 b) Krádež bez vniknutí (2-10 let)</option>
+                            <option>§20 a) Vloupání do obydlí (10-20 let)</option>
+                            <option>§20 b) Vloupání do objektu (5-15 let)</option>
+                            <option>§23 Žhářství (10-20 let)</option>
+                        </optgroup>
+                        <optgroup label="Drogy a organizace">
+                            <option>§29 Výroba a distribuce drog (10-20 let)</option>
+                            <option>§30 Přechovávání za účelem prodeje (5-15 let)</option>
+                            <option>§36 Obchodování se zbraněmi (15-25 let)</option>
+                            <option>§57 Terorismus (Doživotí)</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div>
+                    <label>Typ OPP</label>
+                    <select id="opp-type">
+                        <option>Prověrka majetku a finančních prostředků</option>
+                        <option>Sledování osob a věcí</option>
+                        <option>Odposlech</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="full-width">
+                <label>Zjištěné skutečnosti (Systémový záznam)</label>
+                <textarea class="sys-record" readonly>Na základě prvotního ohledání místa činu bylo zjištěno, že došlo k násilnému trestnému činu, při kterém byly nalezeny osoby bez známek života s poraněními odpovídajícími násilnému útoku. V rámci probíhajícího vyšetřování byly zajištěny důkazní materiály a probíhá analýza stop z místa činu.
 
 Za účelem objasnění okolností případu je žádáno o poskytnutí informací o majetku a finančních prostředcích uvedených osob. Tyto informace mohou napomoci k identifikaci možného motivu trestné činnosti, prověření majetkových poměrů obětí a zjištění případných vazeb na další osoby, které by mohly souviset s vyšetřovaným případem.</textarea>
+            </div>
 
-        <label>Doplňující odůvodnění žádosti</label>
-        <textarea id="user-note" style="min-height: 80px;" placeholder="Vložte vlastní odůvodnění..."></textarea>
-    </div>
-
-    <div class="card notes-card">
-        <div class="notes-header">
-            <i class="fa-solid fa-clipboard-list"></i>
-            Průběžné poznámky a operativní deník
+            <div class="full-width">
+                <label>Doplňující odůvodnění žádosti (Vlastní text)</label>
+                <textarea id="user-note" style="min-height: 80px;" placeholder="Vložte vlastní odůvodnění..."></textarea>
+            </div>
         </div>
-        <textarea id="case-notes" placeholder="Sem pište všechny detaily z vyšetřování..."></textarea>
-    </div>
 
-    <div class="btn-row" id="action-buttons">
-        <button class="btn btn-save" onclick="saveData('OTEVŘENO')"><i class="fa-solid fa-save"></i> ULOŽIT ROZPRACAVANÉ</button>
-        <button class="btn btn-resolve" onclick="saveData('VYŘEŠENO')"><i class="fa-solid fa-check-double"></i> UZAVŘÍT A VYŘEŠIT</button>
+        <div class="card notes-card">
+            <div class="notes-header"><i class="fa-solid fa-clipboard-list"></i> PRŮBĚŽNÉ POZNÁMKY A OPERATIVNÍ DENÍK</div>
+            <textarea id="case-notes" placeholder="Sem pište všechny detaily z vyšetřování..."></textarea>
+        </div>
+
+        <div class="btn-row" id="action-buttons">
+            <button class="btn btn-save" onclick="saveData('OTEVŘENO')"><i class="fa-solid fa-save"></i> ULOŽIT ROZPRACAVANÉ</button>
+            <button class="btn btn-resolve" onclick="saveData('VYŘEŠENO')"><i class="fa-solid fa-check-double"></i> SCHVÁLIT A ARCHIVOVAT</button>
+        </div>
     </div>
 </div>
 
@@ -160,8 +134,8 @@ Za účelem objasnění okolností případu je žádáno o poskytnutí informac
         document.getElementById('det-name').value = c.author || '';
         document.getElementById('case-id').value = c.id || '';
         document.getElementById('sub-name').value = c.subject || '';
-        document.getElementById('legal-qual').value = c.legal || 'Vražda (§ 140 TZ)';
-        document.getElementById('opp-type').value = c.opp || 'Prověrka majetku a finančních prostředků';
+        document.getElementById('legal-qual').value = c.legal || '';
+        document.getElementById('opp-type').value = c.opp || '';
         document.getElementById('case-notes').value = c.notes || '';
         document.getElementById('user-note').value = c.note || '';
         
@@ -183,7 +157,6 @@ Za účelem objasnění okolností případu je žádáno o poskytnutí informac
             note: document.getElementById('user-note').value,
             status: status
         };
-        
         if(caseIndex !== null) cases[caseIndex] = entry; else cases.push(entry);
         localStorage.setItem('lspd_v15_data', JSON.stringify(cases));
         window.location.href = 'index.html';
