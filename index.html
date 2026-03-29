@@ -18,9 +18,7 @@
         }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg-dark); color: #e1e4e8; margin: 0; display: flex; height: 100vh; overflow: hidden; }
         
-        /* FIX SIDEBARU - Pevná šířka, žádné přetékání */
         .sidebar { width: 260px; min-width: 260px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 15px; display: flex; flex-direction: column; box-sizing: border-box; }
-        
         .user-card { background: #0b0e14; padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid var(--border); }
         .role-badge { font-size: 10px; background: var(--gold); color: black; padding: 2px 6px; border-radius: 3px; font-weight: bold; margin-top: 5px; display: inline-block; text-transform: uppercase; }
 
@@ -29,41 +27,58 @@
         .nav-btn:hover { background: #1c212b; color: white; }
         .nav-btn.active { background: var(--accent-blue); color: #0b0e14; font-weight: bold; }
 
-        /* ADMINISTRACE DESIGN */
-        .admin-link { color: var(--gold) !important; border: 1px solid rgba(212, 175, 55, 0.3) !important; margin-top: 10px; font-weight: bold; }
-        .admin-link:hover { background: rgba(212, 175, 55, 0.1) !important; }
+        .admin-link { color: var(--gold) !important; border: 1px solid rgba(212, 175, 55, 0.3) !important; margin-top: 10px; }
 
         .main { flex-grow: 1; padding: 30px; overflow-y: auto; }
         table { width: 100%; border-collapse: collapse; background: var(--card-bg); border: 1px solid var(--border); }
         th { text-align: left; padding: 15px; color: var(--text-gray); border-bottom: 2px solid var(--border); font-size: 11px; text-transform: uppercase; }
         td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 13px; }
+
+        /* MODAL (Náhrada za prompt) */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 100; }
+        .modal { background: var(--sidebar-bg); padding: 25px; border-radius: 8px; border: 1px solid var(--border); width: 400px; }
+        input { background: var(--bg-dark); border: 1px solid var(--border); color: white; padding: 12px; width: 100%; border-radius: 4px; box-sizing: border-box; margin: 10px 0; outline: none; }
+        input:focus { border-color: var(--accent-blue); }
+        .btn-confirm { background: var(--accent-blue); color: black; border: none; padding: 12px; border-radius: 4px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 10px; }
     </style>
 </head>
 <body>
 
+<div id="newCaseModal" class="modal-overlay">
+    <div class="modal">
+        <h3 style="margin: 0 0 15px 0; color: var(--accent-blue);">Nový vyšetřovací spis</h3>
+        <label style="font-size: 11px; color: var(--text-gray);">ČÍSLO SPISU</label>
+        <input type="text" id="caseId" placeholder="#2026-001">
+        <label style="font-size: 11px; color: var(--text-gray);">NÁZEV PŘÍPADU</label>
+        <input type="text" id="caseTitle" placeholder="Např. Přepadení banky">
+        <div style="display: flex; gap: 10px;">
+            <button class="btn-confirm" onclick="confirmNewCase()">VYTVOŘIT</button>
+            <button class="btn-confirm" style="background: var(--border); color: white;" onclick="closeModal()">ZRUŠIT</button>
+        </div>
+    </div>
+</div>
+
 <div class="sidebar">
     <div class="user-card">
-        <div id="u-name" style="font-weight: bold; font-size: 15px;">Načítání...</div>
+        <div id="u-name" style="font-weight: bold; font-size: 15px;">--</div>
         <div id="u-call" style="color: var(--gold); font-size: 11px;">--</div>
         <div id="u-role" class="role-badge">--</div>
     </div>
     
     <div class="nav-group">
         <button class="nav-btn active"><i class="fa-solid fa-folder"></i> Evidence Spisů</button>
-        <button class="nav-btn" onclick="createNewCase()"><i class="fa-solid fa-plus-circle"></i> Nový Spis</button>
+        <button class="nav-btn" onclick="openModal()"><i class="fa-solid fa-plus-circle"></i> Nový Spis</button>
         
         <a href="admin.html" id="admin-btn" class="nav-btn admin-link" style="display: none;">
             <i class="fa-solid fa-user-shield"></i> ADMINISTRACE
         </a>
     </div>
 
-    <button class="nav-btn" onclick="logout()" style="color: var(--danger); border-top: 1px solid var(--border); padding-top: 15px; margin-top: 10px;">
-        <i class="fa-solid fa-power-off"></i> Odhlásit
-    </button>
+    <button class="nav-btn" onclick="logout()" style="color: var(--danger); border-top: 1px solid var(--border); padding-top: 15px; margin-top: 10px;"><i class="fa-solid fa-power-off"></i> Odhlásit</button>
 </div>
 
 <div class="main">
-    <h2 style="font-weight: 300; margin-bottom: 25px;">Centrální Databáze Spisů</h2>
+    <h2 style="font-weight: 300;">Centrální Databáze Spisů</h2>
     <table>
         <thead>
             <tr><th>STATUS</th><th>ID</th><th>NÁZEV</th><th>AUTOR</th><th>STAV</th></tr>
@@ -73,33 +88,38 @@
 </div>
 
 <script>
-    // Inicializace dat
     let cases = JSON.parse(localStorage.getItem('lspd_v15_data')) || [];
-    let loggedUser = JSON.parse(localStorage.getItem('lspd_logged_session')) || { name: "Dorian Hall", rank: "COMMAND", callsign: "1D-01" };
+    let loggedUser = JSON.parse(localStorage.getItem('lspd_logged_session')) || {name: "Dorian Hall", rank: "COMMAND", callsign: "1D-01"};
 
     function init() {
-        // Vynucení COMMAND pro Dorian Hall, pokud je v session chyba
-        if (loggedUser.name === "Dorian Hall") loggedUser.rank = "COMMAND";
+        // Vynucení role pro tebe
+        if(loggedUser.name === "Dorian Hall") loggedUser.rank = "COMMAND";
         
         document.getElementById('u-name').innerText = loggedUser.name;
         document.getElementById('u-call').innerText = loggedUser.callsign || "Bez volačky";
         document.getElementById('u-role').innerText = loggedUser.rank;
 
-        // Zobrazení administrace jen pro vedení
-        if (loggedUser.rank === "COMMAND") {
-            document.getElementById('admin-btn').style.display = 'flex';
-        }
+        if (loggedUser.rank === "COMMAND") document.getElementById('admin-btn').style.display = 'flex';
         renderCases();
     }
 
-    function createNewCase() {
-        const id = prompt("Zadejte Číslo Spisu (např. #2026-001):");
-        if (!id) return;
-        const title = prompt("Zadejte Název Případu:");
-        if (!title) return;
+    function openModal() { document.getElementById('newCaseModal').style.display = 'flex'; }
+    function closeModal() { document.getElementById('newCaseModal').style.display = 'none'; }
+
+    function confirmNewCase() {
+        const id = document.getElementById('caseId').value;
+        const title = document.getElementById('caseTitle').value;
+        if(!id || !title) return alert("Vyplňte všechna pole!");
 
         cases.unshift({ id, title, author: loggedUser.name, status: "OTEVŘENÝ" });
         localStorage.setItem('lspd_v15_data', JSON.stringify(cases));
+        
+        // Logování
+        let logs = JSON.parse(localStorage.getItem('lspd_history')) || [];
+        logs.unshift(`[${new Date().toLocaleTimeString()}] ${loggedUser.name} vytvořil spis ${id}`);
+        localStorage.setItem('lspd_history', JSON.stringify(logs));
+
+        closeModal();
         renderCases();
     }
 
