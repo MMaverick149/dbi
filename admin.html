@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>LSPD - Admin Panel</title>
+    <title>LSPD - Admin</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -18,37 +18,27 @@
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg-dark); color: white; margin: 0; display: flex; height: 100vh; overflow: hidden; }
         .sidebar { width: 260px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 15px; box-sizing: border-box; }
         .main { flex-grow: 1; padding: 30px; overflow-y: auto; }
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 25px; }
-        .stat-card { background: var(--card-bg); border: 1px solid var(--border); padding: 15px; border-radius: 6px; }
-        .stat-val { font-size: 28px; font-weight: bold; }
         .card { background: var(--card-bg); border: 1px solid var(--border); padding: 20px; border-radius: 6px; margin-bottom: 25px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        table { width: 100%; border-collapse: collapse; }
         th { text-align: left; padding: 10px; color: #9ba3af; border-bottom: 2px solid var(--border); font-size: 11px; }
         td { padding: 10px; border-bottom: 1px solid var(--border); font-size: 13px; }
-        .nav-back { color: var(--accent-blue); text-decoration: none; display: block; margin-bottom: 20px; font-size: 13px; }
         input, select { background: #0b0e14; border: 1px solid var(--border); color: white; padding: 8px; border-radius: 4px; margin-right: 5px; }
-        .btn-add { background: var(--success); border: none; color: black; padding: 8px 15px; border-radius: 4px; font-weight: bold; cursor: pointer; }
-        .history-box { background: #0b0e14; padding: 15px; border: 1px solid var(--border); border-radius: 4px; height: 150px; overflow-y: auto; font-family: monospace; font-size: 12px; color: #9ba3af; }
+        .btn-add { background: var(--success); border: none; padding: 8px 15px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        .history-box { background: #0b0e14; padding: 15px; border: 1px solid var(--border); border-radius: 4px; height: 180px; overflow-y: auto; font-family: monospace; font-size: 12px; color: #9ba3af; }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
-    <a href="index.html" class="nav-back"><i class="fa-solid fa-chevron-left"></i> ZPĚT</a>
-    <h3 style="color: var(--gold); margin: 0;">COMMAND PANEL</h3>
+    <a href="index.html" style="color: var(--accent-blue); text-decoration: none; font-size: 13px;"><i class="fa-solid fa-arrow-left"></i> Zpět</a>
+    <h3 style="color: var(--gold); margin-top: 20px;">COMMAND PANEL</h3>
 </div>
 
 <div class="main">
-    <div class="stats-grid">
-        <div class="stat-card"><div>SPISŮ</div><div class="stat-val" id="st-total">0</div></div>
-        <div class="stat-card"><div>AKTIVNÍ</div><div class="stat-val" id="st-active" style="color:var(--gold)">0</div></div>
-        <div class="stat-card"><div>HOTOVO</div><div class="stat-val" id="st-done" style="color:var(--success)">0</div></div>
-    </div>
-
     <div class="card">
         <h3><i class="fa-solid fa-users"></i> Správa personálu</h3>
-        <div style="margin-bottom: 15px; display: flex; flex-wrap: wrap; gap: 5px;">
-            <input type="text" id="m-name" placeholder="Jméno a Příjmení">
+        <div style="margin-bottom: 15px;">
+            <input type="text" id="m-name" placeholder="Jméno">
             <input type="text" id="m-call" placeholder="Volačka">
             <select id="m-rank">
                 <option value="OFFICER">OFFICER</option>
@@ -58,63 +48,31 @@
             <button class="btn-add" onclick="addMember()">PŘIDAT</button>
         </div>
         <table>
-            <thead><tr><th>JMÉNO</th><th>VOLAČKA</th><th>RANK</th><th>AKCE</th></tr></thead>
+            <thead><tr><th>JMÉNO</th><th>RANK</th><th>AKCE</th></tr></thead>
             <tbody id="member-table"></tbody>
         </table>
     </div>
 
     <div class="card">
-        <h3><i class="fa-solid fa-file-shield"></i> Správa spisů</h3>
-        <table id="case-table">
-            <thead><tr><th>ID</th><th>NÁZEV</th><th>STAV</th><th>AKCE</th></tr></thead>
-            <tbody id="admin-case-table"></tbody>
-        </table>
-    </div>
-
-    <div class="card">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h3><i class="fa-solid fa-history"></i> Historie</h3>
-            <button onclick="clearLogs()" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:11px;">SMAZAT LOGY</button>
-        </div>
+        <h3><i class="fa-solid fa-history"></i> Logy akcí</h3>
         <div id="history-box" class="history-box"></div>
+        <button onclick="clearLogs()" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:10px; margin-top:5px;">Smazat historii</button>
     </div>
 </div>
 
 <script>
     function render() {
-        const cases = JSON.parse(localStorage.getItem('lspd_v15_data')) || [];
         const members = JSON.parse(localStorage.getItem('lspd_members')) || [];
         const logs = JSON.parse(localStorage.getItem('lspd_history')) || [];
 
-        // Stats
-        document.getElementById('st-total').innerText = cases.length;
-        document.getElementById('st-active').innerText = cases.filter(c => c.status !== 'UZAVŘENÝ').length;
-        document.getElementById('st-done').innerText = cases.filter(c => c.status === 'UZAVŘENÝ').length;
-
-        // Members Table
         document.getElementById('member-table').innerHTML = members.map((m, i) => `
             <tr>
-                <td>${m.name}</td>
-                <td>${m.callsign}</td>
+                <td>${m.name} (${m.callsign})</td>
                 <td><span style="color:var(--gold)">${m.rank}</span></td>
                 <td><button onclick="deleteMember(${i})" style="color:var(--danger); background:none; border:none; cursor:pointer;">Odebrat</button></td>
             </tr>
         `).join('');
 
-        // Case Table
-        document.getElementById('admin-case-table').innerHTML = cases.map((c, i) => `
-            <tr>
-                <td>${c.id}</td>
-                <td>${c.title}</td>
-                <td>${c.status}</td>
-                <td>
-                    <button onclick="closeCase(${i})" style="color:var(--success); background:none; border:none; cursor:pointer;">Zavřít</button>
-                    <button onclick="deleteCase(${i})" style="color:var(--danger); background:none; border:none; cursor:pointer; margin-left:10px;">Smazat</button>
-                </td>
-            </tr>
-        `).join('');
-
-        // Logs
         document.getElementById('history-box').innerHTML = logs.map(l => `<div>${l}</div>`).join('');
     }
 
@@ -123,7 +81,6 @@
         const callsign = document.getElementById('m-call').value;
         const rank = document.getElementById('m-rank').value;
         if(!name) return;
-        
         let members = JSON.parse(localStorage.getItem('lspd_members')) || [];
         members.push({name, callsign, rank});
         localStorage.setItem('lspd_members', JSON.stringify(members));
@@ -134,20 +91,6 @@
         let members = JSON.parse(localStorage.getItem('lspd_members'));
         members.splice(i, 1);
         localStorage.setItem('lspd_members', JSON.stringify(members));
-        render();
-    }
-
-    function deleteCase(i) {
-        let cases = JSON.parse(localStorage.getItem('lspd_v15_data'));
-        cases.splice(i, 1);
-        localStorage.setItem('lspd_v15_data', JSON.stringify(cases));
-        render();
-    }
-
-    function closeCase(i) {
-        let cases = JSON.parse(localStorage.getItem('lspd_v15_data'));
-        cases[i].status = "UZAVŘENÝ";
-        localStorage.setItem('lspd_v15_data', JSON.stringify(cases));
         render();
     }
 

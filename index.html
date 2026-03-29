@@ -34,11 +34,9 @@
         th { text-align: left; padding: 15px; color: var(--text-gray); border-bottom: 2px solid var(--border); font-size: 11px; text-transform: uppercase; }
         td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 13px; }
 
-        /* MODAL (Náhrada za prompt) */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 100; }
         .modal { background: var(--sidebar-bg); padding: 25px; border-radius: 8px; border: 1px solid var(--border); width: 400px; }
         input { background: var(--bg-dark); border: 1px solid var(--border); color: white; padding: 12px; width: 100%; border-radius: 4px; box-sizing: border-box; margin: 10px 0; outline: none; }
-        input:focus { border-color: var(--accent-blue); }
         .btn-confirm { background: var(--accent-blue); color: black; border: none; padding: 12px; border-radius: 4px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 10px; }
     </style>
 </head>
@@ -50,7 +48,7 @@
         <label style="font-size: 11px; color: var(--text-gray);">ČÍSLO SPISU</label>
         <input type="text" id="caseId" placeholder="#2026-001">
         <label style="font-size: 11px; color: var(--text-gray);">NÁZEV PŘÍPADU</label>
-        <input type="text" id="caseTitle" placeholder="Např. Přepadení banky">
+        <input type="text" id="caseTitle" placeholder="Předmět vyšetřování">
         <div style="display: flex; gap: 10px;">
             <button class="btn-confirm" onclick="confirmNewCase()">VYTVOŘIT</button>
             <button class="btn-confirm" style="background: var(--border); color: white;" onclick="closeModal()">ZRUŠIT</button>
@@ -60,14 +58,16 @@
 
 <div class="sidebar">
     <div class="user-card">
-        <div id="u-name" style="font-weight: bold; font-size: 15px;">--</div>
+        <div id="u-name" style="font-weight: bold; font-size: 15px;">Dorian Hall</div>
         <div id="u-call" style="color: var(--gold); font-size: 11px;">--</div>
-        <div id="u-role" class="role-badge">--</div>
+        <div id="u-role" class="role-badge">COMMAND</div>
     </div>
     
     <div class="nav-group">
         <button class="nav-btn active"><i class="fa-solid fa-folder"></i> Evidence Spisů</button>
         <button class="nav-btn" onclick="openModal()"><i class="fa-solid fa-plus-circle"></i> Nový Spis</button>
+        
+        <a href="opp.html" class="nav-btn"><i class="fa-solid fa-file-signature"></i> OPP Generátor</a>
         
         <a href="admin.html" id="admin-btn" class="nav-btn admin-link" style="display: none;">
             <i class="fa-solid fa-user-shield"></i> ADMINISTRACE
@@ -92,13 +92,10 @@
     let loggedUser = JSON.parse(localStorage.getItem('lspd_logged_session')) || {name: "Dorian Hall", rank: "COMMAND", callsign: "1D-01"};
 
     function init() {
-        // Vynucení role pro tebe
         if(loggedUser.name === "Dorian Hall") loggedUser.rank = "COMMAND";
-        
         document.getElementById('u-name').innerText = loggedUser.name;
         document.getElementById('u-call').innerText = loggedUser.callsign || "Bez volačky";
         document.getElementById('u-role').innerText = loggedUser.rank;
-
         if (loggedUser.rank === "COMMAND") document.getElementById('admin-btn').style.display = 'flex';
         renderCases();
     }
@@ -109,12 +106,11 @@
     function confirmNewCase() {
         const id = document.getElementById('caseId').value;
         const title = document.getElementById('caseTitle').value;
-        if(!id || !title) return alert("Vyplňte všechna pole!");
+        if(!id || !title) return;
 
         cases.unshift({ id, title, author: loggedUser.name, status: "OTEVŘENÝ" });
         localStorage.setItem('lspd_v15_data', JSON.stringify(cases));
         
-        // Logování
         let logs = JSON.parse(localStorage.getItem('lspd_history')) || [];
         logs.unshift(`[${new Date().toLocaleTimeString()}] ${loggedUser.name} vytvořil spis ${id}`);
         localStorage.setItem('lspd_history', JSON.stringify(logs));
