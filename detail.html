@@ -20,7 +20,9 @@
         
         textarea#case-notes { min-height: 250px; font-family: 'Consolas', monospace; line-height: 1.5; border-color: #3d444d; }
         
-        .sys-record { border: 1px dashed var(--border); color: #9ba3af; font-size: 12px; font-style: italic; min-height: 80px; }
+        /* Systémový záznam - fixní výška pro tvůj text */
+        .sys-record { border: 1px dashed var(--border); color: #9ba3af; font-size: 12px; font-style: italic; min-height: 140px; line-height: 1.4; background: rgba(0,0,0,0.2); }
+        
         .btn-row { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; margin-bottom: 30px; }
         .btn { border: none; padding: 12px 25px; border-radius: 4px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; }
         .btn-resolve { background: var(--success); color: white; }
@@ -55,32 +57,12 @@
             <div><label>MDT ID</label><input type="text" id="mdt-id" placeholder="8xxx"></div>
         </div>
 
-        <div class="grid-3">
-            <div style="grid-column: span 2;">
-                <label>Právní kvalifikace</label>
-                <select id="legal">
-                    <option>Vražda (§ 140 TZ)</option>
-                    <option>Loupež (§ 173 TZ)</option>
-                    <option>Obchod s drogami</option>
-                    <option>Organizovaný zločin</option>
-                </select>
-            </div>
-            <div>
-                <label>Typ OPP</label>
-                <select id="opp-type">
-                    <option>Sledování osob a věcí</option>
-                    <option>Odposlech</option>
-                    <option>Prověrka majetku</option>
-                </select>
-            </div>
-        </div>
-
         <label>Zjištěné skutečnosti (Systémový záznam)</label>
         <textarea class="sys-record" readonly>Na základě prvotního ohledání místa činu bylo zjištěno, že došlo k násilnému trestnému činu, při kterém byly nalezeny osoby bez známek života s poraněními odpovídajícími násilnému útoku. V rámci probíhajícího vyšetřování byly zajištěny důkazní materiály a probíhá analýza stop z místa činu.
 
 Za účelem objasnění okolností případu je žádáno o poskytnutí informací o majetku a finančních prostředcích uvedených osob. Tyto informace mohou napomoci k identifikaci možného motivu trestné činnosti, prověření majetkových poměrů obětí a zjištění případných vazeb na další osoby, které by mohly souviset s vyšetřovaným případem.</textarea>
 
-        <label style="margin-top: 15px;">Odůvodnění žádosti</label>
+        <label style="margin-top: 15px;">Odůvodnění žádosti (Závěrečné)</label>
         <textarea id="user-note" style="min-height: 80px;" placeholder="Stručné odůvodnění pro archiv..."></textarea>
     </div>
 
