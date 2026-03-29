@@ -14,11 +14,14 @@
         label { color: var(--accent-blue); font-size: 11px; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 5px; }
         input, select, textarea { width: 100%; background: #0b0e14; border: 1px solid var(--border); color: white; padding: 10px; border-radius: 3px; font-size: 13px; box-sizing: border-box; }
         
-        /* Styl pro poznámky */
-        .notes-area { border-left: 3px solid var(--gold); padding-left: 15px; margin-top: 20px; }
-        textarea { min-height: 100px; font-family: inherit; }
+        /* Samostatná sekce pro poznámky */
+        .notes-card { border-top: 2px solid var(--gold); }
+        .notes-header { display: flex; align-items: center; gap: 10px; color: var(--gold); margin-bottom: 15px; font-weight: bold; text-transform: uppercase; font-size: 12px; }
         
-        .btn-row { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+        textarea#case-notes { min-height: 250px; font-family: 'Consolas', monospace; line-height: 1.5; border-color: #3d444d; }
+        
+        .sys-record { border: 1px dashed var(--border); color: #9ba3af; font-size: 12px; font-style: italic; min-height: 80px; }
+        .btn-row { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; margin-bottom: 30px; }
         .btn { border: none; padding: 12px 25px; border-radius: 4px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; }
         .btn-resolve { background: var(--success); color: white; }
         .btn-save { background: var(--accent-blue); color: black; }
@@ -29,7 +32,8 @@
 <div class="sidebar"><a href="index.html" style="color: var(--accent-blue); text-decoration: none; font-size: 12px;"><i class="fa-solid fa-arrow-left"></i> Zpět do Commandu</a></div>
 <div class="main">
     <div id="locked-msg" class="locked-banner"><i class="fa-solid fa-lock"></i> TENTO ZÁZNAM JE UZAVŘEN A NENÍ MOŽNÉ JEJ EDITOVAT</div>
-    <h2>Evidence Operativních Prostředků</h2>
+    
+    <h2 style="font-weight: 300; margin-bottom: 20px;">Evidence Operativních Prostředků</h2>
     
     <div class="card">
         <div class="grid-3">
@@ -51,29 +55,44 @@
             <div><label>MDT ID</label><input type="text" id="mdt-id" placeholder="8xxx"></div>
         </div>
 
-        <div style="margin-bottom: 20px;">
-            <label>Právní kvalifikace</label>
-            <select id="legal">
-                <option>Vražda (§ 140 TZ)</option>
-                <option>Loupež (§ 173 TZ)</option>
-                <option>Obchod s drogami</option>
-            </select>
+        <div class="grid-3">
+            <div style="grid-column: span 2;">
+                <label>Právní kvalifikace</label>
+                <select id="legal">
+                    <option>Vražda (§ 140 TZ)</option>
+                    <option>Loupež (§ 173 TZ)</option>
+                    <option>Obchod s drogami</option>
+                    <option>Organizovaný zločin</option>
+                </select>
+            </div>
+            <div>
+                <label>Typ OPP</label>
+                <select id="opp-type">
+                    <option>Sledování osob a věcí</option>
+                    <option>Odposlech</option>
+                    <option>Prověrka majetku</option>
+                </select>
+            </div>
         </div>
 
-        <div class="notes-area">
-            <label style="color: var(--gold);"><i class="fa-solid fa-pen-to-square"></i> Poznámky k vyšetřování</label>
-            <textarea id="case-notes" placeholder="Sem vkládejte průběžné poznámky, seznam stop nebo výpovědi..."></textarea>
-        </div>
+        <label>Zjištěné skutečnosti (Systémový záznam)</label>
+        <textarea class="sys-record" readonly>Na základě prvotního ohledání místa činu bylo zjištěno, že došlo k násilnému trestnému činu...</textarea>
 
-        <div style="margin-top: 20px;">
-            <label>Doplňující odůvodnění (Pro archív)</label>
-            <textarea id="user-note" placeholder="Závěrečné odůvodnění nasazení operativních prostředků..."></textarea>
-        </div>
+        <label style="margin-top: 15px;">Odůvodnění žádosti</label>
+        <textarea id="user-note" style="min-height: 80px;" placeholder="Stručné odůvodnění pro archiv..."></textarea>
+    </div>
 
-        <div class="btn-row" id="action-buttons">
-            <button class="btn btn-save" onclick="saveData('OTEVŘENO')"><i class="fa-solid fa-save"></i> ULOŽIT ROZPRACAVANÉ</button>
-            <button class="btn btn-resolve" onclick="saveData('VYŘEŠENO')"><i class="fa-solid fa-check-double"></i> UZAVŘÍT A VYŘEŠIT</button>
+    <div class="card notes-card">
+        <div class="notes-header">
+            <i class="fa-solid fa-clipboard-list"></i>
+            Průběžné poznámky a operativní deník
         </div>
+        <textarea id="case-notes" placeholder="Sem pište všechny detaily z vyšetřování, časovou osu, seznam podezřelých nebo poznatky z terénu..."></textarea>
+    </div>
+
+    <div class="btn-row" id="action-buttons">
+        <button class="btn btn-save" onclick="saveData('OTEVŘENO')"><i class="fa-solid fa-save"></i> ULOŽIT ROZPRACAVANÉ</button>
+        <button class="btn btn-resolve" onclick="saveData('VYŘEŠENO')"><i class="fa-solid fa-check-double"></i> UZAVŘÍT A VYŘEŠIT</button>
     </div>
 </div>
 
@@ -110,7 +129,7 @@
         if(caseIndex !== null) cases[caseIndex] = entry; else cases.push(entry);
         
         let logs = JSON.parse(localStorage.getItem('lspd_history')) || [];
-        logs.push(`[${new Date().toLocaleString()}] Aktualizace spisu ${entry.id} (${status})`);
+        logs.push(`[${new Date().toLocaleString()}] Případ ${entry.id} - ${status}`);
         
         localStorage.setItem('lspd_v15_data', JSON.stringify(cases));
         localStorage.setItem('lspd_history', JSON.stringify(logs));
