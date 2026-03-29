@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generátor Žádosti OPP</title>
+    <style>
+        body { font-family: 'Courier New', Courier, monospace; background-color: #f4f4f4; padding: 20px; color: #333; }
+        .container { max-width: 800px; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); margin: auto; }
+        h2 { text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        select, input, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-family: sans-serif; }
+        button { background-color: #2c3e50; color: white; padding: 15px; border: none; width: 100%; border-radius: 4px; cursor: pointer; font-size: 16px; margin-top: 10px; }
+        button:hover { background-color: #34495e; }
+        #vystup { margin-top: 30px; white-space: pre-wrap; background: #eee; padding: 20px; border-left: 5px solid #2c3e50; display: none; line-height: 1.5; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>SYSTÉM GENEROVÁNÍ ŽÁDOSTÍ OPP</h2>
+    
+    <div class="form-group">
+        <label>Vyžadující příslušník:</label>
+        <select id="prislusnik">
+            <option value="kpt. Jan Novák">kpt. Jan Novák</option>
+            <option value="por. Petr Svoboda">por. Petr Svoboda</option>
+            <option value="mjr. Adam Černý">mjr. Adam Černý</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Trestný čin:</label>
+        <select id="trestnyCin">
+            <option value="Vražda (§ 140 TZ)">Vražda (§ 140 TZ)</option>
+            <option value="Loupež (§ 173 TZ)">Loupež (§ 173 TZ)</option>
+            <option value="Nedovolená výroba a držení omamných látek (§ 283 TZ)">Drogy (§ 283 TZ)</option>
+            <option value="Hospodářská kriminalita (§ 248 TZ)">Hospodářská kriminalita</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Podezřelá / Prověřovaná osoba:</label>
+        <input type="text" id="osoba" value="Luis Vega (13.03.1993, NC5422)">
+    </div>
+
+    <button onclick="generovatSpis()">VYGENEROVAT SPIS</button>
+
+    <div id="vystup"></div>
+</div>
+
+<script>
+function generovatSpis() {
+    const prislusnik = document.getElementById('prislusnik').value;
+    const trestnyCin = document.getElementById('trestnyCin').value;
+    const osoba = document.getElementById('osoba').value;
+    const datum = new Date().toLocaleDateString('cs-CZ');
+
+    const text = `----------------------------------------------------------
+ŽÁDOST O UŽITÍ OPP DLE § 37 Z.Č. 006-19
+Datum podání: ${datum}
+----------------------------------------------------------
+
+Vyžadující příslušník:
+${prislusnik}
+
+Prostředek:
+• Výpis a prověrka majetku a finančních prostředků
+
+Podezřelá osoba / Prověřovaná osoba (Oběť):
+• ${osoba}
+
+Trestný čin:
+• ${trestnyCin}
+
+Předmět vydání:
+• Informace o veškerém evidovaném majetku osoby, zejména bankovních účtech, finančních prostředcích, registrovaných vozidlech, nemovitostech, movitém majetku vyšší hodnoty a případných závazcích či dluzích.
+
+Zjištěné skutečnosti:
+Na základě prvotního ohledání místa činu bylo zjištěno, že došlo k násilnému trestnému činu, při kterém byly nalezeny osoby bez známek života s poraněními odpovídajícími násilnému útoku. V rámci probíhajícího vyšetřování byly zajištěny důkazní materiály a probíhá analýza stop z místa činu.
+
+Za účelem objasnění okolností případu je žádáno o poskytnutí informací o majetku a finančních prostředcích uvedených osob. Tyto informace mohou napomoci k identifikaci možného motivu trestné činnosti, prověření majetkových poměrů obětí a zjištění případných vazeb na další osoby, které by mohly souviset s vyšetřovaným případem.
+
+S pozdravem,
+${prislusnik}
+Policejní sbor`;
+
+    const vystupDiv = document.getElementById('vystup');
+    vystupDiv.innerText = text;
+    vystupDiv.style.display = 'block';
+    
+    // Automatické posunutí na výsledek
+    vystupDiv.scrollIntoView({ behavior: 'smooth' });
+}
+</script>
+
+</body>
+</html>
