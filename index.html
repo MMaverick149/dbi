@@ -2,8 +2,9 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>MDT - Operativní Modul OPP</title>
+    <title>LSPD - Operativní Terminál</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         :root {
             --bg-dark: #0d1117;
@@ -13,6 +14,7 @@
             --text-gray: #8b949e;
             --text-white: #c9d1d9;
             --border: #30363d;
+            --input-bg: #0d1117;
         }
 
         body {
@@ -22,30 +24,17 @@
             margin: 0;
             display: flex;
             height: 100vh;
-            font-size: 13px;
             overflow: hidden;
         }
 
         /* SIDEBAR */
         .sidebar {
-            width: 240px;
+            width: 260px;
             background-color: var(--sidebar-bg);
             border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            padding: 15px;
-        }
-
-        .system-title {
-            padding: 10px;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .system-title strong {
-            color: var(--accent-blue);
-            font-size: 16px;
+            padding: 20px;
         }
 
         .menu-item {
@@ -53,284 +42,249 @@
             align-items: center;
             gap: 12px;
             padding: 12px;
-            color: var(--text-white);
+            background: #21262d;
             border-radius: 6px;
-            background-color: #21262d;
-            border-left: 3px solid var(--accent-blue);
+            border-left: 4px solid var(--accent-blue);
+            margin-bottom: 20px;
         }
 
-        /* MAIN CONTENT */
-        .main-container {
+        /* HLAVNÍ OBSAH */
+        .main {
             flex-grow: 1;
-            padding: 25px;
+            padding: 30px;
             overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
         }
 
-        /* VSTUPNÍ KARTA */
-        .profile-card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 25px;
-        }
-
-        .info-grid {
+        .grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: 1fr 1fr;
             gap: 20px;
-        }
-
-        .info-item label { 
-            color: var(--accent-blue); 
-            display: block; 
-            margin-bottom: 6px; 
-            font-size: 11px; 
-            font-weight: bold;
-            text-transform: uppercase; 
-        }
-
-        input, textarea {
-            background: rgba(0,0,0,0.2);
-            border: 1px solid var(--border);
-            color: var(--text-white);
-            padding: 10px;
-            border-radius: 4px;
-            outline: none;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        /* ČERNÝ TEXT PRO SELECTY */
-        select {
-            background: #ffffff; /* Bílé pozadí pro kontrast */
-            color: #000000;    /* Černý text */
-            border: 1px solid var(--border);
-            padding: 10px;
-            border-radius: 4px;
-            outline: none;
-            width: 100%;
-            box-sizing: border-box;
-            font-weight: 500;
-        }
-
-        .full-width { grid-column: span 2; }
-
-        /* TABULKA HISTORIE */
-        .table-section {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .records-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .records-table th {
-            background-color: rgba(255,255,255,0.03);
-            text-align: left;
-            padding: 12px;
-            color: var(--text-gray);
-            font-size: 11px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .records-table td {
-            padding: 12px;
-            border-bottom: 1px solid var(--border);
-            color: var(--text-white);
-        }
-
-        /* MODAL */
-        #modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .modal-content {
             background: var(--card-bg);
-            width: 650px;
-            border: 1px solid var(--accent-blue);
+            padding: 25px;
             border-radius: 8px;
-            padding: 20px;
+            border: 1px solid var(--border);
         }
 
-        #report-text {
-            background: #0d1117;
-            color: #00ff00;
-            padding: 15px;
-            font-family: 'Courier New', monospace;
-            white-space: pre-wrap;
+        .field { display: flex; flex-direction: column; gap: 8px; }
+        .full { grid-column: span 2; }
+
+        label { color: var(--accent-blue); font-size: 11px; font-weight: bold; text-transform: uppercase; }
+
+        /* SJEDNOCENÝ STYL INPUTŮ */
+        input, select, textarea {
+            background-color: var(--input-bg);
+            border: 1px solid var(--border);
+            color: var(--text-white);
+            padding: 12px;
             border-radius: 4px;
-            margin: 15px 0;
-            max-height: 400px;
-            overflow-y: auto;
+            outline: none;
+            font-size: 13px;
         }
 
-        .btn-primary {
-            background-color: var(--accent-blue);
-            color: #0d1117;
+        input:focus, select:focus { border-color: var(--accent-blue); }
+
+        /* TLAČÍTKA */
+        .btn-group { display: flex; gap: 10px; margin-top: 20px; }
+        .btn {
+            padding: 12px 20px;
             border: none;
-            padding: 10px 20px;
             border-radius: 4px;
             cursor: pointer;
             font-weight: bold;
             text-transform: uppercase;
+            transition: 0.2s;
         }
+        .btn-blue { background: var(--accent-blue); color: #0d1117; }
+        .btn-discord { background: #5865F2; color: white; }
+        .btn-pdf { background: #f85149; color: white; }
 
-        .btn-close {
-            background: #f85149;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 4px;
-            cursor: pointer;
+        /* TABULKA HISTORIE */
+        .history-box { margin-top: 30px; }
+        table { width: 100%; border-collapse: collapse; background: var(--card-bg); border-radius: 8px; overflow: hidden; }
+        th { text-align: left; padding: 15px; color: var(--text-gray); border-bottom: 1px solid var(--border); }
+        td { padding: 15px; border-bottom: 1px solid var(--border); }
+        .btn-view { background: transparent; border: 1px solid var(--accent-blue); color: var(--accent-blue); padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+
+        /* MODAL */
+        #modal {
+            position: fixed; top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center;
         }
+        .modal-body { background: var(--card-bg); width: 700px; padding: 30px; border-radius: 8px; border: 1px solid var(--accent-blue); }
+        pre { background: #000; padding: 20px; color: #00ff00; font-family: monospace; white-space: pre-wrap; border-radius: 5px; }
+
+        .webhook-config { margin-top: auto; padding: 15px; background: #21262d; border-radius: 6px; font-size: 11px; }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
-    <div class="system-title">
-        <strong>LSPD TERMINÁL</strong><br>
-        <span style="color: var(--text-gray); font-size: 10px;">OPERATIVNÍ MODUL OPP</span>
+    <div class="menu-item">
+        <i class="fa-solid fa-shield-halved"></i>
+        <span>MDT - EVIDENCE OPP</span>
     </div>
-    <nav>
-        <div class="menu-item">
-            <i class="fa-solid fa-clock-rotate-left"></i>
-            <span>Evidence žádostí</span>
-        </div>
-    </nav>
+    
+    <div class="webhook-config">
+        <label>Discord Webhook URL</label>
+        <input type="password" id="webhook-url" placeholder="https://discord.com/api/webhooks/1487754214041194596/KPNaj-qDPmVY_6yEsdKvGNri_8AbjS8JS3PBo8GvuKi2R1Qkgtx1iZjYEODUVVYI_Wux">
+    </div>
 </div>
 
-<div class="main-container">
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h1 style="margin:0; font-size: 18px;">Vytvořit nový záznam OPP</h1>
-        <button class="btn-primary" onclick="schvalitZpravu()">Schválit a odeslat</button>
-    </div>
-
-    <div class="profile-card">
-        <div class="info-grid">
-            <div class="info-item">
-                <label>Vyžadující příslušník</label>
-                <input type="text" id="officer" placeholder="Zadejte jméno...">
-            </div>
-            <div class="info-item">
-                <label>Identifikace subjektu</label>
-                <input type="text" id="subject" placeholder="Jméno a ID osoby...">
-            </div>
-            <div class="info-item">
-                <label>Klasifikace případu</label>
-                <select id="crime">
-                    <option value="Vražda (§ 140 TZ)">Vražda (§ 140 TZ)</option>
-                    <option value="Loupež (§ 173 TZ)">Loupež (§ 173 TZ)</option>
-                    <option value="Drogová kriminalita">Drogová kriminalita</option>
-                    <option value="Únos / Omezení svobody">Únos / Omezení svobody</option>
-                </select>
-            </div>
-            <div class="info-item">
-                <label>Typ OPP</label>
-                <select id="type">
-                    <option value="Prolomení telefonu">Prolomení telefonu</option>
-                    <option value="Výpis z telekomunikace">Výpis z telekomunikace</option>
-                    <option value="Prověrka majetku a financí">Prověrka majetku a financí</option>
-                </select>
-            </div>
-            <div class="info-item full-width">
-                <label>Odůvodnění žádosti (Zjištěné skutečnosti)</label>
-                <textarea id="facts" rows="4">Na základě vyšetřování...</textarea>
-            </div>
+<div class="main">
+    <h2 style="margin-top:0;">Nový protokol žádosti</h2>
+    
+    <div class="grid">
+        <div class="field">
+            <label>Vyžadující příslušník</label>
+            <input type="text" id="officer" placeholder="např. kpt. Jan Novák">
+        </div>
+        <div class="field">
+            <label>Identifikace subjektu</label>
+            <input type="text" id="subject" placeholder="Jméno a ID">
+        </div>
+        <div class="field">
+            <label>Klasifikace případu</label>
+            <select id="crime">
+                <option value="Vražda (§ 140 TZ)">Vražda (§ 140 TZ)</option>
+                <option value="Loupež (§ 173 TZ)">Loupež (§ 173 TZ)</option>
+                <option value="Drogy / OPL">Drogy / OPL</option>
+                <option value="Hospodářská kriminalita">Hospodářská kriminalita</option>
+            </select>
+        </div>
+        <div class="field">
+            <label>Typ OPP</label>
+            <select id="type">
+                <option value="Prolomení telefonu">Prolomení telefonu</option>
+                <option value="Výpis z telekomunikace">Výpis z telekomunikace</option>
+                <option value="Prověrka majetku a financí">Prověrka majetku a financí</option>
+            </select>
+        </div>
+        <div class="field full">
+            <label>Odůvodnění (Zjištěné skutečnosti)</label>
+            <textarea id="facts" rows="5">Na základě ohledání místa činu...</textarea>
         </div>
     </div>
 
-    <h3 style="margin: 10px 0 5px 0; color: var(--text-gray); font-size: 12px;">HISTORIE POSLEDNÍCH ŽÁDOSTÍ</h3>
-    <div class="table-section">
-        <table class="records-table">
+    <div class="btn-group">
+        <button class="btn btn-blue" onclick="saveRecord()">Uložit do historie</button>
+        <button class="btn btn-discord" onclick="sendDiscord()"><i class="fa-brands fa-discord"></i> Odeslat na Discord</button>
+        <button class="btn btn-pdf" onclick="generatePDF()"><i class="fa-solid fa-file-pdf"></i> Stáhnout PDF</button>
+    </div>
+
+    <div class="history-box">
+        <label>Historie žádostí v systému</label>
+        <table>
             <thead>
                 <tr>
-                    <th>Typ</th>
+                    <th>Datum</th>
                     <th>Subjekt</th>
                     <th>Příslušník</th>
-                    <th>Datum podání</th>
+                    <th>Typ</th>
+                    <th>Akce</th>
                 </tr>
             </thead>
-            <tbody id="history-log">
-                </tbody>
+            <tbody id="history-rows"></tbody>
         </table>
     </div>
 </div>
 
-<div id="modal-overlay">
-    <div class="modal-content">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <strong style="color: var(--accent-blue);">AUTORIZOVANÝ PROTOKOL</strong>
-            <button class="btn-close" onclick="zavritModal()">X</button>
-        </div>
-        <div id="report-text"></div>
-        <div style="display: flex; gap: 10px;">
-            <button class="btn-primary" onclick="copyText()">Kopírovat do schránky</button>
-            <button class="btn-close" style="background: #30363d;" onclick="zavritModal()">Zavřít</button>
-        </div>
+<div id="modal">
+    <div class="modal-body">
+        <h3 id="modal-title">Detail protokolu</h3>
+        <pre id="modal-text"></pre>
+        <button class="btn btn-blue" onclick="document.getElementById('modal').style.display='none'">Zavřít</button>
     </div>
 </div>
 
 <script>
-    function schvalitZpravu() {
-        const officer = document.getElementById('officer').value || "NEUVEDENO";
-        const subject = document.getElementById('subject').value || "NEZNÁMÝ";
-        const crime = document.getElementById('crime').value;
-        const type = document.getElementById('type').value;
+    let historyData = [];
+
+    function saveRecord() {
+        const record = {
+            id: Date.now(),
+            date: new Date().toLocaleString('cs-CZ'),
+            officer: document.getElementById('officer').value,
+            subject: document.getElementById('subject').value,
+            crime: document.getElementById('crime').value,
+            type: document.getElementById('type').value,
+            facts: document.getElementById('facts').value
+        };
+
+        historyData.unshift(record);
+        updateTable();
+        alert("Záznam uložen do lokální historie.");
+    }
+
+    function updateTable() {
+        const tbody = document.getElementById('history-rows');
+        tbody.innerHTML = historyData.map(r => `
+            <tr>
+                <td>${r.date}</td>
+                <td>${r.subject}</td>
+                <td>${r.officer}</td>
+                <td>${r.type}</td>
+                <td><button class="btn-view" onclick="viewDetail(${r.id})">Detail</button></td>
+            </tr>
+        `).join('');
+    }
+
+    function viewDetail(id) {
+        const r = historyData.find(x => x.id === id);
+        const text = `PROTOKOL OPP\n\nVYSTAVIL: ${r.officer}\nSUBJEKT: ${r.subject}\nČIN: ${r.crime}\nTYP: ${r.type}\n\nSKUTEČNOSTI:\n${r.facts}`;
+        document.getElementById('modal-text').innerText = text;
+        document.getElementById('modal').style.display = 'flex';
+    }
+
+    async function sendDiscord() {
+        const url = document.getElementById('webhook-url').value;
+        if(!url) return alert("Zadej Webhook URL v sidebaru!");
+
+        const data = {
+            embeds: [{
+                title: "NOVÁ ŽÁDOST O OPP",
+                color: 5814783,
+                fields: [
+                    { name: "Příslušník", value: document.getElementById('officer').value, inline: true },
+                    { name: "Subjekt", value: document.getElementById('subject').value, inline: true },
+                    { name: "Typ", value: document.getElementById('type').value, inline: true },
+                    { name: "Odůvodnění", value: document.getElementById('facts').value }
+                ],
+                footer: { text: "LSPD - Operativní modul" }
+            }]
+        };
+
+        await fetch(url, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
+        alert("Odesláno na Discord!");
+    }
+
+    function generatePDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        const officer = document.getElementById('officer').value;
+        const subject = document.getElementById('subject').value;
         const facts = document.getElementById('facts').value;
-        const datum = new Date().toLocaleDateString('cs-CZ');
 
-        const zprava = `ŽÁDOST O UŽITÍ OPP DLE § 37 Z.Č. 006-19
-==================================================
-VYSTAVIL:     ${officer}
-TYP ŽÁDOSTI:  ${type}
-SUBJEKT:      ${subject}
-PŘÍPAD:       ${crime}
-DATUM:        ${datum}
-==================================================
+        // Tady pak přidáme loga, až je pošleš
+        doc.setFontSize(22);
+        doc.text("ŽÁDOST O UŽITÍ OPP", 105, 20, { align: "center" });
+        
+        doc.setFontSize(12);
+        doc.text(`Příslušník: ${officer}`, 20, 40);
+        doc.text(`Subjekt: ${subject}`, 20, 50);
+        doc.text(`Datum: ${new Date().toLocaleDateString()}`, 20, 60);
+        
+        doc.line(20, 65, 190, 65);
+        
+        doc.text("Odůvodnění:", 20, 75);
+        doc.setFontSize(10);
+        const splitText = doc.splitTextToSize(facts, 170);
+        doc.text(splitText, 20, 85);
 
-ZJIŠTĚNÉ SKUTEČNOSTI:
-${facts}
+        doc.text("__________________________", 130, 150);
+        doc.text("Podpis a razítko", 135, 155);
 
-Tato žádost byla schválena v systému MDT a je 
-považována za oficiální dokumentaci vyšetřování.`;
-
-        // Zobrazení výsledku
-        document.getElementById('report-text').innerText = zprava;
-        document.getElementById('modal-overlay').style.display = 'flex';
-
-        // Přidání do historie (tabulky)
-        const log = document.getElementById('history-log');
-        const radek = log.insertRow(0);
-        radek.innerHTML = `
-            <td>${type}</td>
-            <td>${subject}</td>
-            <td>${officer}</td>
-            <td>${datum}</td>
-        `;
-    }
-
-    function zavritModal() {
-        document.getElementById('modal-overlay').style.display = 'none';
-    }
-
-    function copyText() {
-        const text = document.getElementById('report-text').innerText;
-        navigator.clipboard.writeText(text);
-        alert("Protokol byl zkopírován!");
+        doc.save(`Zadost_OPP_${subject}.pdf`);
     }
 </script>
 
