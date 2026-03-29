@@ -7,9 +7,13 @@
     <style>
         :root { --bg-dark: #0b0e14; --sidebar-bg: #151921; --card-bg: #1c212b; --accent-blue: #4a9eff; --border: #2d333b; --gold: #d4af37; --danger: #f85149; --success: #2ea043; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg-dark); color: white; margin: 0; display: flex; height: 100vh; overflow: hidden; }
-        .sidebar { width: 180px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 10px; display: flex; flex-direction: column; flex-shrink: 0; }
+        .sidebar { width: 190px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 15px; display: flex; flex-direction: column; flex-shrink: 0; }
+        
+        /* Zvýrazněné tlačítko Nový záznam */
+        .btn-new { background: var(--accent-blue); color: black !important; padding: 12px; border-radius: 6px; font-weight: bold; text-decoration: none; display: flex; align-items: center; gap: 10px; margin-bottom: 20px; transition: 0.2s; border: none; cursor: pointer; }
+        .btn-new:hover { filter: brightness(1.2); transform: translateY(-1px); }
+        
         .nav-btn { background: none; border: none; color: #9ba3af; padding: 10px; text-align: left; cursor: pointer; border-radius: 4px; display: flex; align-items: center; gap: 8px; font-size: 11px; margin-bottom: 5px; }
-        .nav-btn:hover { background: var(--card-bg); color: white; }
         .main { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; gap: 20px; }
         .content-area { flex-grow: 1; display: flex; flex-direction: column; gap: 20px; }
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
@@ -32,7 +36,8 @@
 <body>
 <div class="sidebar">
     <div style="text-align: center; margin-bottom: 20px;"><i class="fa-solid fa-shield-halved" style="font-size: 24px; color: var(--gold);"></i></div>
-    <button class="nav-btn" onclick="window.location.href='detail.html'"><i class="fa-solid fa-file-signature"></i> Nový záznam</button>
+    <a href="detail.html" class="btn-new"><i class="fa-solid fa-plus-circle"></i> NOVÝ ZÁZNAM</a>
+    <button class="nav-btn" onclick="location.reload()"><i class="fa-solid fa-rotate"></i> Obnovit data</button>
 </div>
 <div class="main">
     <div class="content-area">
@@ -62,10 +67,10 @@
         let logs = JSON.parse(localStorage.getItem('lspd_history')) || [];
         document.getElementById('case-table-body').innerHTML = cases.map((c, i) => `
             <tr>
-                <td><b>${c.id}</b></td><td>${c.subject || '---'}</td><td>${c.author}</td>
+                <td><b>${c.id}</b></td><td>${c.subject || '---'}</td><td>${c.author || 'Nepřiřazen'}</td>
                 <td><span class="status-badge ${c.status === 'VYŘEŠENO' ? 'status-resolved' : 'status-open'}">${c.status}</span></td>
                 <td>
-                    <button style="color:var(--accent-blue); border:none; background:none; cursor:pointer;" onclick="window.location.href='detail.html?id=${i}'"><i class="fa-solid fa-eye"></i></button>
+                    <button style="color:var(--accent-blue); border:none; background:none; cursor:pointer;" onclick="window.location.href='detail.html?id=${i}'"><i class="fa-solid fa-edit"></i></button>
                     <button style="color:var(--danger); border:none; background:none; cursor:pointer;" onclick="deleteCase(${i})"><i class="fa-solid fa-trash"></i></button>
                 </td>
             </tr>`).join('');
@@ -74,10 +79,10 @@
         document.getElementById('stat-active').innerText = cases.filter(c => c.status !== 'VYŘEŠENO').length;
         document.getElementById('stat-done').innerText = cases.filter(c => c.status === 'VYŘEŠENO').length;
     }
-    function deleteCase(i) { if(confirm("Smazat záznam?")) { 
-        let cases = JSON.parse(localStorage.getItem('lspd_v15_data'));
-        cases.splice(i, 1); 
-        localStorage.setItem('lspd_v15_data', JSON.stringify(cases)); 
+    function deleteCase(i) { if(confirm("Opravdu smazat tento záznam?")) { 
+        let data = JSON.parse(localStorage.getItem('lspd_v15_data'));
+        data.splice(i, 1); 
+        localStorage.setItem('lspd_v15_data', JSON.stringify(data)); 
         render(); 
     }}
     render();
