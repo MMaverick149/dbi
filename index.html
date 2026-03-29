@@ -16,6 +16,7 @@
             --border: #30363d;
             --input-bg: #0d1117;
             --danger: #f85149;
+            --success: #238636;
         }
 
         body {
@@ -48,7 +49,7 @@
             border-left: 4px solid var(--accent-blue);
         }
 
-        /* HLAVNÍ OBSAH */
+        /* MAIN CONTENT */
         .main {
             flex-grow: 1;
             padding: 30px;
@@ -81,7 +82,7 @@
         }
 
         /* TLAČÍTKA */
-        .btn-group { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-group { display: flex; justify-content: flex-end; margin-top: 20px; }
         .btn {
             padding: 12px 25px;
             border: none;
@@ -94,17 +95,17 @@
             gap: 8px;
         }
         .btn-blue { background: var(--accent-blue); color: #0d1117; }
-        .btn-pdf { background: var(--danger); color: white; }
 
         /* TABULKA */
         table { width: 100%; border-collapse: collapse; background: var(--card-bg); margin-top: 20px; border-radius: 8px; overflow: hidden; }
         th { text-align: left; padding: 12px; color: var(--text-gray); border-bottom: 1px solid var(--border); }
         td { padding: 12px; border-bottom: 1px solid var(--border); }
         
-        .action-btns { display: flex; gap: 8px; }
-        .btn-sm { padding: 5px 10px; border-radius: 4px; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--text-white); font-size: 11px; }
+        .action-btns { display: flex; gap: 5px; }
+        .btn-sm { padding: 6px 10px; border-radius: 4px; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--text-white); font-size: 11px; display: flex; align-items: center; gap: 4px; }
         .btn-view { border-color: var(--accent-blue); color: var(--accent-blue); }
-        .btn-delete { border-color: var(--danger); color: var(--danger); }
+        .btn-pdf { border-color: var(--danger); color: var(--danger); }
+        .btn-delete { border-color: #666; color: #666; }
 
         /* MODAL */
         #modal {
@@ -112,20 +113,20 @@
             background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 1000;
         }
         .modal-body { background: var(--card-bg); width: 600px; padding: 30px; border-radius: 8px; border: 1px solid var(--accent-blue); }
-        pre { background: #000; padding: 20px; color: #00ff00; font-family: monospace; white-space: pre-wrap; border-radius: 5px; max-height: 300px; overflow-y: auto; }
+        pre { background: #000; padding: 20px; color: #00ff00; font-family: monospace; white-space: pre-wrap; border-radius: 5px; max-height: 300px; overflow-y: auto; border: 1px solid #333; }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
     <div class="menu-item">
-        <i class="fa-solid fa-file-invoice"></i>
+        <i class="fa-solid fa-folder-tree"></i>
         <span>LSPD - EVIDENCE OPP</span>
     </div>
 </div>
 
 <div class="main">
-    <h2 style="margin-top:0;">Nový protokol</h2>
+    <h2 style="margin-top:0;">Správa žádostí</h2>
     
     <div class="grid">
         <div class="field">
@@ -134,45 +135,47 @@
         </div>
         <div class="field">
             <label>Identifikace subjektu</label>
-            <input type="text" id="subject" placeholder="Jméno a ID osoby">
+            <input type="text" id="subject" placeholder="Jméno a ID">
         </div>
         <div class="field">
             <label>Klasifikace případu</label>
             <select id="crime">
-                <option value="Vrazda (§ 140 TZ)">Vrazda (§ 140 TZ)</option>
-                <option value="Loupez (§ 173 TZ)">Loupez (§ 173 TZ)</option>
+                <option value="Vražda (§ 140 TZ)">Vražda (§ 140 TZ)</option>
+                <option value="Loupež (§ 173 TZ)">Loupež (§ 173 TZ)</option>
                 <option value="Drogy / OPL">Drogy / OPL</option>
-                <option value="Hospodarska kriminalita">Hospodarska kriminalita</option>
+                <option value="Únos / Omezení svobody">Únos / Omezení svobody</option>
+                <option value="Hospodářská kriminalita">Hospodářská kriminalita</option>
             </select>
         </div>
         <div class="field">
-            <label>Typ OPP</label>
+            <label>Typ OPP (Prostředek)</label>
             <select id="type">
-                <option value="Prolomeni telefonu">Prolomeni telefonu</option>
-                <option value="Vypis z telekomunikace">Vypis z telekomunikace</option>
-                <option value="Proverka majetku a financi">Proverka majetku a financi</option>
+                <option value="Prolomení koncového zařízení (Telefon/PC)">Prolomení koncového zařízení (Telefon/PC)</option>
+                <option value="Sledování a odposlech telekomunikace">Sledování a odposlech telekomunikace</option>
+                <option value="Výpis bankovního tajemství a účtů">Výpis bankovního tajemství a účtů</option>
+                <option value="Lokalizace polohy subjektu (GPS)">Lokalizace polohy subjektu (GPS)</option>
+                <option value="Domovní prohlídka a zajištění věcí">Domovní prohlídka a zajištění věcí</option>
             </select>
         </div>
         <div class="field full">
-            <label>Odůvodnění žádosti</label>
-            <textarea id="facts" rows="4"></textarea>
+            <label>Odůvodnění žádosti (Zjištěné skutečnosti)</label>
+            <textarea id="facts" rows="4" placeholder="Podrobně popište důvody k nasazení OPP..."></textarea>
         </div>
     </div>
 
     <div class="btn-group">
-        <button class="btn btn-blue" onclick="processAll()"><i class="fa-solid fa-check-double"></i> Uložit a Schválit</button>
-        <button class="btn btn-pdf" onclick="generatePDF()"><i class="fa-solid fa-file-pdf"></i> Generovat PDF</button>
+        <button class="btn btn-blue" onclick="processAndSave()"><i class="fa-solid fa-paper-plane"></i> Uložit a Schválit</button>
     </div>
 
     <div style="margin-top: 40px;">
-        <label>Historie žádostí</label>
+        <label>Archiv žádostí v systému</label>
         <table>
             <thead>
                 <tr>
                     <th>Datum</th>
                     <th>Subjekt</th>
                     <th>Příslušník</th>
-                    <th>Správa</th>
+                    <th>Správa (Akce)</th>
                 </tr>
             </thead>
             <tbody id="history-rows"></tbody>
@@ -182,7 +185,7 @@
 
 <div id="modal">
     <div class="modal-body">
-        <h3>Protokol byl vytvořen a odeslán</h3>
+        <h3 id="m-title">Systémové potvrzení</h3>
         <pre id="modal-text"></pre>
         <button class="btn btn-blue" onclick="document.getElementById('modal').style.display='none'">Zavřít</button>
     </div>
@@ -190,51 +193,51 @@
 
 <script>
     // --- KONFIGURACE WEBHOOKU ---
-    const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1487754214041194596/KPNaj-qDPmVY_6yEsdKvGNri_8AbjS8JS3PBo8GvuKi2R1Qkgtx1iZjYEODUVVYI_Wux";
+    const DISCORD_WEBHOOK_URL = "SEM_VLOZ_TVUJ_WEBHOOK_URL";
 
-    let historyLog = JSON.parse(localStorage.getItem('lspd_history')) || [];
+    let historyLog = JSON.parse(localStorage.getItem('lspd_history_v2')) || [];
     updateTable();
 
     const removeAccents = (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
-    async function processAll() {
+    async function processAndSave() {
         const officer = document.getElementById('officer').value;
         const subject = document.getElementById('subject').value;
         const type = document.getElementById('type').value;
         const facts = document.getElementById('facts').value;
+        const crime = document.getElementById('crime').value;
 
-        if(!officer || !subject) return alert("Chybí jméno příslušníka nebo subjektu!");
+        if(!officer || !subject || !facts) return alert("Musíte vyplnit všechna pole!");
 
-        // 1. Uložit do historie
         const data = {
             id: Date.now(),
             date: new Date().toLocaleString('cs-CZ'),
-            officer, subject, type, facts,
-            crime: document.getElementById('crime').value
+            officer, subject, type, facts, crime
         };
+
         historyLog.unshift(data);
-        localStorage.setItem('lspd_history', JSON.stringify(historyLog));
+        localStorage.setItem('lspd_history_v2', JSON.stringify(historyLog));
         updateTable();
 
-        // 2. Automaticky odeslat na Discord
+        // Automatický Discord
         if(DISCORD_WEBHOOK_URL !== "SEM_VLOZ_TVUJ_WEBHOOK_URL") {
             const payload = {
                 embeds: [{
-                    title: "📁 NOVÁ ŽÁDOST O OPP",
-                    color: 3447003,
+                    title: "📄 NOVÝ PROTOKOL OPP",
+                    color: 5814783,
                     fields: [
                         { name: "Příslušník", value: officer, inline: true },
                         { name: "Subjekt", value: subject, inline: true },
-                        { name: "Typ", value: type, inline: false },
+                        { name: "Prostředek", value: type, inline: false },
+                        { name: "Případ", value: crime, inline: false },
                         { name: "Odůvodnění", value: facts }
                     ],
-                    timestamp: new Date()
+                    footer: { text: "LSPD - Automatizovaný záznam" }
                 }]
             };
             fetch(DISCORD_WEBHOOK_URL, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
         }
 
-        // 3. Zobrazit detail
         viewDetail(data.id);
     }
 
@@ -246,7 +249,8 @@
                 <td>${r.subject}</td>
                 <td>${r.officer}</td>
                 <td class="action-btns">
-                    <button class="btn-sm btn-view" onclick="viewDetail(${r.id})">Detail</button>
+                    <button class="btn-sm btn-view" onclick="viewDetail(${r.id})"><i class="fa-solid fa-eye"></i> Náhled</button>
+                    <button class="btn-sm btn-pdf" onclick="generatePDF(${r.id})"><i class="fa-solid fa-file-pdf"></i> PDF</button>
                     <button class="btn-sm btn-delete" onclick="deleteEntry(${r.id})"><i class="fa-solid fa-trash"></i></button>
                 </td>
             </tr>
@@ -255,36 +259,38 @@
 
     function viewDetail(id) {
         const r = historyLog.find(x => x.id === id);
-        const text = `PROTOKOL OPP\n----------\nVYSTAVIL: ${r.officer}\nSUBJEKT:  ${r.subject}\nTYP:      ${r.type}\n----------\nODŮVODNĚNÍ:\n${r.facts}`;
+        const text = `LSPD PROTOKOL\n============\nVYSTAVIL: ${r.officer}\nSUBJEKT:  ${r.subject}\nČIN:      ${r.crime}\nTYP:      ${r.type}\n============\nSKUTEČNOSTI:\n${r.facts}`;
         document.getElementById('modal-text').innerText = text;
         document.getElementById('modal').style.display = 'flex';
     }
 
     function deleteEntry(id) {
-        if(confirm("Opravdu smazat tento záznam z historie?")) {
+        if(confirm("Odstranit záznam z archivu?")) {
             historyLog = historyLog.filter(x => x.id !== id);
-            localStorage.setItem('lspd_history', JSON.stringify(historyLog));
+            localStorage.setItem('lspd_history_v2', JSON.stringify(historyLog));
             updateTable();
         }
     }
 
-    function generatePDF() {
+    function generatePDF(id) {
+        const r = historyLog.find(x => x.id === id);
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
         
-        const officer = removeAccents(document.getElementById('officer').value);
-        const subject = removeAccents(document.getElementById('subject').value);
-        const type = removeAccents(document.getElementById('type').value);
-        const facts = removeAccents(document.getElementById('facts').value);
-        const date = new Date().toLocaleDateString();
+        const officer = removeAccents(r.officer);
+        const subject = removeAccents(r.subject);
+        const type = removeAccents(r.type);
+        const facts = removeAccents(r.facts);
+        const crime = removeAccents(r.crime);
 
         doc.setFont("helvetica", "bold");
         doc.setFontSize(22);
-        doc.text("PROTOKOL O ZADOSTI OPP", 105, 30, { align: "center" });
+        doc.text("PROTOKOL O NASAZENI OPP", 105, 30, { align: "center" });
         
         doc.setFontSize(10);
         doc.setFont("helvetica", "normal");
-        doc.text(`Datum: ${date}`, 160, 45);
+        doc.text(`Identifikator: #${r.id}`, 20, 45);
+        doc.text(`Datum: ${r.date.split(',')[0]}`, 160, 45);
 
         doc.setLineWidth(0.5);
         doc.line(20, 50, 190, 50);
@@ -294,34 +300,40 @@
         doc.setFont("helvetica", "normal");
         doc.text(officer, 70, 65);
 
-        doc.setFont("helvetica", "bold");
         doc.text("Proverovany subjekt:", 20, 75);
-        doc.setFont("helvetica", "normal");
         doc.text(subject, 70, 75);
 
+        doc.text("Klasifikace:", 20, 85);
+        doc.text(crime, 70, 85);
+
         doc.setFont("helvetica", "bold");
-        doc.text("Duvod zadosti:", 20, 90);
+        doc.text("Operativni prostredky:", 20, 100);
         doc.setFont("helvetica", "normal");
-        const splitText = doc.splitTextToSize(facts, 160);
-        doc.text(splitText, 20, 100);
+        doc.text(type, 20, 110);
+
+        doc.setFont("helvetica", "bold");
+        doc.text("Oduvodneni:", 20, 125);
+        doc.setFont("helvetica", "normal");
+        const splitText = doc.splitTextToSize(facts, 170);
+        doc.text(splitText, 20, 135);
 
         const pageHeight = doc.internal.pageSize.height;
         doc.line(130, pageHeight - 50, 190, pageHeight - 50);
         
-        // --- SEKCE PODPISU ---
-        // 1. "Ruční" podpis (kurzíva)
-        doc.setFont("times", "italic");
+        // --- ASTON SCRIPT STYLE PODPIS ---
+        doc.setFont("times", "italic"); // Nejblizsi standardni nahrazení scriptu
         doc.setFontSize(18);
+        doc.setTextColor(0, 0, 128); // Tmavě modrá barva podpisu (inkoust)
         doc.text(officer, 140, pageHeight - 55); 
         
-        // 2. Klasické Jméno a Příjmení (tiskací)
+        doc.setTextColor(0);
         doc.setFont("helvetica", "normal");
         doc.setFontSize(10);
         doc.text(officer, 135, pageHeight - 45);
-        doc.setFontSize(8);
-        doc.text("Jmeno a prijmeni / Digitalni podpis", 135, pageHeight - 40);
+        doc.setFontSize(7);
+        doc.text("Potvrzeno digitalnim klicem LSPD MDT", 135, pageHeight - 41);
 
-        doc.save(`Protokol_OPP_${subject}.pdf`);
+        doc.save(`LSPD_OPP_${subject.replace(/\s/g, '_')}.pdf`);
     }
 </script>
 
