@@ -3,57 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <style>
-        body { background: #0d1117; color: #c9d1d9; font-family: sans-serif; padding: 20px; font-size: 13px; }
+        :root { --bg: #0d1117; --accent: #58a6ff; --border: #30363d; --text: #c9d1d9; }
+        body { background: var(--bg); color: var(--text); font-family: sans-serif; padding: 20px; font-size: 13px; margin: 0; }
         .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 15px; }
         .field { display: flex; flex-direction: column; }
-        label { color: #58a6ff; font-size: 10px; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; }
-        input, select, textarea { background: #010409; border: 1px solid #30363d; color: #c9d1d9; padding: 8px; border-radius: 4px; }
-        textarea { width: 100%; height: 80px; margin-top: 10px; }
-        .btn-submit { background: #1f6feb; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; float: right; margin-top: 15px; font-weight: bold; }
+        label { color: var(--accent); font-size: 10px; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; }
+        input, select, textarea { background: #010409; border: 1px solid var(--border); color: var(--text); padding: 8px; border-radius: 4px; }
+        
+        .btn-submit { background: #1f6feb; color: white; border: none; padding: 12px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 20px; width: 100%; text-transform: uppercase; }
+        .btn-laws { background: #ffa657; color: black; border: none; padding: 10px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-bottom: 15px; width: 100%; }
+
+        /* MODAL */
+        #modal-laws { 
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: #161b22; border: 1px solid var(--accent); padding: 20px; border-radius: 8px;
+            width: 80%; max-height: 80vh; overflow-y: auto; z-index: 100; box-shadow: 0 0 20px rgba(0,0,0,0.8);
+        }
+        .law-item { padding: 10px; border-bottom: 1px solid var(--border); cursor: pointer; }
+        .law-item:hover { background: #21262d; color: var(--accent); }
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 99; }
     </style>
 </head>
 <body>
 
-<div id="form-title" style="color: #58a6ff; font-size: 18px; margin-bottom: 20px;">Detail Spisu</div>
+<button class="btn-laws" onclick="toggleLaws()">📖 OTEVŘÍT KATALOG TRESTŮ</button>
+
+<div id="form-title" style="color: var(--accent); font-size: 18px; margin-bottom: 20px; font-weight: bold;">DETAIL SPISU</div>
 
 <div class="grid">
-    <div class="field"><label>Vyšetřující detektiv</label><input type="text" id="detektiv" placeholder="Jméno Příjmení"></div>
-    <div class="field"><label>Hodnost</label><select id="hodnost"><option>DBI Trainee</option><option>Detective I</option></select></div>
-    <div class="field"><label>Case ID</label><input type="text" id="caseid" placeholder="#2026-XXXX"></div>
-    <div class="field"><label>Subjekt</label><input type="text" id="subjekt" placeholder="John Doe"></div>
-    <div class="field"><label>Datum narození</label><input type="text" id="narozeni" placeholder="DD.MM.YYYY"></div>
-    <div class="field"><label>MDT ID</label><input type="text" id="mdtid" placeholder="např. 8421"></div>
+    <div class="field"><label>👮 Vyžadující příslušník</label><input type="text" id="detektiv" placeholder="Jméno Příjmení"></div>
+    <div class="field">
+        <label>🎖️ Hodnost</label>
+        <select id="hodnost">
+            <option>Detective I</option>
+            <option>Detective II</option>
+            <option>Detective III</option>
+            <option>Sergeant</option>
+            <option>Lieutenant</option>
+            <option>DBI Trainee</option>
+        </select>
+    </div>
+    <div class="field"><label>📂 Case ID</label><input type="text" id="caseid" placeholder="#2026-XXXX"></div>
+    <div class="field"><label>👤 Subjekt</label><input type="text" id="subjekt" placeholder="Luis Vega"></div>
+    <div class="field"><label>📅 Datum narození</label><input type="text" id="narozeni" placeholder="13.03.1993"></div>
+    <div class="field"><label>🆔 MDT ID</label><input type="text" id="mdtid" placeholder="NC5422"></div>
 </div>
 
-<label>Typ OPP</label>
-<select id="typopp" style="width:100%;"><option>Prověrka majetku a finančních prostředků</option></select>
+<label>⚖️ Právní kvalifikace</label>
+<input type="text" id="kvalifikace" style="width:100%; margin-bottom: 15px;" placeholder="§ 12 Vražda...">
 
-<textarea id="skutecnosti" placeholder="Zjištěné skutečnosti..."></textarea>
-<textarea id="oduvodneni" placeholder="Doplňující odůvodnění..."></textarea>
+<label>🛠️ Prostředek (OPP)</label>
+<select id="typopp" style="width:100%; margin-bottom: 15px;">
+    <option>Výpis a prověrka majetku a finančních prostředků</option>
+    <option>Odposlech a záznam telekomunikačního provozu</option>
+    <option>Sledování osob a věcí</option>
+</select>
 
-<button class="btn-submit" onclick="vytvorZadost()">📥 SCHVÁLIT A GENEROVAT</button>
+<button class="btn-submit" onclick="vytvorZadost()">📥 GENEROVAT ŽÁDOST PRO DISCORD</button>
+
+<div class="overlay" id="overlay" onclick="toggleLaws()"></div>
+<div id="modal-laws">
+    <h2 style="color:var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 10px;">Penal Code</h2>
+    <div class="law-item" onclick="selectLaw('§ 12 Vražda dle z.č. 002-19')">§ 12 Vražda</div>
+    <div class="law-item" onclick="selectLaw('§ 24 Loupež dle z.č. 002-19')">§ 24 Loupež</div>
+    <div class="law-item" onclick="selectLaw('§ 37 Maření spravedlnosti dle z.č. 002-19')">§ 37 Maření spravedlnosti</div>
+    <button onclick="toggleLaws()" style="margin-top: 20px; padding: 10px; width: 100%;">ZAVŘÍT</button>
+</div>
 
 <script>
-    // Logika pro "Nový spis" nebo "Načtení ID"
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('new')) {
-        document.getElementById('form-title').innerText = "Nový Spis";
-        // Zde by mohl být kód pro vymazání všech políček, pokud by tam byla předvyplněná data
-    } else if (urlParams.get('id')) {
-        document.getElementById('caseid').value = urlParams.get('id');
-        document.getElementById('form-title').innerText = "Úprava spisu " + urlParams.get('id');
+    function toggleLaws() {
+        const m = document.getElementById('modal-laws');
+        const o = document.getElementById('overlay');
+        const isVisible = m.style.display === 'block';
+        m.style.display = isVisible ? 'none' : 'block';
+        o.style.display = isVisible ? 'none' : 'block';
+    }
+
+    function selectLaw(law) {
+        document.getElementById('kvalifikace').value = law;
+        toggleLaws();
     }
 
     function vytvorZadost() {
         const d = (id) => document.getElementById(id).value;
-        const text = `ŽÁDOST O UŽITÍ OPP DLE § 37 Z.Č. 006-19
-Vyžadující příslušník: • ${d('detektiv')}
-Prostředek: • ${d('typopp')}
-Subjekt: • ${d('subjekt')} (${d('narozeni')}, ${d('mdtid')})
-Skutečnosti: ${d('skutecnosti')}
-S pozdravem, ${d('hodnost')} ${d('detektiv')}`;
+        
+        const pevnyText = `Na základě prvotního ohledání místa činu bylo zjištěno, že došlo k násilnému trestnému činu, při kterém byly nalezeny osoby bez známek života s poraněními odpovídajícími násilnému útoku. V rámci probíhajícího vyšetřování byly zajištěny důkazní materiály a probíhá analýza stop z místa činu.
 
-        window.parent.postMessage(text, '*');
+Za účelem objasnění okolností případu je žádáno o poskytnutí informací o majetku a finančních prostředcích uvedených osob. Tyto informace mohou napomoci k identifikaci možného motivu trestné činnosti, prověření majetkových poměrů obětí a zjištění případných vazeb na další osoby, které by mohly souviset s vyšetřovaným případem.`;
+
+        // FORMÁTOVÁNÍ PRO DISCORD (Tučné nadpisy, Emoji)
+        const discordText = `**ŽÁDOST O UŽITÍ OPP DLE § 37 Z.Č. 006-19** ⚖️
+
+**Vyžadující příslušník:**
+• 👮 ${d('detektiv')}
+
+**Prostředek:**
+• 🛠️ ${d('typopp')}
+
+**Podezřelá osoba/Prověřovaná osoba (Oběť):**
+• 👤 ${d('subjekt')} (${d('narozeni')}, ${d('mdtid')})
+
+**Trestný čin:**
+• ⚖️ ${d('kvalifikace')}
+
+**Předmět vydání:**
+• 📑 Informace o veškerém evidovaném majetku osoby, zejména bankovních účtech, finančních prostředcích, registrovaných vozidlech, nemovitostech, movitém majetku vyšší hodnoty a případných závazcích či dluzích.
+
+**Zjištěné skutečnosti:**
+${pevnyText}
+
+**S pozdravem,**
+🏙️ San Andreas State Police
+🎖️ ${d('hodnost')} ${d('detektiv')}
+
+**PŘÍLOHY:** 📁`;
+
+        window.parent.postMessage(discordText, '*');
     }
 </script>
 </body>
