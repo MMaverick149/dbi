@@ -4,114 +4,57 @@
     <meta charset="UTF-8">
     <style>
         body { background: #0d1117; color: #c9d1d9; font-family: sans-serif; padding: 20px; font-size: 13px; }
-        .header { color: #58a6ff; font-size: 18px; margin-bottom: 20px; }
         .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 15px; }
         .field { display: flex; flex-direction: column; }
         label { color: #58a6ff; font-size: 10px; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; }
         input, select, textarea { background: #010409; border: 1px solid #30363d; color: #c9d1d9; padding: 8px; border-radius: 4px; }
         textarea { width: 100%; height: 80px; margin-top: 10px; }
         .btn-submit { background: #1f6feb; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; float: right; margin-top: 15px; font-weight: bold; }
-        .btn-submit:hover { background: #388bfd; }
     </style>
 </head>
 <body>
 
-<div class="header">Evidence Operativních Prostředků</div>
+<div id="form-title" style="color: #58a6ff; font-size: 18px; margin-bottom: 20px;">Detail Spisu</div>
 
 <div class="grid">
-    <div class="field">
-        <label>Vyšetřující detektiv</label>
-        <input type="text" id="detektiv" placeholder="Jméno Příjmení">
-    </div>
-    <div class="field">
-        <label>Hodnost</label>
-        <select id="hodnost">
-            <option>DBI Trainee</option>
-            <option>Detective I</option>
-            <option>Detective II</option>
-            <option>Detective III</option>
-        </select>
-    </div>
-    <div class="field">
-        <label>Case ID</label>
-        <input type="text" id="caseid" placeholder="#2026-XXXX">
-    </div>
-    <div class="field">
-        <label>Subjekt (Jméno Příjmení)</label>
-        <input type="text" id="subjekt" placeholder="John Doe">
-    </div>
-    <div class="field">
-        <label>Datum narození</label>
-        <input type="text" id="narozeni" placeholder="DD.MM.YYYY">
-    </div>
-    <div class="field">
-        <label>MDT ID</label>
-        <input type="text" id="mdtid" placeholder="např. 8421">
-    </div>
+    <div class="field"><label>Vyšetřující detektiv</label><input type="text" id="detektiv" placeholder="Jméno Příjmení"></div>
+    <div class="field"><label>Hodnost</label><select id="hodnost"><option>DBI Trainee</option><option>Detective I</option></select></div>
+    <div class="field"><label>Case ID</label><input type="text" id="caseid" placeholder="#2026-XXXX"></div>
+    <div class="field"><label>Subjekt</label><input type="text" id="subjekt" placeholder="John Doe"></div>
+    <div class="field"><label>Datum narození</label><input type="text" id="narozeni" placeholder="DD.MM.YYYY"></div>
+    <div class="field"><label>MDT ID</label><input type="text" id="mdtid" placeholder="např. 8421"></div>
 </div>
 
-<div class="field">
-    <label>Právní kvalifikace</label>
-    <select id="kvalifikace">
-        <option>Vražda (§ 140 TZ)</option>
-        <option>Loupež (§ 173 TZ)</option>
-        <option>Obchod s drogami (§ 283 TZ)</option>
-    </select>
-</div>
+<label>Typ OPP</label>
+<select id="typopp" style="width:100%;"><option>Prověrka majetku a finančních prostředků</option></select>
 
-<div class="field" style="margin-top:15px;">
-    <label>Typ OPP</label>
-    <select id="typopp">
-        <option>Prověrka majetku a finančních prostředků</option>
-        <option>Odposlech a záznam telekomunikačního provozu</option>
-        <option>Sledování osob a věcí</option>
-    </select>
-</div>
+<textarea id="skutecnosti" placeholder="Zjištěné skutečnosti..."></textarea>
+<textarea id="oduvodneni" placeholder="Doplňující odůvodnění..."></textarea>
 
-<label style="margin-top:20px; display:block;">Zjištěné skutečnosti (systémový záznam)</label>
-<textarea id="skutecnosti">Na základě prvotního ohledání místa činu bylo zjištěno...</textarea>
-
-<label style="margin-top:20px; display:block;">Doplňující odůvodnění (vlastní text)</label>
-<textarea id="oduvodneni" placeholder="Zde uveďte vaše doplňující odůvodnění..."></textarea>
-
-<button class="btn-submit" onclick="vytvorZadost()">📥 SCHVÁLIT A ARCHIVOVAT</button>
+<button class="btn-submit" onclick="vytvorZadost()">📥 SCHVÁLIT A GENEROVAT</button>
 
 <script>
-function vytvorZadost() {
-    const d = (id) => document.getElementById(id).value;
+    // Logika pro "Nový spis" nebo "Načtení ID"
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('new')) {
+        document.getElementById('form-title').innerText = "Nový Spis";
+        // Zde by mohl být kód pro vymazání všech políček, pokud by tam byla předvyplněná data
+    } else if (urlParams.get('id')) {
+        document.getElementById('caseid').value = urlParams.get('id');
+        document.getElementById('form-title').innerText = "Úprava spisu " + urlParams.get('id');
+    }
 
-    const text = `ŽÁDOST O UŽITÍ OPP DLE § 37 Z.Č. 006-19
-Vyžadující příslušník:
-• ${d('detektiv')}
+    function vytvorZadost() {
+        const d = (id) => document.getElementById(id).value;
+        const text = `ŽÁDOST O UŽITÍ OPP DLE § 37 Z.Č. 006-19
+Vyžadující příslušník: • ${d('detektiv')}
+Prostředek: • ${d('typopp')}
+Subjekt: • ${d('subjekt')} (${d('narozeni')}, ${d('mdtid')})
+Skutečnosti: ${d('skutecnosti')}
+S pozdravem, ${d('hodnost')} ${d('detektiv')}`;
 
-Prostředek:
-• ${d('typopp')}
-
-Podezřelá osoba/Prověřovaná osobá (Oběť) :
-• ${d('subjekt')} (${d('narozeni')}, ${d('mdtid')})
-
-Trestný čin:
-${d('kvalifikace')}
-
-Předmět vydání:
-• Informace o veškerém evidovaném majetku osoby, zejména bankovních účtech, finančních prostředcích, registrovaných vozidlech, nemovitostech, movitém majetku vyšší hodnoty a případných závazcích či dluzích.
-
-Zjištěné skutečnosti:
-${d('skutecnosti')}
-
-Doplňující odůvodnění:
-${d('oduvodneni')}
-
-S pozdravem,
-San Andreas State Police
-${d('hodnost')} ${d('detektiv')}
-
-PŘÍLOHY:`;
-
-    // Pošle text do hlavního okna (index.html)
-    window.parent.postMessage(text, '*');
-}
+        window.parent.postMessage(text, '*');
+    }
 </script>
-
 </body>
 </html>
