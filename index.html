@@ -2,169 +2,238 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>LSPD - Main Terminal</title>
+    <title>SASP - Operativní Terminál</title>
     <style>
-        body { background-color: #0d1117; color: #c9d1d9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; display: flex; overflow: hidden; }
-        
-        /* Sidebar */
-        .sidebar { width: 220px; height: 100vh; background-color: #161b22; padding: 20px; border-right: 1px solid #30363d; flex-shrink: 0; }
-        .sidebar h2 { color: #58a6ff; font-size: 1em; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #30363d; padding-bottom: 10px; }
-        .sidebar button { 
-            width: 100%; padding: 12px; margin-bottom: 8px; background: #21262d; border: 1px solid #30363d;
-            color: #8b949e; text-align: left; border-radius: 6px; cursor: pointer; transition: 0.2s;
-        }
-        .sidebar button:hover { background: #30363d; color: #fff; border-color: #58a6ff; }
-        .sidebar button.active { background: #1f6feb; color: white; border-color: #58a6ff; }
-
-        /* Hlavní plocha */
-        .content-area { flex-grow: 1; height: 100vh; position: relative; background: #0d1117; display: flex; flex-direction: column; }
-        
-        /* DASHBOARD (Statistiky a Spisy) */
-        #dashboard {
-            padding: 30px;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-gap: 20px;
-            overflow-y: auto;
+        :root {
+            --bg-deep: #0d1117;
+            --bg-side: #161b22;
+            --border: #30363d;
+            --accent: #58a6ff;
+            --yellow: #d29922;
+            --text: #c9d1d9;
         }
 
-        .stat-card {
-            background: #161b22;
-            border: 1px solid #30363d;
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* LEVÝ PANEL - NAVIGACE */
+        .sidebar {
+            width: 240px;
+            background-color: var(--bg-side);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .sidebar-header {
             padding: 20px;
-            border-radius: 8px;
+            border-bottom: 1px solid var(--border);
             text-align: center;
         }
-        .stat-card h3 { margin: 0; font-size: 0.8em; color: #8b949e; text-transform: uppercase; }
-        .stat-card .value { font-size: 2.5em; font-weight: bold; color: #58a6ff; margin: 10px 0; }
-        .stat-card .trend { font-size: 0.8em; color: #238636; }
 
-        .recent-files {
-            grid-column: span 3;
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 8px;
-            padding: 20px;
+        .sidebar-header h2 {
+            margin: 0;
+            font-size: 0.9em;
+            color: var(--yellow);
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
-        .recent-files h3 { margin-top: 0; color: #58a6ff; border-bottom: 1px solid #30363d; padding-bottom: 10px; }
-        
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th { text-align: left; color: #8b949e; font-size: 0.8em; padding: 10px; border-bottom: 1px solid #30363d; }
-        td { padding: 12px 10px; border-bottom: 1px solid #21262d; font-size: 0.9em; }
-        .status { padding: 3px 8px; border-radius: 10px; font-size: 0.75em; font-weight: bold; }
-        .status-closed { background: rgba(35, 134, 54, 0.2); color: #3fb950; }
-        .status-open { background: rgba(187, 128, 9, 0.2); color: #d29922; }
 
-        /* Skrytý Iframe pro zákoník */
-        iframe { width: 100%; height: 100%; border: none; display: none; }
+        .nav-group {
+            padding: 20px 10px;
+            flex-grow: 1;
+        }
 
-        /* Pravý panel se spisem */
-        .report-panel { width: 350px; height: 100vh; background-color: #161b22; border-left: 1px solid #30363d; padding: 20px; display: flex; flex-direction: column; flex-shrink: 0; }
-        #report-text-area { flex-grow: 1; background: #0d1117; color: #c9d1d9; border: 1px solid #30363d; padding: 15px; resize: none; font-family: monospace; border-radius: 4px; font-size: 0.9em; }
-        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .btn-clear { background: #f85149; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.7em; }
+        .nav-item {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 5px;
+            background: transparent;
+            border: 1px solid transparent;
+            color: #8b949e;
+            text-align: left;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-item:hover {
+            background: #21262d;
+            color: #fff;
+        }
+
+        .nav-item.active {
+            background: #1f6feb;
+            color: #fff;
+            border-color: var(--accent);
+        }
+
+        /* HLAVNÍ OBSAHOVÁ PLOCHA */
+        .main-wrapper {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-bar {
+            height: 50px;
+            background: var(--bg-side);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            justify-content: space-between;
+            font-size: 0.8em;
+            color: #8b949e;
+        }
+
+        .content-frame-container {
+            flex-grow: 1;
+            position: relative;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: var(--bg-deep);
+        }
+
+        /* PRAVÝ PANEL - GENERÁTOR / POZNÁMKY */
+        .right-panel {
+            width: 320px;
+            background: var(--bg-side);
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+        }
+
+        .right-panel h3 {
+            font-size: 0.8em;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #report-text-area {
+            flex-grow: 1;
+            background: var(--bg-deep);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 12px;
+            border-radius: 6px;
+            resize: none;
+            font-family: 'Consolas', monospace;
+            font-size: 0.85em;
+            line-height: 1.4;
+        }
+
+        .btn-action {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.75em;
+            text-transform: uppercase;
+        }
+
+        .btn-copy { background: var(--green); color: white; }
+        .btn-clear { background: #f85149; color: white; margin-left: 5px; }
+
     </style>
 </head>
 <body>
 
-<div class="sidebar">
-    <h2>LSPD Intranet</h2>
-    <button id="btn-dash" class="active" onclick="showDashboard()">Dashboard</button>
-    <button id="btn-laws" onclick="loadSection('tresty.html')">Trestní zákoník</button>
-    <button onclick="alert('V přípravě...')">Evidence vozidel</button>
-    <button onclick="alert('V přípravě...')">Databáze osob</button>
-</div>
-
-<div class="content-area">
-    <div id="dashboard">
-        <div class="stat-card">
-            <h3>Zatčení (24h)</h3>
-            <div class="value">14</div>
-            <div class="trend">↑ +12% oproti včerejšku</div>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>SASP Command</h2>
         </div>
-        <div class="stat-card">
-            <h3>Aktivní spisy</h3>
-            <div class="value">8</div>
-            <div class="trend" style="color: #d29922;">Vyžaduje pozornost</div>
+        <div class="nav-group">
+            <button class="nav-item active" onclick="changeTab(this, 'dashboard.html')">🏠 Přehled systému</button>
+            <button class="nav-item" onclick="changeTab(this, 'evidence.html')">📁 Operativní prostředky</button>
+            <button class="nav-item" onclick="changeTab(this, 'tresty.html')">⚖️ Trestní zákoník</button>
+            <button class="nav-item" onclick="alert('Databáze v údržbě')">👤 Evidence osob</button>
+            <button class="nav-item" onclick="alert('Databáze v údržbě')">🚘 Registr vozidel</button>
         </div>
-        <div class="stat-card">
-            <h3>Hledané osoby</h3>
-            <div class="value">32</div>
-            <div class="trend" style="color: #f85149;">Vysoké riziko</div>
-        </div>
-
-        <div class="recent-files">
-            <h3>Poslední záznamy v databázi</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID SPISU</th>
-                        <th>JMÉNO PODEZŘELÉHO</th>
-                        <th>PŘEČIN</th>
-                        <th>STAV</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>#4521</td>
-                        <td>James "Quick" Miller</td>
-                        <td>§58 b) Útěk před hlídkou</td>
-                        <td><span class="status status-closed">UZAVŘENO</span></td>
-                    </tr>
-                    <tr>
-                        <td>#4522</td>
-                        <td>Unknown (Maskovaný)</td>
-                        <td>§26 a) Loupež obchodu</td>
-                        <td><span class="status status-open">PROBÍHÁ</span></td>
-                    </tr>
-                    <tr>
-                        <td>#4523</td>
-                        <td>Sarah Connor</td>
-                        <td>§37 c) Rychlost nad 31 mph</td>
-                        <td><span class="status status-closed">POKUTA</span></td>
-                    </tr>
-                </tbody>
-            </table>
+        <div style="padding: 20px; font-size: 0.7em; color: #484f58; text-align: center;">
+            v2.4.0-STABLE <br> San Andreas State Police
         </div>
     </div>
 
-    <iframe id="content-frame" src=""></iframe>
-</div>
-
-<div class="report-panel">
-    <div class="panel-header">
-        <h3 style="color: #58a6ff; margin:0;">Generátor spisu</h3>
-        <button class="btn-clear" onclick="document.getElementById('report-text-area').value=''">SMAZAT</button>
+    <div class="main-wrapper">
+        <div class="top-bar">
+            <div>SASP / TERMINÁL / <span id="current-section">PŘEHLED</span></div>
+            <div id="clock">00:00:00</div>
+        </div>
+        <div class="content-frame-container">
+            <iframe id="main-frame" src="dashboard.html"></iframe>
+        </div>
     </div>
-    <textarea id="report-text-area" placeholder="Kliknutím v zákoníku přidáte data..."></textarea>
-</div>
 
-<script>
-    function loadSection(url) {
-        document.getElementById('dashboard').style.display = 'none';
-        document.getElementById('content-frame').style.display = 'block';
-        document.getElementById('content-frame').src = url;
-        
-        document.getElementById('btn-dash').classList.remove('active');
-        document.getElementById('btn-laws').classList.add('active');
-    }
+    <div class="right-panel">
+        <h3>
+            Generátor Spisu
+            <span style="color: #484f58; font-size: 0.8em;">ID: #AUTO</span>
+        </h3>
+        <textarea id="report-text-area" placeholder="Zde se budou skládat paragrafy a poznámky..."></textarea>
+        <div style="display: flex;">
+            <button class="btn-action btn-copy" style="flex: 2;" onclick="copyReport()">Kopírovat spis</button>
+            <button class="btn-action btn-clear" style="flex: 1;" onclick="document.getElementById('report-text-area').value=''">Smazat</button>
+        </div>
+    </div>
 
-    function showDashboard() {
-        document.getElementById('dashboard').style.display = 'grid';
-        document.getElementById('content-frame').style.display = 'none';
-        
-        document.getElementById('btn-dash').classList.add('active');
-        document.getElementById('btn-laws').classList.remove('active');
-    }
-
-    window.addEventListener('message', function(event) {
-        if (typeof event.data === 'string') {
-            const textArea = document.getElementById('report-text-area');
-            textArea.value += (textArea.value ? '\n' : '') + event.data;
-            textArea.scrollTop = textArea.scrollHeight;
+    <script>
+        // Funkce pro přepínání oken
+        function changeTab(element, url) {
+            // Změna barvy tlačítka
+            document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+            element.classList.add('active');
+            
+            // Změna nadpisu v top-baru
+            document.getElementById('current-section').innerText = element.innerText.split(' ').slice(1).join(' ').toUpperCase();
+            
+            // Načtení stránky do iframe
+            document.getElementById('main-frame').src = url;
         }
-    });
-</script>
 
+        // Přijímání zpráv z iframe (např. z tresty.html)
+        window.addEventListener('message', function(event) {
+            if (typeof event.data === 'string') {
+                const area = document.getElementById('report-text-area');
+                area.value += (area.value ? '\n' : '') + event.data;
+                area.scrollTop = area.scrollHeight;
+            }
+        });
+
+        // Hodiny v top-baru
+        setInterval(() => {
+            document.getElementById('clock').innerText = new Date().toLocaleTimeString();
+        }, 1000);
+
+        function copyReport() {
+            const area = document.getElementById('report-text-area');
+            area.select();
+            document.execCommand('copy');
+            alert('Spis byl zkopírován do schránky.');
+        }
+    </script>
 </body>
 </html>
