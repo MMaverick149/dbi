@@ -54,13 +54,20 @@
 
 <script>
     function loadPage(btn, url) {
+        // Změna barvy tlačítek v menu
         document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
+        if(btn) btn.classList.add('active'); 
         document.getElementById('content-frame').src = url;
     }
 
     window.addEventListener('message', function(e) {
-        if (typeof e.data === 'string') {
+        // Pokud přijde požadavek na otevření evidence z dashboardu
+        if (e.data.action === 'open_evidence') {
+            const evidenceBtn = document.querySelectorAll('.nav-item')[1]; // Druhé tlačítko v menu (Evidence)
+            loadPage(evidenceBtn, 'evidence.html');
+        } 
+        // Pokud přijde text žádosti z evidence
+        else if (typeof e.data === 'string') {
             document.getElementById('report-area').value = e.data;
         }
     });

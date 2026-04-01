@@ -5,89 +5,57 @@
     <style>
         :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --blue: #58a6ff; --green: #238636; --yellow: #d29922; --text: #c9d1d9; }
         body { background-color: var(--bg); color: var(--text); font-family: sans-serif; padding: 25px; margin: 0; }
-        
         .header-title { margin-bottom: 25px; border-left: 4px solid var(--yellow); padding-left: 15px; }
         .header-title h1 { margin: 0; font-size: 1.4em; text-transform: uppercase; color: var(--yellow); }
-
-        /* Statistiky */
         .stats-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 30px; }
         .stat-card { background: var(--card); border: 1px solid var(--border); padding: 20px; border-radius: 8px; text-align: center; }
         .stat-card .label { font-size: 0.75em; color: #8b949e; text-transform: uppercase; margin-bottom: 10px; display: block; }
         .stat-card .value { font-size: 2em; font-weight: bold; }
-
-        /* Tabulka spisů */
         .table-section { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
         .table-section h3 { margin-top: 0; font-size: 0.9em; color: var(--blue); text-transform: uppercase; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
-        
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th { text-align: left; font-size: 0.75em; color: #8b949e; padding: 10px; border-bottom: 1px solid var(--border); text-transform: uppercase; }
         td { padding: 12px 10px; border-bottom: 1px solid #21262d; font-size: 0.85em; }
-        
         .status { padding: 3px 8px; border-radius: 4px; font-size: 0.7em; font-weight: bold; }
         .status-open { background: rgba(210, 153, 34, 0.15); color: var(--yellow); border: 1px solid var(--yellow); }
         .status-closed { background: rgba(35, 134, 54, 0.15); color: #3fb950; border: 1px solid var(--green); }
+        /* Tlačítko pro otevření */
+        .btn-open { background: transparent; border: 1px solid var(--blue); color: var(--blue); padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.8em; transition: 0.2s; }
+        .btn-open:hover { background: var(--blue); color: white; }
     </style>
 </head>
 <body>
-
-    <div class="header-title">
-        <h1>Přehled operačního systému</h1>
-    </div>
-
+    <div class="header-title"><h1>Přehled operačního systému</h1></div>
     <div class="stats-container">
-        <div class="stat-card">
-            <span class="label">Otevřené spisy</span>
-            <div class="value" style="color: var(--yellow);">2</div>
-        </div>
-        <div class="stat-card">
-            <span class="label">Vyřešené spisy</span>
-            <div class="value" style="color: var(--green);">3</div>
-        </div>
-        <div class="stat-card">
-            <span class="label">Celkem v evidenci</span>
-            <div class="value">5</div>
-        </div>
+        <div class="stat-card"><span class="label">Otevřené spisy</span><div class="value" style="color: var(--yellow);">2</div></div>
+        <div class="stat-card"><span class="label">Vyřešené spisy</span><div class="value" style="color: var(--green);">3</div></div>
+        <div class="stat-card"><span class="label">Celkem v evidenci</span><div class="value">5</div></div>
     </div>
-
     <div class="table-section">
-        <h3>Aktuální stav spisů (Poslední záznamy)</h3>
+        <h3>Aktuální stav spisů</h3>
         <table>
-            <thead>
-                <tr>
-                    <th>Case ID</th>
-                    <th>Subjekt</th>
-                    <th>Vyřizuje</th>
-                    <th>Stav</th>
-                </tr>
-            </thead>
+            <thead><tr><th>Case ID</th><th>Subjekt</th><th>Stav</th><th>Akce</th></tr></thead>
             <tbody>
-                <tr>
-                    <td style="color:var(--yellow); font-weight:bold;">#sda</td>
-                    <td>Michal Undefined</td>
-                    <td>Michala</td>
-                    <td><span class="status status-closed">VYŘEŠENO</span></td>
-                </tr>
                 <tr>
                     <td style="color:var(--yellow); font-weight:bold;">#re</td>
                     <td>---</td>
-                    <td>Michal</td>
                     <td><span class="status status-open">OTEVŘENÝ</span></td>
-                </tr>
-                <tr>
-                    <td style="color:var(--yellow); font-weight:bold;">#g</td>
-                    <td>---</td>
-                    <td>Michala</td>
-                    <td><span class="status status-closed">VYŘEŠENO</span></td>
+                    <td><button class="btn-open" onclick="otevritSpis('#re')">Otevřít</button></td>
                 </tr>
                 <tr>
                     <td style="color:var(--yellow); font-weight:bold;">#gs</td>
                     <td>---</td>
-                    <td>Michal</td>
                     <td><span class="status status-open">OTEVŘENÝ</span></td>
+                    <td><button class="btn-open" onclick="otevritSpis('#gs')">Otevřít</button></td>
                 </tr>
             </tbody>
         </table>
     </div>
 
+    <script>
+        function otevritSpis(id) {
+            window.parent.postMessage({ action: 'open_evidence', caseId: id }, '*');
+        }
+    </script>
 </body>
 </html>
