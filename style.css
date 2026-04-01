@@ -11,7 +11,7 @@
 }
 
 body { 
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    font-family: 'Segoe UI', sans-serif; 
     background: var(--bg); 
     color: white; 
     margin: 0; 
@@ -28,68 +28,54 @@ body {
     justify-content: space-between; 
 }
 
-.breadcrumb { font-size: 13px; }
+.breadcrumb { font-size: 13px; font-weight: bold; }
 .breadcrumb a { color: var(--blue); text-decoration: none; }
 
 .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
 
-/* Statistiky na hlavní stránce */
-.stats-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 40px; }
-.stat-card { background: var(--card); border: 1px solid var(--border); padding: 20px; border-radius: 4px; }
-.stat-label { font-size: 11px; color: var(--blue); text-transform: uppercase; font-weight: bold; display: block; }
-.stat-value { font-size: 24px; font-weight: bold; margin-top: 5px; display: block; }
-
 /* Nadpisy a karty */
-h1 { color: var(--gold); text-transform: uppercase; letter-spacing: 1px; font-size: 24px; margin-bottom: 20px; }
-
+h1 { color: var(--gold); text-transform: uppercase; font-size: 24px; margin-bottom: 25px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
 .card { background: var(--card); border: 1px solid var(--border); padding: 25px; border-radius: 4px; margin-bottom: 25px; }
-.section-title { color: var(--gold); font-size: 14px; text-transform: uppercase; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
 
-/* Tabulky */
-table { width: 100%; border-collapse: collapse; background: var(--card); border: 1px solid var(--border); }
-th { text-align: left; padding: 12px 15px; border-bottom: 1px solid var(--border); font-size: 11px; color: var(--blue); text-transform: uppercase; }
-td { padding: 12px 15px; border-bottom: 1px solid var(--border); font-size: 13px; }
-
-/* Inputy */
-.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 20px; }
-label { color: var(--blue); font-size: 11px; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 8px; }
-input, select, textarea { 
-    width: 100%; background: var(--input-bg); border: 1px solid var(--border); color: white; 
-    padding: 12px; border-radius: 4px; font-size: 14px; box-sizing: border-box; outline: none;
+/* Status Tagy */
+.status-tag { 
+    padding: 8px 18px; 
+    border-radius: 4px; 
+    font-size: 12px; 
+    font-weight: bold; 
+    text-transform: uppercase;
 }
+.status-active { background: var(--blue); color: black; }
 
-/* Webové oznámení (Modrý box) */
-.web-oznameni { 
-    border: 1px solid var(--blue); background: rgba(74, 158, 255, 0.05); color: #d1e8ff; 
-    min-height: 120px; margin-bottom: 20px; resize: vertical;
-}
-
-/* Statusy a Emoji akce */
-.status-tag { padding: 4px 8px; border-radius: 3px; font-size: 11px; font-weight: bold; }
-.status-open { background: rgba(74, 158, 255, 0.2); color: var(--blue); }
-.status-closed { background: rgba(46, 160, 67, 0.2); color: var(--success); }
-
-/* Pulzující ARCHIVED v detailu */
+/* Pulzující ARCHIVED - Pouze na štítku */
 .status-archived {
-    background: rgba(248, 81, 73, 0.2) !important;
-    color: var(--danger) !important;
-    border: 1px solid var(--danger);
-    animation: pulse-red 2s infinite;
+    background: var(--danger) !important;
+    color: white !important;
+    animation: pulse-red 1.5s infinite;
 }
 
 @keyframes pulse-red {
-    0% { box-shadow: 0 0 0 0 rgba(248, 81, 73, 0.4); }
-    70% { box-shadow: 0 0 0 10px rgba(248, 81, 73, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(248, 81, 73, 0); }
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(248, 81, 73, 0.7); }
+    70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(248, 81, 73, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(248, 81, 73, 0); }
 }
 
+/* Grid a Inputy */
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+label { color: var(--blue); font-size: 11px; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 8px; }
+
+input, select, textarea { 
+    width: 100%; background: var(--input-bg); border: 1px solid var(--border); color: white; 
+    padding: 12px; border-radius: 4px; font-size: 14px; outline: none; box-sizing: border-box;
+}
+
+.web-oznameni { border: 1px solid var(--blue); background: rgba(74, 158, 255, 0.05); min-height: 150px; }
+
 /* Tlačítka */
-.btn { padding: 10px 20px; border-radius: 4px; border: none; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 12px; text-decoration: none; display: inline-block; }
+.btn { padding: 12px 25px; border-radius: 4px; border: none; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
 .btn-save { background: var(--blue); color: black; }
 .btn-close { background: var(--success); color: white; }
-.btn-catalog { background: transparent; border: 1px solid var(--gold); color: var(--gold); margin-top: 5px; }
+.btn-catalog { background: transparent; border: 1px solid var(--gold); color: var(--gold); margin-top: 5px; width: auto; display: inline-block; padding: 8px 15px; }
 
-.action-link { text-decoration: none; font-weight: bold; font-size: 12px; margin-right: 15px; }
-.delete { color: var(--danger); cursor: pointer; }
-
-.locked-mode { pointer-events: none; opacity: 0.7; }
+.footer-btns { display: flex; justify-content: flex-end; gap: 15px; margin-top: 30px; }
+.locked-mode { pointer-events: none; opacity: 0.8; }
