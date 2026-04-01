@@ -2,49 +2,161 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>Policejní Systém - San Andreas</title>
+    <title>LSPD - Main Terminal</title>
     <style>
-        body { background-color: #0d1117; color: #c9d1d9; font-family: sans-serif; margin: 0; display: flex; overflow: hidden; }
+        body { background-color: #0d1117; color: #c9d1d9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; display: flex; overflow: hidden; }
         
         /* Sidebar */
-        .sidebar { width: 200px; height: 100vh; background-color: #161b22; padding: 20px; border-right: 1px solid #30363d; }
-        .sidebar h2 { color: #58a6ff; font-size: 1.1em; margin-bottom: 20px; }
+        .sidebar { width: 220px; height: 100vh; background-color: #161b22; padding: 20px; border-right: 1px solid #30363d; flex-shrink: 0; }
+        .sidebar h2 { color: #58a6ff; font-size: 1em; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #30363d; padding-bottom: 10px; }
         .sidebar button { 
-            width: 100%; padding: 10px; margin-bottom: 10px; background: #21262d; border: 1px solid #30363d;
-            color: #8b949e; text-align: left; border-radius: 4px; cursor: pointer;
+            width: 100%; padding: 12px; margin-bottom: 8px; background: #21262d; border: 1px solid #30363d;
+            color: #8b949e; text-align: left; border-radius: 6px; cursor: pointer; transition: 0.2s;
         }
-        .sidebar button:hover { background: #30363d; color: #fff; }
+        .sidebar button:hover { background: #30363d; color: #fff; border-color: #58a6ff; }
+        .sidebar button.active { background: #1f6feb; color: white; border-color: #58a6ff; }
 
-        /* Hlavní plocha s iframe */
-        .content-area { flex-grow: 1; height: 100vh; }
-        iframe { width: 100%; height: 100%; border: none; }
+        /* Hlavní plocha */
+        .content-area { flex-grow: 1; height: 100vh; position: relative; background: #0d1117; display: flex; flex-direction: column; }
+        
+        /* DASHBOARD (Statistiky a Spisy) */
+        #dashboard {
+            padding: 30px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-gap: 20px;
+            overflow-y: auto;
+        }
+
+        .stat-card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-card h3 { margin: 0; font-size: 0.8em; color: #8b949e; text-transform: uppercase; }
+        .stat-card .value { font-size: 2.5em; font-weight: bold; color: #58a6ff; margin: 10px 0; }
+        .stat-card .trend { font-size: 0.8em; color: #238636; }
+
+        .recent-files {
+            grid-column: span 3;
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        .recent-files h3 { margin-top: 0; color: #58a6ff; border-bottom: 1px solid #30363d; padding-bottom: 10px; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { text-align: left; color: #8b949e; font-size: 0.8em; padding: 10px; border-bottom: 1px solid #30363d; }
+        td { padding: 12px 10px; border-bottom: 1px solid #21262d; font-size: 0.9em; }
+        .status { padding: 3px 8px; border-radius: 10px; font-size: 0.75em; font-weight: bold; }
+        .status-closed { background: rgba(35, 134, 54, 0.2); color: #3fb950; }
+        .status-open { background: rgba(187, 128, 9, 0.2); color: #d29922; }
+
+        /* Skrytý Iframe pro zákoník */
+        iframe { width: 100%; height: 100%; border: none; display: none; }
 
         /* Pravý panel se spisem */
-        .report-panel { width: 350px; height: 100vh; background-color: #161b22; border-left: 1px solid #30363d; padding: 20px; display: flex; flex-direction: column; }
-        .report-panel h3 { color: #58a6ff; margin-top: 0; font-size: 1.1em; }
+        .report-panel { width: 350px; height: 100vh; background-color: #161b22; border-left: 1px solid #30363d; padding: 20px; display: flex; flex-direction: column; flex-shrink: 0; }
         #report-text-area { flex-grow: 1; background: #0d1117; color: #c9d1d9; border: 1px solid #30363d; padding: 15px; resize: none; font-family: monospace; border-radius: 4px; font-size: 0.9em; }
+        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .btn-clear { background: #f85149; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.7em; }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
-    <h2>Menu</h2>
-    <button onclick="document.getElementById('content-frame').src='tresty.html'">Trestní zákoník</button>
-    <button>Evidence vozidel</button>
-    <button>Databáze osob</button>
+    <h2>LSPD Intranet</h2>
+    <button id="btn-dash" class="active" onclick="showDashboard()">Dashboard</button>
+    <button id="btn-laws" onclick="loadSection('tresty.html')">Trestní zákoník</button>
+    <button onclick="alert('V přípravě...')">Evidence vozidel</button>
+    <button onclick="alert('V přípravě...')">Databáze osob</button>
 </div>
 
 <div class="content-area">
-    <iframe id="content-frame" src="tresty.html"></iframe>
+    <div id="dashboard">
+        <div class="stat-card">
+            <h3>Zatčení (24h)</h3>
+            <div class="value">14</div>
+            <div class="trend">↑ +12% oproti včerejšku</div>
+        </div>
+        <div class="stat-card">
+            <h3>Aktivní spisy</h3>
+            <div class="value">8</div>
+            <div class="trend" style="color: #d29922;">Vyžaduje pozornost</div>
+        </div>
+        <div class="stat-card">
+            <h3>Hledané osoby</h3>
+            <div class="value">32</div>
+            <div class="trend" style="color: #f85149;">Vysoké riziko</div>
+        </div>
+
+        <div class="recent-files">
+            <h3>Poslední záznamy v databázi</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID SPISU</th>
+                        <th>JMÉNO PODEZŘELÉHO</th>
+                        <th>PŘEČIN</th>
+                        <th>STAV</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>#4521</td>
+                        <td>James "Quick" Miller</td>
+                        <td>§58 b) Útěk před hlídkou</td>
+                        <td><span class="status status-closed">UZAVŘENO</span></td>
+                    </tr>
+                    <tr>
+                        <td>#4522</td>
+                        <td>Unknown (Maskovaný)</td>
+                        <td>§26 a) Loupež obchodu</td>
+                        <td><span class="status status-open">PROBÍHÁ</span></td>
+                    </tr>
+                    <tr>
+                        <td>#4523</td>
+                        <td>Sarah Connor</td>
+                        <td>§37 c) Rychlost nad 31 mph</td>
+                        <td><span class="status status-closed">POKUTA</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <iframe id="content-frame" src=""></iframe>
 </div>
 
 <div class="report-panel">
-    <h3>Generátor spisu</h3>
-    <textarea id="report-text-area" placeholder="Zde se objeví vybrané paragrafy..."></textarea>
+    <div class="panel-header">
+        <h3 style="color: #58a6ff; margin:0;">Generátor spisu</h3>
+        <button class="btn-clear" onclick="document.getElementById('report-text-area').value=''">SMAZAT</button>
+    </div>
+    <textarea id="report-text-area" placeholder="Kliknutím v zákoníku přidáte data..."></textarea>
 </div>
 
 <script>
-    // OPRAVA [object Object]: Přijímáme pouze textovou zprávu
+    function loadSection(url) {
+        document.getElementById('dashboard').style.display = 'none';
+        document.getElementById('content-frame').style.display = 'block';
+        document.getElementById('content-frame').src = url;
+        
+        document.getElementById('btn-dash').classList.remove('active');
+        document.getElementById('btn-laws').classList.add('active');
+    }
+
+    function showDashboard() {
+        document.getElementById('dashboard').style.display = 'grid';
+        document.getElementById('content-frame').style.display = 'none';
+        
+        document.getElementById('btn-dash').classList.add('active');
+        document.getElementById('btn-laws').classList.remove('active');
+    }
+
     window.addEventListener('message', function(event) {
         if (typeof event.data === 'string') {
             const textArea = document.getElementById('report-text-area');
