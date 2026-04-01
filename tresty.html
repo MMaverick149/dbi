@@ -2,18 +2,46 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>Trestní zákoník</title>
     <style>
         body { background-color: #0d1117; color: #c9d1d9; font-family: sans-serif; padding: 20px; }
-        .law-item { background-color: #161b22; border: 1px solid #30363d; border-radius: 6px; padding: 15px; margin-bottom: 20px; }
-        .law-description { color: #8b949e; font-size: 0.9em; margin-bottom: 10px; }
-        .sub-line { padding: 8px; margin: 4px 0; border-radius: 4px; cursor: pointer; transition: background 0.2s; }
+        
+        .law-item { 
+            background-color: #161b22; 
+            border: 1px solid #30363d; 
+            border-radius: 6px; 
+            padding: 20px; 
+            margin-bottom: 20px; 
+        }
+
+        /* Styl pro nadpis paragrafu */
+        .law-title {
+            color: #58a6ff;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .law-description { color: #8b949e; font-size: 0.9em; margin-bottom: 15px; }
+
+        .sub-line { 
+            padding: 10px; 
+            margin: 5px 0; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            transition: background 0.2s; 
+            font-size: 0.95em;
+        }
+
         .sub-line:hover { background-color: #21262d; border-left: 3px solid #58a6ff; }
-        b { color: #ffa657; }
+        
+        /* Barva pro tresty/sazby (oranžová podle obrázku) */
+        b { color: #ffa657; font-weight: bold; }
     </style>
 </head>
 <body>
-    
+
 <div class="law-item" id="L7" data-title="§7 Ublížení na zdraví">
     <p class="law-description">Vyhrožování usmrcením, těžkou újmou na zdraví či majetku, takovým způsobem, že to může vzbudit důvodnou obavu druhého</p>
     
@@ -714,18 +742,12 @@
 </div>
 
 <script>
-        // Tuto funkci vlož na úplný konec souboru tresty.html
         function toggle(element, text) {
-            // Pošle informaci do hlavního okna (index.html), aby se text přidal do textarea
             window.parent.postMessage(text, '*');
-            
-            // Udělá vizuální zpětnou vazbu (zelené bliknutí)
+            const originalColor = element.style.backgroundColor;
             element.style.backgroundColor = "#238636";
-            setTimeout(() => {
-                element.style.backgroundColor = "";
-            }, 300);
+            setTimeout(() => { element.style.backgroundColor = originalColor; }, 300);
         }
     </script>
-
 </body>
 </html>
