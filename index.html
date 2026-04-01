@@ -2,90 +2,200 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>SASP - Bureau Command</title>
+    <title>SASP - Detail záznamu</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --bg-dark: #0b0e14; --sidebar-bg: #151921; --card-bg: #1c212b; --accent-blue: #4a9eff; --border: #2d333b; --gold: #d4af37; --danger: #f85149; --success: #2ea043; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg-dark); color: white; margin: 0; display: flex; height: 100vh; overflow: hidden; }
-        .sidebar { width: 190px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 15px; display: flex; flex-direction: column; flex-shrink: 0; }
+        :root { 
+            --bg-dark: #0b0e14; 
+            --sidebar-bg: #151921; 
+            --card-bg: #1c212b; 
+            --accent-blue: #4a9eff; 
+            --border: #2d333b; 
+            --gold: #ffcc00; /* Výraznější žlutá/zlatá */
+            --danger: #f85149; 
+            --success: #2ea043; 
+        }
         
-        /* Zvýrazněné tlačítko Nový záznam */
-        .btn-new { background: var(--accent-blue); color: black !important; padding: 12px; border-radius: 6px; font-weight: bold; text-decoration: none; display: flex; align-items: center; gap: 10px; margin-bottom: 20px; transition: 0.2s; border: none; cursor: pointer; }
-        .btn-new:hover { filter: brightness(1.2); transform: translateY(-1px); }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg-dark); color: white; margin: 0; display: flex; height: 100vh; }
         
-        .nav-btn { background: none; border: none; color: #9ba3af; padding: 10px; text-align: left; cursor: pointer; border-radius: 4px; display: flex; align-items: center; gap: 8px; font-size: 11px; margin-bottom: 5px; }
-        .main { flex-grow: 1; padding: 20px; overflow-y: auto; display: flex; gap: 20px; }
-        .content-area { flex-grow: 1; display: flex; flex-direction: column; gap: 20px; }
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
-        .stat-card { background: var(--card-bg); border: 1px solid var(--border); padding: 15px; border-radius: 4px; }
-        .stat-val { font-size: 24px; font-weight: bold; display: block; }
-        .card { background: var(--card-bg); border: 1px solid var(--border); padding: 20px; border-radius: 4px; }
-        h3 { font-size: 14px; margin: 0 0 15px 0; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; }
-        table { width: 100%; border-collapse: collapse; font-size: 12px; }
-        th { text-align: left; padding: 12px; color: #9ba3af; border-bottom: 2px solid var(--border); font-size: 10px; }
-        td { padding: 12px; border-bottom: 1px solid var(--border); }
-        .status-badge { padding: 4px 8px; border-radius: 3px; font-weight: bold; font-size: 10px; }
-        .status-open { background: rgba(212, 175, 55, 0.1); color: var(--gold); border: 1px solid var(--gold); }
-        .status-resolved { background: rgba(46, 160, 67, 0.1); color: var(--success); border: 1px solid var(--success); }
-        .side-info { width: 300px; display: flex; flex-direction: column; gap: 15px; flex-shrink: 0; }
-        .log-card { background: var(--card-bg); border: 1px solid var(--border); padding: 15px; border-radius: 4px; display: flex; flex-direction: column; height: 100%; }
-        .log-list { overflow-y: auto; font-size: 11px; color: #9ba3af; flex-grow: 1; }
-        .log-item { padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .sidebar { width: 180px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 15px; flex-shrink: 0; }
+        .main { flex-grow: 1; padding: 20px 40px; overflow-y: auto; }
+        .container-fluid { width: 100%; }
+
+        /* Hlavní nadpis žlutě */
+        h2 { font-weight: bold; margin-bottom: 25px; color: var(--gold); letter-spacing: 1px; text-transform: uppercase; }
+
+        .card { background: var(--card-bg); border: 1px solid var(--border); padding: 25px; border-radius: 4px; margin-bottom: 20px; }
+        
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 25px; margin-bottom: 20px; }
+        
+        label { color: var(--accent-blue); font-size: 11px; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 8px; }
+        
+        input, select, textarea { 
+            width: 100%; background: #0b0e14; border: 1px solid var(--border); 
+            color: white; padding: 12px; border-radius: 3px; font-size: 14px; box-sizing: border-box; 
+        }
+
+        /* Systémový záznam */
+        .sys-record { border: 1px dashed #444; color: #aaa; font-size: 13px; font-style: italic; min-height: 80px; background: rgba(0,0,0,0.3); padding: 15px; }
+
+        /* Sekce poznámek se žlutým textem a okrajem */
+        .notes-card { border-top: 4px solid var(--gold); }
+        .notes-header { 
+            display: flex; align-items: center; gap: 10px; 
+            color: var(--gold); /* Žlutý text nadpisu */
+            margin-bottom: 15px; font-weight: bold; text-transform: uppercase; font-size: 14px; 
+        }
+        
+        textarea#case-notes { min-height: 400px; font-family: 'Consolas', monospace; font-size: 15px; border-color: #444; }
+
+        /* Varování přes obrazovku */
+        #locked-screen-warning {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(248, 81, 73, 0.15); /* Jemný červený nádech přes vše */
+            border: 10px solid var(--danger);
+            pointer-events: none; /* Aby se dalo klikat skrz na prohlížení */
+            z-index: 9999;
+            box-sizing: border-box;
+        }
+        
+        .locked-banner {
+            background: var(--danger); color: white; padding: 20px; 
+            font-size: 20px; font-weight: bold; text-align: center; 
+            margin-bottom: 30px; border-radius: 4px; display: none;
+        }
+
+        .btn-row { display: flex; justify-content: flex-end; gap: 15px; margin-bottom: 50px; }
+        .btn { border: none; padding: 14px 30px; border-radius: 4px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 10px; }
+        .btn-resolve { background: var(--success); color: white; }
+        .btn-save { background: var(--accent-blue); color: black; }
     </style>
 </head>
 <body>
+
+<div id="locked-screen-warning"></div>
+
 <div class="sidebar">
-    <div style="text-align: center; margin-bottom: 20px;"><i class="fa-solid fa-shield-halved" style="font-size: 24px; color: var(--gold);"></i></div>
-    <a href="detail.html" class="btn-new"><i class="fa-solid fa-plus-circle"></i> NOVÝ ZÁZNAM</a>
-    <button class="nav-btn" onclick="location.reload()"><i class="fa-solid fa-rotate"></i> Obnovit data</button>
+    <a href="index.html" style="color: var(--accent-blue); text-decoration: none; font-size: 12px; font-weight: bold;">
+        <i class="fa-solid fa-arrow-left"></i> ZPĚT
+    </a>
 </div>
+
 <div class="main">
-    <div class="content-area">
-        <div class="stats-grid">
-            <div class="stat-card">CELKEM <span id="stat-total" class="stat-val">0</span></div>
-            <div class="stat-card">OTEVŘENO <span id="stat-active" class="stat-val" style="color:var(--gold)">0</span></div>
-            <div class="stat-card">VYŘEŠENO <span id="stat-done" class="stat-val" style="color:var(--success)">0</span></div>
+    <div class="container-fluid">
+        <div id="locked-msg" class="locked-banner">
+            <i class="fa-solid fa-triangle-exclamation"></i> TENTO ZÁZNAM JE UZAVŘEN - POUZE PRO ČTENÍ
         </div>
+        
+        <h2>Evidence Operativních Prostředků</h2>
+        
         <div class="card">
-            <h3>Evidence vyšetřování</h3>
-            <table>
-                <thead><tr><th>ID</th><th>SUBJEKT</th><th>DETEKTIV</th><th>STAV</th><th>AKCE</th></tr></thead>
-                <tbody id="case-table-body"></tbody>
-            </table>
+            <div class="grid-3">
+                <div><label>Vyšetřující detektiv</label><input type="text" id="det-name"></div>
+                <div><label>Hodnost</label>
+                    <select id="det-rank">
+                        <option>DBI Trainee</option><option>Detective I</option><option>Detective II</option><option>Command</option>
+                    </select>
+                </div>
+                <div><label>Case ID</label><input type="text" id="case-id"></div>
+            </div>
+            
+            <div class="grid-3">
+                <div><label>Subjekt (Jméno Příjmení)</label><input type="text" id="sub-name"></div>
+                <div><label>Datum narození</label><input type="text" id="sub-dob"></div>
+                <div><label>MDT ID</label><input type="text" id="mdt-id"></div>
+            </div>
+
+            <div class="grid-3">
+                <div style="grid-column: span 2;">
+                    <label>Právní kvalifikace (Lze přepisovat tresty)</label>
+                    <input list="crimes-list" id="legal-qual" placeholder="Vyberte nebo napište vlastní trestný čin a trest...">
+                    <datalist id="crimes-list">
+                        <option value="§6 a) Zločin v organizaci (15 let - doživotí)">
+                        <option value="§6 b) Zločin v organizaci s naplněním (Doživotí)">
+                        <option value="§7 a) Ublížení - neúmyslně zbraní (1-5 let)">
+                        <option value="§7 c) Ublížení - úmyslně střelnou zbraní (3-10 let)">
+                        <option value="§9 Vražda (Doživotí)">
+                        <option value="§11 Pokus o vraždu (20-30 let)">
+                        <option value="§18 Loupežné přepadení (10-20 let)">
+                    </datalist>
+                </div>
+                <div>
+                    <label>Typ OPP</label>
+                    <select id="opp-type">
+                        <option>Prověrka majetku a finančních prostředků</option>
+                        <option>Sledování osob a věcí</option>
+                        <option>Odposlech a záznam</option>
+                    </select>
+                </div>
+            </div>
+
+            <label>Zjištěné skutečnosti (Systémový záznam)</label>
+            <textarea class="sys-record" readonly>Na základě prvotního ohledání místa činu bylo zjištěno, že došlo k násilnému trestnému činu...</textarea>
+
+            <label>Doplňující odůvodnění žádosti</label>
+            <textarea id="user-note" style="min-height: 80px;" placeholder="Vlastní text..."></textarea>
         </div>
-    </div>
-    <div class="side-info">
-        <div class="log-card">
-            <div style="font-size: 10px; font-weight: bold; color: var(--accent-blue); margin-bottom: 10px;">HISTORIE ÚKONŮ</div>
-            <div id="log-list" class="log-list"></div>
+
+        <div class="card notes-card">
+            <div class="notes-header">
+                <i class="fa-solid fa-clipboard-list"></i> PRŮBĚŽNÉ POZNÁMKY A OPERATIVNÍ DENÍK
+            </div>
+            <textarea id="case-notes" placeholder="Zápis vyšetřování..."></textarea>
+        </div>
+
+        <div class="btn-row" id="action-buttons">
+            <button class="btn btn-save" onclick="saveData('OTEVŘENO')"><i class="fa-solid fa-save"></i> ULOŽIT</button>
+            <button class="btn btn-resolve" onclick="saveData('VYŘEŠENO')"><i class="fa-solid fa-check-double"></i> SCHVÁLIT A ARCHIVOVAT</button>
         </div>
     </div>
 </div>
+
 <script>
-    function render() {
-        let cases = JSON.parse(localStorage.getItem('lspd_v15_data')) || [];
-        let logs = JSON.parse(localStorage.getItem('lspd_history')) || [];
-        document.getElementById('case-table-body').innerHTML = cases.map((c, i) => `
-            <tr>
-                <td><b>${c.id}</b></td><td>${c.subject || '---'}</td><td>${c.author || 'Nepřiřazen'}</td>
-                <td><span class="status-badge ${c.status === 'VYŘEŠENO' ? 'status-resolved' : 'status-open'}">${c.status}</span></td>
-                <td>
-                    <button style="color:var(--accent-blue); border:none; background:none; cursor:pointer;" onclick="window.location.href='detail.html?id=${i}'"><i class="fa-solid fa-edit"></i></button>
-                    <button style="color:var(--danger); border:none; background:none; cursor:pointer;" onclick="deleteCase(${i})"><i class="fa-solid fa-trash"></i></button>
-                </td>
-            </tr>`).join('');
-        document.getElementById('log-list').innerHTML = logs.slice(-20).reverse().map(l => `<div class="log-item">${l}</div>`).join('');
-        document.getElementById('stat-total').innerText = cases.length;
-        document.getElementById('stat-active').innerText = cases.filter(c => c.status !== 'VYŘEŠENO').length;
-        document.getElementById('stat-done').innerText = cases.filter(c => c.status === 'VYŘEŠENO').length;
+    const urlParams = new URLSearchParams(window.location.search);
+    const caseIndex = urlParams.get('id');
+    let cases = JSON.parse(localStorage.getItem('lspd_v15_data')) || [];
+
+    if(caseIndex !== null && cases[caseIndex]) {
+        let c = cases[caseIndex];
+        document.getElementById('det-name').value = c.author || '';
+        document.getElementById('case-id').value = c.id || '';
+        document.getElementById('sub-name').value = c.subject || '';
+        document.getElementById('sub-dob').value = c.dob || '';
+        document.getElementById('mdt-id').value = c.mdt || '';
+        document.getElementById('legal-qual').value = c.legal || '';
+        document.getElementById('opp-type').value = c.opp || '';
+        document.getElementById('case-notes').value = c.notes || '';
+        document.getElementById('user-note').value = c.note || '';
+        
+        // Pokud je vyřešeno, zamknout vše a ukázat varování
+        if(c.status === 'VYŘEŠENO') {
+            document.querySelectorAll('input, select, textarea').forEach(el => el.disabled = true);
+            document.getElementById('locked-msg').style.display = 'block';
+            document.getElementById('locked-screen-warning').style.display = 'block';
+            document.getElementById('action-buttons').style.display = 'none';
+        }
     }
-    function deleteCase(i) { if(confirm("Opravdu smazat tento záznam?")) { 
-        let data = JSON.parse(localStorage.getItem('lspd_v15_data'));
-        data.splice(i, 1); 
-        localStorage.setItem('lspd_v15_data', JSON.stringify(data)); 
-        render(); 
-    }}
-    render();
+
+    function saveData(status) {
+        let entry = {
+            id: document.getElementById('case-id').value || '---',
+            author: document.getElementById('det-name').value || 'Michala',
+            subject: document.getElementById('sub-name').value || '---',
+            dob: document.getElementById('sub-dob').value || '',
+            mdt: document.getElementById('mdt-id').value || '',
+            legal: document.getElementById('legal-qual').value,
+            opp: document.getElementById('opp-type').value,
+            notes: document.getElementById('case-notes').value,
+            note: document.getElementById('user-note').value,
+            status: status
+        };
+        if(caseIndex !== null) cases[caseIndex] = entry; else cases.push(entry);
+        localStorage.setItem('lspd_v15_data', JSON.stringify(cases));
+        window.location.href = 'index.html';
+    }
 </script>
 </body>
 </html>
