@@ -2,40 +2,39 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>SASP - Evidence OPP</title>
+    <title>SASP - Evidence</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --bg: #0b0e14; --sidebar: #151921; --card: #1c212b; --blue: #4a9eff; --gold: #ffcc00; --border: #2d333b; --success: #2ea043; --danger: #f85149; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; margin: 0; display: flex; height: 100vh; }
-        .sidebar { width: 200px; background: var(--sidebar); border-right: 1px solid var(--border); padding: 20px; flex-shrink: 0; }
-        .main { flex-grow: 1; padding: 40px; overflow-y: auto; }
-        h1 { color: var(--gold); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; }
+        :root { --bg: #0b0e14; --sidebar: #151921; --card: #1c212b; --blue: #4a9eff; --gold: #ffcc00; --border: #2d333b; --success: #2ea043; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; margin: 0; display: flex; }
+        .sidebar { width: 200px; background: var(--sidebar); height: 100vh; border-right: 1px solid var(--border); padding: 20px; position: fixed; }
+        .main { margin-left: 240px; padding: 40px; width: calc(100% - 240px); }
+        h1 { color: var(--gold); text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
         .btn-new { background: var(--gold); color: black; border: none; padding: 12px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; margin-bottom: 25px; }
         table { width: 100%; border-collapse: collapse; background: var(--card); border: 1px solid var(--border); }
-        th { background: #151921; color: var(--blue); text-align: left; padding: 15px; font-size: 12px; text-transform: uppercase; border-bottom: 1px solid var(--border); }
+        th { background: #11141b; color: var(--blue); text-align: left; padding: 15px; font-size: 12px; text-transform: uppercase; border-bottom: 1px solid var(--border); }
         td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 14px; }
-        .status { padding: 4px 8px; border-radius: 3px; font-size: 11px; font-weight: bold; }
-        .status-open { background: rgba(74,158,255,0.2); color: var(--blue); }
-        .status-closed { background: rgba(46,160,67,0.2); color: var(--success); }
-        .btn-action { color: var(--blue); text-decoration: none; font-weight: bold; margin-right: 15px; }
-        .btn-del { color: var(--danger); cursor: pointer; background: none; border: none; font-weight: bold; }
+        .status { padding: 4px 8px; border-radius: 3px; font-size: 11px; font-weight: bold; text-transform: uppercase; }
+        .status-open { background: rgba(74,158,255,0.1); color: var(--blue); border: 1px solid var(--blue); }
+        .status-closed { background: rgba(46,160,67,0.1); color: var(--success); border: 1px solid var(--success); }
+        .btn-edit { color: var(--gold); text-decoration: none; font-weight: bold; margin-right: 15px; }
     </style>
 </head>
 <body>
     <div class="sidebar">
-        <div style="font-weight: bold; color: var(--gold); margin-bottom: 30px;">SASP COMMAND</div>
-        <a href="detail.html" class="btn-new"><i class="fa-solid fa-plus"></i> NOVÝ ZÁZNAM</a>
+        <div style="font-weight: bold; color: var(--gold); margin-bottom: 30px; font-size: 20px;">SASP</div>
+        <a href="detail.html" class="btn-new"><i class="fa-solid fa-plus"></i> NOVÝ PŘÍPAD</a>
     </div>
     <div class="main">
-        <h1>Evidence Operativních Prostředků</h1>
+        <h1>Operační centrum</h1>
         <table>
             <thead>
                 <tr>
-                    <th>CASE ID</th>
-                    <th>SUBJEKT</th>
-                    <th>DETEKTIV</th>
-                    <th>STAV</th>
-                    <th>AKCE</th>
+                    <th>Spisové ID</th>
+                    <th>Subjekt</th>
+                    <th>Detektiv</th>
+                    <th>Stav</th>
+                    <th>Akce</th>
                 </tr>
             </thead>
             <tbody id="table-body"></tbody>
@@ -50,19 +49,15 @@
             data.forEach((c, i) => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td style="color:var(--gold); font-weight:bold;">${c.id}</td>
+                    <td style="color:var(--gold); font-weight:bold;">${c.id || '#2026-X'}</td>
                     <td>${c.subject}</td>
                     <td>${c.author}</td>
                     <td><span class="status ${c.status === 'VYŘEŠENO' ? 'status-closed' : 'status-open'}">${c.status}</span></td>
-                    <td>
-                        <a href="detail.html?id=${i}" class="btn-action">${c.status === 'VYŘEŠENO' ? 'ZOBRAZIT' : 'UPRAVIT'}</a>
-                        <button onclick="del(${i})" class="btn-del">SMAZAT</button>
-                    </td>
+                    <td><a href="detail.html?id=${i}" class="btn-edit">OTEVŘÍT</a></td>
                 `;
                 tbody.appendChild(tr);
             });
         }
-        function del(i) { if(confirm('Smazat?')) { let d = JSON.parse(localStorage.getItem(DB)); d.splice(i,1); localStorage.setItem(DB, JSON.stringify(d)); load(); } }
         load();
     </script>
 </body>
