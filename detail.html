@@ -4,67 +4,7 @@
     <meta charset="UTF-8">
     <title>SASP - Detail</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        :root { 
-            --bg: #0d1117; --sidebar: #161b22; --card: #0d1117; 
-            --blue: #58a6ff; --gold: #f0883e; --border: #30363d; 
-            --input-bg: #010409; --success: #238636; --danger: #f85149;
-        }
-        
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: var(--bg); color: #c9d1d9; margin: 0; padding: 0; }
-        
-        .top-bar { background: var(--sidebar); padding: 10px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-        .breadcrumb { font-size: 13px; color: #8b949e; }
-        .breadcrumb a { color: var(--blue); text-decoration: none; margin-right: 5px; }
-
-        .container { max-width: 1100px; margin: 20px auto; padding: 20px; }
-        
-        .header-section { border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
-        .header-section h1 { font-size: 20px; margin: 0; color: #f0f6fc; font-weight: 400; }
-
-        /* Pulzující ARCHIVED štítek */
-        .status-badge { 
-            background: rgba(56, 139, 253, 0.1); color: var(--blue); border: 1px solid rgba(56, 139, 253, 0.4); 
-            padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: bold; text-transform: uppercase;
-        }
-        
-        .status-archived {
-            background: rgba(248, 81, 73, 0.1) !important;
-            color: var(--danger) !important;
-            border: 1px solid var(--danger) !important;
-            animation: pulse-red 2s infinite;
-        }
-
-        @keyframes pulse-red {
-            0% { box-shadow: 0 0 0 0 rgba(248, 81, 73, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(248, 81, 73, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(248, 81, 73, 0); }
-        }
-
-        .section-title { font-size: 14px; font-weight: 600; color: #8b949e; margin-bottom: 15px; text-transform: uppercase; display: flex; align-items: center; gap: 8px; margin-top: 25px; }
-        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px; }
-        
-        .input-group { display: flex; flex-direction: column; }
-        label { font-size: 11px; margin-bottom: 6px; color: #8b949e; text-transform: uppercase; font-weight: bold; }
-        input, select, textarea { 
-            background: var(--input-bg); border: 1px solid var(--border); color: #f0f6fc; 
-            padding: 10px; border-radius: 6px; font-size: 14px; outline: none; transition: 0.2s;
-        }
-        input:focus, textarea:focus { border-color: var(--blue); }
-        
-        .web-box { background: #161b22; border: 1px solid var(--border); border-radius: 6px; padding: 1px; margin-bottom: 20px; }
-        .web-box textarea { width: 100%; border: none; background: transparent; min-height: 150px; padding: 15px; resize: vertical; color: #d1e8ff; }
-
-        .btn-catalog { background: #21262d; border: 1px solid var(--border); color: #c9d1d9; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; margin-top: 5px; }
-        
-        .footer-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 30px; border-top: 1px solid var(--border); padding-top: 20px; }
-        .btn { padding: 10px 25px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 14px; border: 1px solid transparent; }
-        .btn-primary { background: var(--success); color: white; }
-        .btn-secondary { background: #21262d; color: #c9d1d9; border-color: var(--border); }
-
-        /* Zrušen lock-frame okraj, nahrazeno jen zákazem interakce */
-        .locked-mode { pointer-events: none; opacity: 0.8; }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="top-bar">
