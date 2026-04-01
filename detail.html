@@ -2,112 +2,123 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>SASP - Evidence Detail</title>
+    <title>SASP - Case File</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --bg: #0b0e14; --sidebar: #151921; --card: #1c212b; --blue: #4a9eff; --gold: #ffcc00; --border: #2d333b; --danger: #f85149; --success: #2ea043; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; margin: 0; padding: 0; }
-        
-        .top-nav { background: var(--sidebar); padding: 15px 40px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 15px; font-size: 13px; }
-        .top-nav a { color: var(--blue); text-decoration: none; }
-        .top-nav span { color: #888; }
-
-        .container { max-width: 1300px; margin: 30px auto; padding: 0 20px; }
-        .header-title { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
-        .header-title h1 { margin: 0; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; font-size: 24px; }
-
-        .card { background: var(--card); border: 1px solid var(--border); padding: 25px; border-radius: 4px; margin-bottom: 25px; }
-        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 20px; }
-        
-        label { color: var(--blue); font-size: 11px; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 8px; }
-        input, select, textarea { width: 100%; background: #05070a; border: 1px solid var(--border); color: white; padding: 12px; border-radius: 4px; font-size: 14px; box-sizing: border-box; }
-        
-        /* Styl pro Webové oznámení - nyní editovatelné */
-        .web-oznameni { 
-            border: 1px solid var(--blue); 
-            background: rgba(74, 158, 255, 0.05); 
-            color: #d1e8ff; 
-            min-height: 120px; 
-            margin-bottom: 20px; 
-            font-family: 'Segoe UI', sans-serif;
-            resize: vertical;
+        :root { 
+            --bg: #0d1117; --sidebar: #161b22; --card: #0d1117; 
+            --blue: #58a6ff; --gold: #f0883e; --border: #30363d; 
+            --input-bg: #010409; --success: #238636; --danger: #f85149;
         }
         
-        .btn-catalog { background: #1c212b; border: 1px solid var(--gold); color: var(--gold); padding: 10px; cursor: pointer; border-radius: 4px; font-weight: bold; transition: 0.3s; margin-top: 5px; }
-        .btn-catalog:hover { background: var(--gold); color: black; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background: var(--bg); color: #c9d1d9; margin: 0; padding: 0; }
         
-        .footer-btns { display: flex; justify-content: flex-end; gap: 15px; margin-top: 40px; padding-bottom: 50px; }
-        .btn { padding: 14px 25px; border-radius: 4px; border: none; font-weight: bold; cursor: pointer; text-transform: uppercase; }
-        .btn-save { background: var(--blue); color: black; }
-        .btn-close { background: var(--success); color: white; }
+        .top-bar { background: var(--sidebar); padding: 10px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+        .breadcrumb { font-size: 13px; color: #8b949e; }
+        .breadcrumb a { color: var(--blue); text-decoration: none; margin-right: 5px; }
 
-        #locked-frame { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; border: 15px solid var(--danger); pointer-events: none; z-index: 10000; box-sizing: border-box; opacity: 0.3; }
+        .container { max-width: 1100px; margin: 20px auto; padding: 20px; }
+        
+        .header-section { border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
+        .header-section h1 { font-size: 20px; margin: 0; color: #f0f6fc; font-weight: 400; }
+
+        /* Pulzující ARCHIVED štítek */
+        .status-badge { 
+            background: rgba(56, 139, 253, 0.1); color: var(--blue); border: 1px solid rgba(56, 139, 253, 0.4); 
+            padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: bold; text-transform: uppercase;
+        }
+        
+        .status-archived {
+            background: rgba(248, 81, 73, 0.1) !important;
+            color: var(--danger) !important;
+            border: 1px solid var(--danger) !important;
+            animation: pulse-red 2s infinite;
+        }
+
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(248, 81, 73, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(248, 81, 73, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(248, 81, 73, 0); }
+        }
+
+        .section-title { font-size: 14px; font-weight: 600; color: #8b949e; margin-bottom: 15px; text-transform: uppercase; display: flex; align-items: center; gap: 8px; margin-top: 25px; }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px; }
+        
+        .input-group { display: flex; flex-direction: column; }
+        label { font-size: 11px; margin-bottom: 6px; color: #8b949e; text-transform: uppercase; font-weight: bold; }
+        input, select, textarea { 
+            background: var(--input-bg); border: 1px solid var(--border); color: #f0f6fc; 
+            padding: 10px; border-radius: 6px; font-size: 14px; outline: none; transition: 0.2s;
+        }
+        input:focus, textarea:focus { border-color: var(--blue); }
+        
+        .web-box { background: #161b22; border: 1px solid var(--border); border-radius: 6px; padding: 1px; margin-bottom: 20px; }
+        .web-box textarea { width: 100%; border: none; background: transparent; min-height: 150px; padding: 15px; resize: vertical; color: #d1e8ff; }
+
+        .btn-catalog { background: #21262d; border: 1px solid var(--border); color: #c9d1d9; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; margin-top: 5px; }
+        
+        .footer-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 30px; border-top: 1px solid var(--border); padding-top: 20px; }
+        .btn { padding: 10px 25px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 14px; border: 1px solid transparent; }
+        .btn-primary { background: var(--success); color: white; }
+        .btn-secondary { background: #21262d; color: #c9d1d9; border-color: var(--border); }
+
+        /* Zrušen lock-frame okraj, nahrazeno jen zákazem interakce */
+        .locked-mode { pointer-events: none; opacity: 0.8; }
     </style>
 </head>
-<body>
-    <div id="locked-frame"></div>
+<body id="body-content">
     
-    <div class="top-nav">
-        <a href="index.html"><i class="fa-solid fa-arrow-left"></i> Zpět do Commandu</a>
+    <div class="top-bar">
+        <div class="breadcrumb">
+            <a href="index.html">SASP Evidence</a> / <span>Detail Spisu</span>
+        </div>
+        <div id="case-number" style="font-weight: bold; color: #8b949e;">#2026-NEW</div>
     </div>
 
     <div class="container">
-        <div class="header-title">
-            <div><h1 id="case-title-id">Evidence Operativních Prostředků</h1></div>
-            <div id="status-tag" style="background: var(--blue); color: black; padding: 5px 15px; font-weight: bold; border-radius: 3px; font-size: 12px;">AKTIVNÍ</div>
+        <div class="header-section">
+            <h1 id="main-title">Operativní spis</h1>
+            <div id="status-tag" class="status-badge">ACTIVE</div>
         </div>
 
-        <div class="card">
-            <div class="grid-3">
-                <div><label>Vyšetřující detektiv</label><input type="text" id="author" placeholder="Jméno"></div>
-                <div>
+        <div id="main-form">
+            <div class="section-title"><i class="fa-solid fa-user-shield"></i> Detektiv</div>
+            <div class="grid">
+                <div class="input-group"><label>Jméno</label><input type="text" id="author"></div>
+                <div class="input-group">
                     <label>Hodnost</label>
                     <select id="rank">
-                        <option>DBI Trainee</option><option>Detective I</option><option>Detective II</option><option>Detective III</option><option>Command Staff</option>
+                        <option>Detective Trainee</option><option>Detective I</option><option>Detective II</option><option>Detective III</option>
                     </select>
                 </div>
-                <div><label>Case ID</label><input type="text" id="case-id" placeholder="#2026-XXXX"></div>
+                <div class="input-group"><label>Badge ID</label><input type="text" id="case-id"></div>
             </div>
 
-            <div class="grid-3">
-                <div><label>Subjekt (Jméno Příjmení)</label><input type="text" id="subject" placeholder="John Doe"></div>
-                <div><label>Datum Narození</label><input type="text" id="birth" placeholder="DD/MM/YYYY"></div>
-                <div><label>MDT ID</label><input type="text" id="mdt-id" placeholder="8xxx"></div>
+            <div class="section-title"><i class="fa-solid fa-id-card"></i> Subjekt</div>
+            <div class="grid">
+                <div class="input-group"><label>Celé jméno</label><input type="text" id="subject"></div>
+                <div class="input-group"><label>Narození</label><input type="text" id="birth"></div>
+                <div class="input-group"><label>MDT ID</label><input type="text" id="mdt-id"></div>
             </div>
 
-            <div class="grid-3" style="grid-template-columns: 2fr 1fr;">
-                <div>
-                    <label>Právní kvalifikace (Dle Penal Code SA)</label>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="text" id="legal" readonly placeholder="Vyberte v katalogu...">
-                        <button class="btn-catalog" onclick="window.open('trest.html', 'PC', 'width=1100,height=800')">KATALOG</button>
-                    </div>
-                </div>
-                <div>
-                    <label>Typ OPP</label>
-                    <select id="opp-type">
-                        <option>Prověrka majetku a finančních prostředků</option>
-                        <option>Odposlech telekomunikačního provozu</option>
-                        <option>Sledování osob a věcí</option>
-                    </select>
-                </div>
+            <div class="section-title"><i class="fa-solid fa-gavel"></i> Kvalifikace</div>
+            <div style="margin-bottom: 25px;">
+                <textarea id="legal" readonly style="height: 60px; width:100%; margin-bottom: 10px; background: #010409;"></textarea>
+                <button id="catalog-btn" class="btn-catalog" onclick="window.open('trest.html', 'PC', 'width=1100,height=800')">Otevřít katalog</button>
             </div>
 
-            <label>Webové oznámení (Popis skutku)</label>
-            <textarea id="web-oznameni" class="web-oznameni" placeholder="Zde vypište oficiální znění oznámení..."></textarea>
+            <div class="section-title"><i class="fa-solid fa-file-lines"></i> Webové oznámení</div>
+            <div class="web-box">
+                <textarea id="web-oznameni"></textarea>
+            </div>
 
-            <label>Doplňující odůvodnění žádosti (Interní)</label>
-            <textarea id="note" style="height: 80px;" placeholder="Vložte interní odůvodnění..."></textarea>
+            <div class="section-title"><i class="fa-solid fa-pen-nib"></i> Interní deník</div>
+            <textarea id="notes" style="height: 150px; width: 100%; background: var(--input-bg); border: 1px solid var(--border); color: white; padding: 10px; border-radius: 6px;"></textarea>
         </div>
 
-        <div class="card" style="border-top: 2px solid var(--gold);">
-            <label style="color: var(--gold);"><i class="fa-solid fa-book"></i> Průběžné poznámky a operativní deník</label>
-            <textarea id="notes" style="height: 250px; margin-top: 10px;" placeholder="Sem pište všechny detaily z vyšetřování..."></textarea>
-        </div>
-
-        <div class="footer-btns" id="action-area">
-            <button class="btn btn-save" onclick="saveData('OTEVŘENO')">Uložit rozpracované</button>
-            <button class="btn btn-close" onclick="saveData('VYŘEŠENO')">Schválit a archivovat</button>
+        <div class="footer-actions" id="action-area">
+            <button class="btn btn-secondary" onclick="saveData('OTEVŘENO')">Uložit koncept</button>
+            <button class="btn btn-primary" onclick="saveData('VYŘEŠENO')">Archivovat spis</button>
         </div>
     </div>
 
@@ -120,23 +131,27 @@
         if(cid !== null && records[cid]) {
             let r = records[cid];
             document.getElementById('author').value = r.author || '';
-            document.getElementById('rank').value = r.rank || 'DBI Trainee';
+            document.getElementById('rank').value = r.rank || 'Detective Trainee';
             document.getElementById('case-id').value = r.id || '';
             document.getElementById('subject').value = r.subject || '';
             document.getElementById('birth').value = r.birth || '';
             document.getElementById('mdt-id').value = r.mdt || '';
             document.getElementById('legal').value = r.legal || '';
-            document.getElementById('opp-type').value = r.oppType || '';
-            document.getElementById('web-oznameni').value = r.webOznameni || ''; // Načtení oznámení
-            document.getElementById('note').value = r.note || '';
+            document.getElementById('web-oznameni').value = r.webOznameni || '';
             document.getElementById('notes').value = r.notes || '';
+            document.getElementById('case-number').innerText = "#" + (r.id || 'N/A');
             
             if(r.status === 'VYŘEŠENO') {
-                document.querySelectorAll('input, textarea, select, button').forEach(el => el.disabled = true);
+                // Aktivace pulzujícího červeného štítku
+                const tag = document.getElementById('status-tag');
+                tag.innerText = "ARCHIVED";
+                tag.classList.add('status-archived');
+                
+                // Zamknutí formuláře
+                document.getElementById('main-form').classList.add('locked-mode');
                 document.getElementById('action-area').style.display = 'none';
-                document.getElementById('status-tag').style.background = "#2ea043"; 
-                document.getElementById('status-tag').innerText = "ARCHIVOVÁNO";
-                document.getElementById('locked-frame').style.display = 'block';
+                document.getElementById('catalog-btn').style.display = 'none';
+                document.querySelectorAll('input, textarea, select').forEach(el => el.readOnly = true);
             }
         }
 
@@ -149,9 +164,7 @@
                 birth: document.getElementById('birth').value,
                 mdt: document.getElementById('mdt-id').value,
                 legal: document.getElementById('legal').value,
-                oppType: document.getElementById('opp-type').value,
-                webOznameni: document.getElementById('web-oznameni').value, // Uložení oznámení
-                note: document.getElementById('note').value,
+                webOznameni: document.getElementById('web-oznameni').value,
                 notes: document.getElementById('notes').value,
                 status: status
             };
