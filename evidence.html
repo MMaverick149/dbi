@@ -15,7 +15,7 @@
         .law-category { color: #ffa657; font-weight: bold; margin: 15px 0 5px 0; border-bottom: 1px solid #30363d; padding-bottom: 5px; text-transform: uppercase; font-size: 11px; }
         .law-item { padding: 10px; border-bottom: 1px solid var(--border); cursor: pointer; }
         .law-item:hover { background: #21262d; color: var(--accent); }
-        .law-item small { display: block; color: #8b949e; font-weight: normal; margin-top: 3px; font-size: 11px; }
+        .law-item small { display: block; color: #8b949e; font-weight: normal; margin-top: 3px; font-size: 11px; line-height: 1.2; }
         .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 99; }
         #lawSearch { width: 100%; padding: 10px; background: #010409; border: 1px solid var(--border); color: white; border-radius: 4px; margin-bottom: 10px; box-sizing: border-box; }
     </style>
@@ -28,9 +28,14 @@
 
 <div class="grid">
     <div class="field"><label>👮 Vyžadující příslušník</label><input type="text" id="detektiv" placeholder="Jméno Příjmení"></div>
-    <div class="field"><label>🎖️ Hodnost</label><select id="hodnost"><option>Detective I</option><option>Detective II</option><option>Detective III</option><option>Sergeant</option><option>Lieutenant</option><option>DBI Trainee</option></select></div>
+    <div class="field"><label>🎖️ Hodnost</label>
+        <select id="hodnost">
+            <option>Detective I</option><option>Detective II</option><option>Detective III</option>
+            <option>Sergeant</option><option>Lieutenant</option><option>DBI Trainee</option>
+        </select>
+    </div>
     <div class="field"><label>📂 Case ID</label><input type="text" id="caseid" placeholder="#2026-XXXX"></div>
-    <div class="field"><label>👤 Subjekt</label><input type="text" id="subjekt" placeholder="Luis Vega"></div>
+    <div class="field"><label>👤 Subjekt</label><input type="text" id="subjekt" placeholder="Jméno osoby"></div>
     <div class="field"><label>📅 Datum narození</label><input type="text" id="narozeni" placeholder="13.03.1993"></div>
     <div class="field"><label>🆔 MDT ID</label><input type="text" id="mdtid" placeholder="NC5422"></div>
 </div>
@@ -51,7 +56,7 @@
 <div id="modal-laws">
     <h2 style="color:var(--accent); margin-top: 0;">Katalog trestů</h2>
     <input type="text" id="lawSearch" placeholder="Hledat trest..." onkeyup="filterLaws()">
-    <div id="laws-list">Načítám data ze souboru laws.json...</div>
+    <div id="laws-list">Načítám laws.json...</div>
     <button onclick="toggleLaws()" style="margin-top: 20px; padding: 10px; width: 100%; cursor: pointer; background: #30363d; color: white; border: none; border-radius: 4px;">ZAVŘÍT</button>
 </div>
 
@@ -59,63 +64,66 @@
     async function loadLaws() {
         const list = document.getElementById('laws-list');
         try {
-            // Použijeme cestu bez ./ pro jistotu na GitHubu
+            // Načítáme přímo z kořene webu, kde jsi potvrdil, že soubor je
             const response = await fetch('laws.json?v=' + Date.now());
             
             if (!response.ok) {
-                throw new Error(`Soubor laws.json nebyl nalezen (Status: ${response.status})`);
+                throw new Error(`Soubor nenalezen (Status ${response.status}). Zkontroluj, zda je laws.json na GitHubu.`);
             }
 
             const data = await response.json();
             list.innerHTML = '';
 
-            // Kontrola struktury: categories -> name, laws -> title, subs -> label
-            if (data && data.categories) {
-                data.categories.forEach(cat => {
-                    const catTitle = document.createElement('div');
-                    catTitle.className = 'law-category';
-                    catTitle.innerText = cat.name || 'Neznámá kategorie';
-                    list.appendChild(catTitle);
+            if (!data.categories) {
+                throw new Error("JSON je načtený, ale chybí v něm sekce 'categories'.");
+            }
 
-                    if (cat.laws) {
-                        cat.laws.forEach(law => {
-                            // Pokud má zákon podbody (subs), vypíšeme každý jako položku
-                            if (law.subs && law.subs.length > 0) {
-                                law.subs.forEach(sub => {
-                                    const div = document.createElement('div');
-                                    div.className = 'law-item';
-                                    div.innerHTML = `<strong>${law.title} ${sub.label}</strong><small>${sub.text}</small>`;
-                                    div.onclick = () => {
-                                        document.getElementById('kvalifikace').value = `${law.title} ${sub.label}`;
-                                        toggleLaws();
-                                    };
-                                    list.appendChild(div);
-                                });
-                            } else {
-                                // Zákon bez podbodů
+            data.categories.forEach(cat => {
+                const catTitle = document.createElement('div');
+                catTitle.className = 'law-category';
+                catTitle.innerText = cat.name || 'Kategorie';
+                list.appendChild(catTitle);
+
+                if (cat.laws && Array.isArray(cat.laws)) {
+                    cat.laws.forEach(law => {
+                        // Kontrola, zda existují podbody subs
+                        if (law.subs && Array.isArray(law.subs) && law.subs.length > 0) {
+                            law.subs.forEach(sub => {
                                 const div = document.createElement('div');
                                 div.className = 'law-item';
-                                div.innerHTML = `<strong>${law.title}</strong>`;
+                                // Zobrazení: §7 Ublížení na zdraví a)
+                                const labelText = sub.label ? ` ${sub.label}` : '';
+                                div.innerHTML = `<strong>${law.title}${labelText}</strong><small>${sub.text || ''}</small>`;
                                 div.onclick = () => {
-                                    document.getElementById('kvalifikace').value = law.title;
+                                    document.getElementById('kvalifikace').value = `${law.title}${labelText}`;
                                     toggleLaws();
                                 };
                                 list.appendChild(div);
-                            }
-                        });
-                    }
-                });
-            } else {
-                throw new Error("JSON nemá očekávanou strukturu (chybí categories)");
-            }
+                            });
+                        } else {
+                            // Zákon bez podbodů
+                            const div = document.createElement('div');
+                            div.className = 'law-item';
+                            div.innerHTML = `<strong>${law.title}</strong><small>${law.description || ''}</small>`;
+                            div.onclick = () => {
+                                document.getElementById('kvalifikace').value = law.title;
+                                toggleLaws();
+                            };
+                            list.appendChild(div);
+                        }
+                    });
+                }
+            });
+
         } catch (e) {
-            list.innerHTML = `<span style="color:#f85149"><b>Chyba načítání:</b> ${e.message}</span><br>
-            <small>Ujistěte se, že soubor 'laws.json' je ve stejné složce jako tento soubor a že má správný formát.</small>`;
-            console.error("Debug Info:", e);
+            list.innerHTML = `<div style="color:#f85149; padding:10px; border:1px solid #f85149; border-radius:4px;">
+                <strong>Chyba:</strong> ${e.message}
+            </div>`;
+            console.error("Chyba při načítání:", e);
         }
     }
 
-    // Spustit načítání hned
+    // Inicializace
     loadLaws();
 
     function filterLaws() {
