@@ -33,12 +33,12 @@
         /* KATALOG */
         .tags-container { border: 1px solid var(--border); background: #010409; padding: 10px; border-radius: 4px; min-height: 40px; display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
         .tag { background: #238636; color: white; padding: 3px 10px; border-radius: 20px; font-size: 11px; display: flex; align-items: center; gap: 5px; font-weight: bold; }
-        .tag span { cursor: pointer; opacity: 0.7; }
         .inline-catalog { border: 1px solid var(--border); background: #0d1117; max-height: 180px; overflow-y: auto; margin-top: 5px; }
         .law-item { padding: 8px 12px; border-bottom: 1px solid var(--border); cursor: pointer; font-size: 11px; }
         .law-item:hover { background: #161b22; }
 
         .opp-extra { background: rgba(88, 166, 255, 0.05); border: 1px dashed var(--accent); padding: 15px; border-radius: 6px; margin-bottom: 15px; }
+        .section-title { color: #ffa657; border-bottom: 1px solid var(--border); padding-bottom: 5px; margin-bottom: 15px; text-transform: uppercase; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -60,19 +60,32 @@
     <button class="btn-back" onclick="goBack()">← ZPĚT DO MENU</button>
     
     <div class="form-section">
-        <h3 id="form-title" style="margin-top: 0; color: #ffa657;"></h3>
+        <h3 id="form-title" style="margin-top: 0; color: var(--accent);"></h3>
         
+        <div class="section-title">Základní informace</div>
         <div class="grid">
             <div class="field"><label>👮 Vyžadující příslušník</label><input type="text" id="detektiv" placeholder="Jméno Příjmení"></div>
+            <div class="field"><label>🎖️ Hodnost</label>
+                <select id="hodnost">
+                    <option>Detective I</option><option>Detective II</option><option>Detective III</option>
+                    <option>Sergeant</option><option>Lieutenant</option><option>DBI Trainee</option>
+                </select>
+            </div>
             <div class="field"><label>📂 Case ID</label><input type="text" id="caseid" placeholder="#2026-XXXX"></div>
-            <div class="field"><label>👤 Podezřelá osoba</label><input type="text" id="subjekt"></div>
         </div>
 
+        <div class="grid">
+            <div class="field"><label>👤 Podezřelá osoba</label><input type="text" id="subjekt"></div>
+            <div class="field"><label>📅 Datum narození</label><input type="text" id="narozeni" placeholder="DD.MM.YYYY"></div>
+            <div class="field"><label>🆔 MDT ID</label><input type="text" id="mdtid"></div>
+        </div>
+
+        <div class="section-title">Specifikace OPP</div>
         <div id="extra-fields"></div>
 
         <div id="law-section">
             <label>⚖️ Právní kvalifikace</label>
-            <div class="tags-container" id="tags"><span style="color:#484f58; font-size:11px;">Vyberte trest z katalogu níže...</span></div>
+            <div class="tags-container" id="tags"></div>
             <input type="text" id="search" placeholder="Hledat v zákoníku..." onkeyup="filterLaws()">
             <div class="inline-catalog" id="laws-list"></div>
         </div>
@@ -106,10 +119,10 @@
         lawSec.style.display = 'block';
 
         if (type === 'sledovani') {
-            document.getElementById('form-title').innerText = 'Žádost o sledování osoby';
+            document.getElementById('form-title').innerText = 'Sledování osoby';
         } 
         else if (type === 'vypis') {
-            document.getElementById('form-title').innerText = 'Výpis telekomunikačního provozu';
+            document.getElementById('form-title').innerText = 'Výpis telekomunikace';
             extra.innerHTML = `
                 <div class="opp-extra">
                     <div class="field"><label>📱 Zařízení (Tel. číslo)</label><input type="text" id="v-zarizeni" placeholder="Např. 555-1234"></div>
@@ -118,23 +131,23 @@
                             <option value="výpis telekomunikačního provozu">výpis telekomunikačního provozu</option>
                             <option value="historii hovorů a SMS">historii hovorů a SMS</option>
                             <option value="identifikaci kontaktovaných čísel">identifikaci kontaktovaných čísel</option>
-                            <option value="případné lokalizační údaje zařízení, pokud jsou k dispozici">případné lokalizační údaje zařízení</option>
+                            <option value="případné lokalizační údaje zařízení, pokud jsou k dispozici">případné lokalizační údaje zařízení, pokud jsou k dispozici</option>
                         </select>
                     </div>
                 </div>`;
         }
         else if (type === 'prolomeni') {
-            document.getElementById('form-title').innerText = 'Prolomení mobilního zařízení';
+            document.getElementById('form-title').innerText = 'Prolomení telefonu';
             extra.innerHTML = `
                 <div class="opp-extra">
-                    <div class="field"><label>📱 Zařízení (Model / Tel. číslo)</label><input type="text" id="p-zarizeni" value="Mobilní telefon s tel. číslem "></div>
+                    <div class="field"><label>📱 Zařízení</label><input type="text" id="p-zarizeni" value="Mobilní telefon s tel. číslem "></div>
                     <div class="field"><label>💾 Předmět vydání</label>
                     <textarea id="p-predmet" readonly>Data uložená v mobilním telefonu, zejména komunikace, kontakty, historie hovorů, SMS zprávy, multimediální soubory a další relevantní digitální data … včetně případných smazaných nebo skrytých dat.</textarea></div>
                 </div>`;
         }
         else if (type === 'majetek') {
-            document.getElementById('form-title').innerText = 'Prověrka majetku a financí';
-            extra.innerHTML = `<div class="field"><label>💰 Předmět prověrky</label><input type="text" id="m-vydani" value="Informace o bankovních účtech a majetku."></div>`;
+            document.getElementById('form-title').innerText = 'Prověrka majetku';
+            extra.innerHTML = `<div class="field"><label>💰 Předmět prověrky</label><input type="text" id="m-vydani" value="Informace o veškerém evidovaném majetku, bankovních účtech a vozidlech."></div>`;
         }
         else if (type === 'agent') {
             document.getElementById('form-title').innerText = 'Zastírající agent';
@@ -146,7 +159,7 @@
         }
         else if (type === 'prohlidka') {
             document.getElementById('form-title').innerText = 'Domovní prohlídka (§ 38)';
-            extra.innerHTML = `<div class="grid" style="grid-template-columns: 1fr 1fr;"><div class="field"><label>📍 Adresa</label><input type="text" id="h-adresa"></div><div class="field"><label>🏠 Typ</label><input type="text" id="h-typ" value="Domovní"></div></div>`;
+            extra.innerHTML = `<div class="grid" style="grid-template-columns: 2fr 1fr;"><div class="field"><label>📍 Adresa</label><input type="text" id="h-adresa"></div><div class="field"><label>🏠 Typ</label><input type="text" id="h-typ" value="Domovní"></div></div>`;
         }
         loadLaws();
     }
@@ -182,7 +195,7 @@
 
     function renderTags() {
         const c = document.getElementById('tags'); c.innerHTML = '';
-        if(selectedLaws.length === 0) { c.innerHTML = '<span style="color:#484f58; font-size:11px;">Vyberte trest z katalogu níže...</span>'; return; }
+        if(selectedLaws.length === 0) { c.innerHTML = '<span style="color:#484f58; font-size:11px;">Nebyl vybrán žádný trest...</span>'; return; }
         selectedLaws.forEach(l => {
             const s = document.createElement('div'); s.className = 'tag';
             s.innerHTML = `${l} <span onclick="selectedLaws=selectedLaws.filter(x=>x!=='${l}');renderTags()">✖</span>`;
@@ -197,29 +210,39 @@
 
     function generate() {
         const d = (id) => document.getElementById(id) ? document.getElementById(id).value : '';
-        let res = `**ŽÁDOST O UŽITÍ OPP DLE § 37 Z.Č. 006-19**\n\n`;
-        res += `**Vyžadující příslušník:** ${d('detektiv')}\n`;
+        let header = `**ŽÁDOST O UŽITÍ OPP DLE § 37 Z.Č. 006-19**\n\n`;
+        header += `**Vyžadující příslušník:** ${d('hodnost')} ${d('detektiv')}\n`;
+        header += `**Case ID:** ${d('caseid')}\n`;
+        header += `**Podezřelá osoba:** ${d('subjekt')} (${d('narozeni')}, ${d('mdtid')})\n`;
 
+        let body = "";
         if (currentType === 'sledovani') {
-            res += `**Prostředek:** Sledování osoby\n**Podezřelá osoba:** ${d('subjekt')}\n**Právní kvalifikace:** ${selectedLaws.join(', ')}\n**Zjištěné skutečnosti:** ${d('skutecnosti')}\n**PŘILOHY:** ${d('prilohy')}`;
+            body = `**Prostředek:** Sledování osoby\n**Právní kvalifikace:** ${selectedLaws.join(', ')}\n**Zjištěné skutečnosti:** ${d('skutecnosti')}\n**PŘILOHY:** ${d('prilohy')}`;
         } 
         else if (currentType === 'vypis') {
-            res += `**Prostředek:** Výpis telekomunikace\n**Podezřelá osoba:** ${d('subjekt')}\n**Právní kvalifikace:** ${selectedLaws.join(', ')}\n**Zařízení:** ${d('v-zarizeni')}\n**Předmět vydání:** ${d('v-predmet')}\n**Zjištěné skutečnosti:** ${d('skutecnosti')}\n**PŘILOHY:** ${d('prilohy')}`;
+            body = `**Prostředek:** Výpis telekomunikace\n**Právní kvalifikace:** ${selectedLaws.join(', ')}\n**Zařízení:** ${d('v-zarizeni')}\n**Předmět vydání:** ${d('v-predmet')}\n**Zjištěné skutečnosti:** ${d('skutecnosti')}\n**PŘILOHY:** ${d('prilohy')}`;
         }
         else if (currentType === 'prolomeni') {
-            res += `**Prostředek:** Prolomení mobilního telefonu a analýza zajištěných dat\n**Podezřelá osoba:** ${d('subjekt')}\n**Právní kvalifikace:** ${selectedLaws.join(', ')}\n**Zařízení:** ${d('p-zarizeni')}\n**Předmět vydání:** ${d('p-predmet')}\n**Zjištěné skutečnosti:** ${d('skutecnosti')}\n**PŘILOHY:** ${d('prilohy')}`;
+            body = `**Prostředek:** Prolomení mobilního telefonu a analýza zajištěných dat\n**Právní kvalifikace:** ${selectedLaws.join(', ')}\n**Zařízení:** ${d('p-zarizeni')}\n**Předmět vydání:** ${d('p-predmet')}\n**Zjištěné skutečnosti:** ${d('skutecnosti')}\n**PŘILOHY:** ${d('prilohy')}`;
         }
         else if (currentType === 'majetek') {
-            res += `**Prostředek:** Výpis a prověrka majetku\n**Podezřelá osoba:** ${d('subjekt')}\n**Právní kvalifikace:** ${selectedLaws.join(', ')}\n**Zjištěné skutečnosti:** ${d('skutecnosti')}\n**PŘILOHY:** ${d('prilohy')}`;
+            body = `**Prostředek:** Výpis a prověrka majetku\n**Právní kvalifikace:** ${selectedLaws.join(', ')}\n**Předmět:** ${d('m-vydani')}\n**Zjištěné skutečnosti:** ${d('skutecnosti')}\n**PŘILOHY:** ${d('prilohy')}`;
+        }
+        else if (currentType === 'agent') {
+            body = `**Prostředek:** Užití agenta zastírajícího svou příslušnost k S.O.S.\n**Právní kvalifikace:** ${selectedLaws.join(', ')}\n**Zjištěné skutečnosti:** ${d('skutecnosti')}\n**PŘILOHY:** ${d('prilohy')}`;
         }
         else if (currentType === 'nemovitost') {
-            res = `**ŽÁDOST O VÝPIS NEMOVITOSTI (SEC)**\n\nUrčeno pro: SEC\nOsoba: ${d('subjekt')}\nZjištěné skutečnosti: ${d('skutecnosti')}`;
+            header = `**ŽÁDOST O VÝPIS NEMOVITOSTI (SEC)**\n\n`;
+            header += `**Příslušník:** ${d('hodnost')} ${d('detektiv')}\n**Osoba:** ${d('subjekt')} (${d('narozeni')})\n`;
+            body = `**Zdůvodnění:** ${d('skutecnosti')}`;
         }
         else if (currentType === 'prohlidka') {
-            res = `**PODNĚT K PROHLÍDCE DLE § 38**\n\n**Příslušník:** ${d('detektiv')}\n**Adresa:** ${d('h-adresa')}\n**Osoba:** ${d('subjekt')}\n**Kvalifikace:** ${selectedLaws.join(', ')}\n**Skutečnosti:** ${d('skutecnosti')}`;
+            header = `**PODNĚT K PROVEDENÍ PROHLÍDKY DLE § 38 Z.Č. 006-19**\n\n`;
+            header += `**Příslušník:** ${d('hodnost')} ${d('detektiv')}\n**Osoba:** ${d('subjekt')} (${d('narozeni')})\n`;
+            body = `**Adresa:** ${d('h-adresa')}\n**Typ:** ${d('h-typ')}\n**Kvalifikace:** ${selectedLaws.join(', ')}\n**Skutečnosti:** ${d('skutecnosti')}\n**PŘILOHY:** ${d('prilohy')}`;
         }
 
-        window.parent.postMessage(res, '*');
+        window.parent.postMessage(header + body, '*');
     }
 </script>
 </body>
