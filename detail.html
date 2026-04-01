@@ -2,71 +2,71 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>SASP - Case Detail</title>
+    <title>SASP - Case File</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="top-bar">
         <div class="breadcrumb"><a href="index.html">SASP COMMAND</a> / <span>EVIDENCE PŘÍPADU</span></div>
-        <div id="case-num" style="color: var(--gold); font-weight: bold;">#NEW</div>
+        <div id="case-num" style="color: var(--gold); font-weight: bold; letter-spacing: 1px;">#NEW</div>
     </div>
 
     <div class="container">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
             <h1>Evidence Operativních Prostředků</h1>
             <div id="status-tag" class="status-tag status-active">AKTIVNÍ</div>
         </div>
 
-        <div id="form-wrapper">
+        <div id="form-container">
             <div class="card">
-                <label style="margin-bottom: 15px; display: block; border-bottom: 1px solid var(--border); padding-bottom: 5px;">Personální údaje</label>
+                <label style="margin-bottom: 20px; display: block; border-bottom: 1px solid var(--border); padding-bottom: 8px; color: var(--gold);">Personální údaje vyšetřovatele</label>
                 <div class="grid-3">
-                    <div class="input-group"><label>Detektiv</label><input type="text" id="author"></div>
+                    <div class="input-group"><label>Jméno detektiva</label><input type="text" id="author" placeholder="Např. mmaverick149"></div>
                     <div class="input-group">
-                        <label>Hodnost</label>
+                        <label>Služební hodnost</label>
                         <select id="rank">
-                            <option>Detective I</option><option>Detective II</option><option>Detective III</option><option>Command Staff</option>
+                            <option>Detective Trainee</option><option>Detective I</option><option>Detective II</option><option>Detective III</option><option>Detective Specialist</option><option>Command Staff</option>
                         </select>
                     </div>
-                    <div class="input-group"><label>Case ID / Badge</label><input type="text" id="case-id"></div>
+                    <div class="input-group"><label>Badge ID / Evidence</label><input type="text" id="case-id" placeholder="8xxx"></div>
                 </div>
 
-                <label style="margin-bottom: 15px; display: block; border-bottom: 1px solid var(--border); padding-bottom: 5px;">Identifikace subjektu</label>
+                <label style="margin-top: 10px; margin-bottom: 20px; display: block; border-bottom: 1px solid var(--border); padding-bottom: 8px; color: var(--gold);">Identifikace subjektu (Podezřelý)</label>
                 <div class="grid-3">
-                    <div class="input-group"><label>Jméno a Příjmení</label><input type="text" id="subject"></div>
-                    <div class="input-group"><label>Datum narození</label><input type="text" id="birth"></div>
-                    <div class="input-group"><label>MDT ID</label><input type="text" id="mdt-id"></div>
+                    <div class="input-group"><label>Celé jméno</label><input type="text" id="subject" placeholder="Jméno Příjmení"></div>
+                    <div class="input-group"><label>Datum narození</label><input type="text" id="birth" placeholder="DD. MM. YYYY"></div>
+                    <div class="input-group"><label>MDT Evidence ID</label><input type="text" id="mdt-id" placeholder="UID"></div>
                 </div>
 
                 <div class="input-group">
-                    <label>Právní kvalifikace</label>
-                    <textarea id="legal" readonly style="height: 60px; margin-bottom: 10px;"></textarea>
-                    <button id="cat-btn" class="btn btn-catalog" onclick="openCatalog()"><i class="fa-solid fa-book"></i> OTEVŘÍT KATALOG</button>
+                    <label>Právní kvalifikace (Paragrafy)</label>
+                    <textarea id="legal" readonly style="height: 70px; margin-bottom: 10px; background: #010409;" placeholder="Vyberte tresty pomocí katalogu níže..."></textarea>
+                    <button id="cat-btn" class="btn btn-catalog" onclick="openCatalog()"><i class="fa-solid fa-gavel"></i> OTEVŘÍT PENAL CODE</button>
                 </div>
             </div>
 
             <div class="card">
-                <label>Webové oznámení (Popis skutku)</label>
-                <textarea id="web-oznameni" class="web-oznameni" placeholder="Zde vypište oficiální hlášení..."></textarea>
+                <label>Webové oznámení (Veřejný popis skutku)</label>
+                <textarea id="web-oznameni" class="web-oznameni" placeholder="Zde detailně popište zjištěné skutečnosti a důvody pro nasazení operativních prostředků..."></textarea>
             </div>
 
             <div class="card" style="border-top: 2px solid var(--gold);">
-                <label style="color: var(--gold);">Operativní deník (Interní poznámky)</label>
-                <textarea id="notes" style="height: 200px; margin-top: 10px;" placeholder="Chronologický zápis vyšetřování..."></textarea>
+                <label style="color: var(--gold);">Operativní deník (Interní neveřejné poznámky)</label>
+                <textarea id="notes" style="height: 250px; margin-top: 10px;" placeholder="Chronologický zápis postupu vyšetřování, sledování a dalších úkonů..."></textarea>
             </div>
         </div>
 
         <div class="footer-btns" id="action-area">
-            <button class="btn btn-save" onclick="saveData('OTEVŘENO')">Uložit rozpracované</button>
-            <button class="btn btn-close" onclick="saveData('VYŘEŠENO')">Archivovat a uzavřít</button>
+            <button class="btn btn-save" onclick="saveData('OTEVŘENO')">Uložit jako koncept</button>
+            <button class="btn btn-close" onclick="saveData('VYŘEŠENO')">Archivovat spis</button>
         </div>
     </div>
 
     <div id="catalogModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2><i class="fa-solid fa-gavel"></i> Penal Code - Katalog trestů</h2>
+                <h2><i class="fa-solid fa-book"></i> Penal Code - Výběr trestných činů</h2>
                 <span class="close-modal" onclick="closeCatalog()">&times;</span>
             </div>
             <iframe src="tresty.html" id="catalog-iframe"></iframe>
@@ -79,7 +79,6 @@
         const cid = urlParams.get('id');
         let records = JSON.parse(localStorage.getItem(DB)) || [];
 
-        // Načtení dat
         if(cid !== null && records[cid]) {
             let r = records[cid];
             document.getElementById('author').value = r.author || '';
@@ -97,18 +96,17 @@
                 const tag = document.getElementById('status-tag');
                 tag.innerText = "ARCHIVOVÁNO";
                 tag.className = "status-tag status-archived";
-                document.getElementById('form-wrapper').classList.add('locked-mode');
+                document.getElementById('form-container').classList.add('locked-mode');
                 document.getElementById('action-area').style.display = 'none';
                 document.getElementById('cat-btn').style.display = 'none';
+                document.querySelectorAll('input, textarea, select').forEach(el => el.readOnly = true);
             }
         }
 
-        // Modální okno funkce
         function openCatalog() { document.getElementById("catalogModal").style.display = "block"; }
         function closeCatalog() { document.getElementById("catalogModal").style.display = "none"; }
         window.onclick = function(event) { if (event.target == document.getElementById("catalogModal")) closeCatalog(); }
 
-        // Ukládání
         function saveData(status) {
             let entry = {
                 author: document.getElementById('author').value,
@@ -127,7 +125,6 @@
             window.location.href = 'index.html';
         }
 
-        // Sledování změn v katalogu
         setInterval(() => {
             const p = localStorage.getItem('temp_crimes');
             if(p) { 

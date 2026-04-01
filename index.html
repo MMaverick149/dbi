@@ -6,31 +6,31 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <style>
-        table { width: 100%; border-collapse: collapse; background: var(--card); border: 1px solid var(--border); }
-        th { text-align: left; padding: 12px; border-bottom: 1px solid var(--border); color: var(--blue); font-size: 11px; text-transform: uppercase; }
-        td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 13px; }
-        tr:hover { background: rgba(255,255,255,0.02); }
-        .action-btn { color: var(--blue); text-decoration: none; font-weight: bold; margin-right: 10px; font-size: 12px; }
-        .delete-btn { color: var(--danger); cursor: pointer; font-weight: bold; font-size: 12px; }
+        table { width: 100%; border-collapse: collapse; background: var(--card); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+        th { text-align: left; padding: 15px; border-bottom: 1px solid var(--border); color: var(--blue); font-size: 11px; text-transform: uppercase; background: var(--sidebar); }
+        td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 13px; color: #c9d1d9; }
+        tr:hover { background: rgba(255,255,255,0.03); }
+        .action-link { color: var(--blue); text-decoration: none; font-weight: bold; font-size: 11px; margin-right: 15px; text-transform: uppercase; }
+        .action-link:hover { text-decoration: underline; }
+        .del-link { color: var(--danger); cursor: pointer; font-weight: bold; font-size: 11px; text-transform: uppercase; }
     </style>
 </head>
 <body>
     <div class="top-bar">
         <div class="breadcrumb">SASP COMMAND CENTER</div>
-        <a href="detail.html" class="btn btn-save"><i class="fa-solid fa-plus"></i> NOVÝ PŘÍPAD</a>
+        <a href="detail.html" class="btn btn-save"><i class="fa-solid fa-plus"></i> NOVÝ ZÁZNAM</a>
     </div>
 
     <div class="container">
         <h1>Evidence Operativních Prostředků</h1>
-        
         <table>
             <thead>
                 <tr>
-                    <th>Case ID</th>
-                    <th>Subjekt</th>
-                    <th>Detektiv</th>
-                    <th>Stav</th>
-                    <th>Akce</th>
+                    <th style="width: 100px;">Case ID</th>
+                    <th>Subjekt (Podezřelý)</th>
+                    <th>Vyšetřující důstojník</th>
+                    <th style="width: 150px;">Stav spisu</th>
+                    <th style="width: 200px;">Administrace</th>
                 </tr>
             </thead>
             <tbody id="table-body"></tbody>
@@ -39,41 +39,33 @@
 
     <script>
         const DB = 'lspd_v15_data';
-        function renderTable() {
-            const records = JSON.parse(localStorage.getItem(DB)) || [];
-            const tbody = document.getElementById('table-body');
-            tbody.innerHTML = '';
+        function render() {
+            const data = JSON.parse(localStorage.getItem(DB)) || [];
+            const body = document.getElementById('table-body');
+            body.innerHTML = '';
 
-            records.forEach((r, i) => {
+            data.forEach((r, i) => {
                 const tr = document.createElement('tr');
+                const isDone = r.status === 'VYŘEŠENO';
                 tr.innerHTML = `
-                    <td style="color:var(--gold); font-weight:bold;">${r.id || 'N/A'}</td>
-                    <td>${r.subject || 'Neznámý'}</td>
-                    <td>${r.author || '---'}</td>
+                    <td style="color:var(--gold); font-weight:bold;">#${r.id || '---'}</td>
+                    <td style="color:white; font-weight:600;">${r.subject || 'Neznámý'}</td>
+                    <td>${r.author || 'Nepřiřazeno'}</td>
                     <td>
-                        <span class="status-tag ${r.status === 'VYŘEŠENO' ? 'status-archived' : 'status-active'}" style="font-size:10px; padding:4px 10px;">
-                            ${r.status === 'VYŘEŠENO' ? 'ARCHIVOVÁNO' : 'AKTIVNÍ'}
+                        <span class="status-tag ${isDone ? 'status-archived' : 'status-active'}" style="font-size:9px; padding:4px 10px;">
+                            ${isDone ? 'ARCHIVOVÁNO' : 'AKTIVNÍ'}
                         </span>
                     </td>
                     <td>
-                        <a href="detail.html?id=${i}" class="action-btn">🔍 OTEVŘÍT</a>
-                        <span class="delete-btn" onclick="deleteRec(${i})">🗑 SMAZAT</span>
+                        <a href="detail.html?id=${i}" class="action-link">${isDone ? '🔍 Detail' : '✒️ Editovat'}</a>
+                        <span class="del-link" onclick="remove(${i})">🗑 Smazat</span>
                     </td>
                 `;
-                tbody.appendChild(tr);
+                body.appendChild(tr);
             });
         }
-
-        function deleteRec(i) {
-            if(confirm('Opravdu chcete tento spis smazat?')) {
-                let records = JSON.parse(localStorage.getItem(DB));
-                records.splice(i, 1);
-                localStorage.setItem(DB, JSON.stringify(records));
-                renderTable();
-            }
-        }
-
-        renderTable();
+        function remove(i) { if(confirm('Opravdu odstranit tento záznam?')) { let d = JSON.parse(localStorage.getItem(DB)); d.splice(i,1); localStorage.setItem(DB, JSON.stringify(d)); render(); } }
+        render();
     </script>
 </body>
 </html>
