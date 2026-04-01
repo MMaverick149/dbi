@@ -8,200 +8,193 @@
         :root { --bg: #0d1117; --accent: #58a6ff; --border: #30363d; --text: #c9d1d9; --panel: #161b22; --at-color: #ffa657; --success: #238636; }
         body { background: var(--bg); color: var(--text); font-family: -apple-system, sans-serif; padding: 20px; font-size: 13px; margin: 0; }
         
-        #main-menu { max-width: 1100px; margin: 0 auto; }
-        .opp-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-top: 25px; }
-        .opp-card { background: var(--panel); border: 1px solid var(--border); padding: 20px; border-radius: 10px; text-align: center; cursor: pointer; transition: 0.2s; }
-        .opp-card:hover { border-color: var(--accent); transform: translateY(-3px); background: #21262d; }
+        .container { max-width: 1000px; margin: 0 auto; }
         
-        #form-container, #list-container { max-width: 900px; margin: 0 auto; display: none; }
-        .form-section { background: var(--panel); border: 1px solid var(--border); padding: 25px; border-radius: 8px; }
+        /* LOGIN & MENU */
+        .login-section { background: var(--panel); border: 1px solid var(--accent); padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 20px; }
+        .opp-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 30px; }
+        .opp-card { background: var(--panel); border: 1px solid var(--border); padding: 15px; border-radius: 8px; text-align: center; cursor: pointer; transition: 0.2s; }
+        .opp-card:hover { border-color: var(--accent); background: #21262d; }
+        .opp-card div { font-size: 24px; margin-bottom: 5px; }
+        .opp-card span { font-weight: bold; font-size: 10px; color: var(--accent); text-transform: uppercase; }
 
-        .section-title { color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 5px; margin-bottom: 15px; text-transform: uppercase; font-size: 12px; font-weight: bold; margin-top: 20px; }
+        /* SEZNAM SPISŮ (TVÁ SEKCE) */
+        .list-section { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-top: 20px; }
+        .spis-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .spis-table th { text-align: left; color: #8b949e; font-size: 10px; text-transform: uppercase; padding: 10px; border-bottom: 1px solid var(--border); }
+        .spis-table td { padding: 12px 10px; border-bottom: 1px solid var(--border); font-size: 12px; }
+        .btn-view { background: var(--border); color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+        .btn-view:hover { background: #484f58; }
+
+        /* FORMULÁŘ */
+        #form-container { display: none; background: var(--panel); border: 1px solid var(--border); padding: 25px; border-radius: 8px; margin-bottom: 30px; }
+        .section-title { color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 5px; margin-bottom: 15px; text-transform: uppercase; font-size: 11px; font-weight: bold; margin-top: 15px; }
         .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
         .field { display: flex; flex-direction: column; margin-bottom: 10px; }
         label { color: #8b949e; font-size: 10px; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; }
+        input, select, textarea { background: #010409; border: 1px solid var(--border); color: var(--text); padding: 10px; border-radius: 4px; outline: none; }
         
-        input, select, textarea { background: #010409; border: 1px solid var(--border); color: var(--text); padding: 10px; border-radius: 4px; outline: none; width: 100%; box-sizing: border-box; }
-        textarea { resize: vertical; min-height: 100px; }
-
-        .subjekt-row { border: 1px solid var(--border); padding: 15px; border-radius: 6px; margin-bottom: 10px; position: relative; background: #0d1117; }
-        .btn-add { background: transparent; color: var(--success); border: 1px dashed var(--success); padding: 8px; border-radius: 4px; cursor: pointer; margin-bottom: 20px; font-size: 11px; width: 100%; font-weight: bold; }
+        /* VÝSTUP */
+        .output-box { background: #010409; border: 1px solid var(--border); padding: 15px; color: #c9d1d9; font-family: monospace; white-space: pre-wrap; margin-top: 10px; border-radius: 4px; line-height: 1.6; }
+        hr.divider { border: 0; height: 1px; background: var(--border); margin: 20px 0; }
         
-        .btn-submit { background: var(--success); color: white; border: none; padding: 15px; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 20px; text-transform: uppercase; }
-        .btn-save { background: var(--accent); color: white; border: none; padding: 10px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 10px; width: 100%; }
-
-        .output-modal { background: #161b22; border: 1px solid var(--border); padding: 25px; border-radius: 8px; margin-top: 40px; display: none; }
-        .output-box { background: #010409; border: 1px solid #30363d; padding: 15px; color: #c9d1d9; font-family: monospace; white-space: pre-wrap; margin-bottom: 20px; border-radius: 4px; font-size: 12px; line-height: 1.6; }
-        
-        .spis-item { background: #0d1117; border: 1px solid var(--border); padding: 12px; border-radius: 6px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
-        .login-box { text-align: center; margin-bottom: 30px; padding: 20px; border: 1px solid var(--accent); border-radius: 10px; }
+        .btn-submit { background: var(--success); color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
+        .subjekt-row { border: 1px solid var(--border); padding: 10px; margin-bottom: 10px; border-radius: 4px; background: #0d1117; }
     </style>
 </head>
 <body>
 
-<div id="main-menu">
-    <h1 style="color: var(--accent); text-align: center;">DATABASE OPP & EVIDENCE</h1>
-    
-    <div class="login-box">
-        <label>ZADEJ SVŮJ PRIVÁTNÍ KLÍČ (Pro tvé spisy)</label><br>
-        <input type="password" id="user-key" style="width: 200px; text-align: center;" placeholder="Např. 1234 nebo Jméno" onchange="initSystem()">
-        <p style="font-size: 10px; color: #8b949e;">Tento klíč určuje, které spisy uvidíš. Nikomu ho neříkej.</p>
+<div class="container">
+    <div class="login-section">
+        <label>ZADEJ SVŮJ SOUKROMÝ KLÍČ</label><br>
+        <input type="password" id="user-key" style="width: 250px; text-align: center; margin-top: 10px;" placeholder="Tvé tajné heslo" oninput="loadMySpisy()">
+        <p style="font-size: 10px; color: #8b949e;">Každý z 6 uživatelů má svůj klíč. Uvidíš jen to, co uložíš pod ním.</p>
     </div>
 
-    <div class="opp-menu">
-        <div class="opp-card" onclick="openForm('vypis')"><div>📞</div><span>Výpis telekomunikace</span></div>
-        <div class="opp-card" onclick="openForm('prolomeni')"><div>🔓</div><span>Prolomení telefonu</span></div>
-        <div class="opp-card" onclick="openForm('majetek')"><div>💰</div><span>Prověrka majetku</span></div>
-        <div class="opp-card" onclick="viewList()"><div>📁</div><span>Moje uložené spisy</span></div>
+    <div id="main-menu" class="opp-menu">
+        <div class="opp-card" onclick="openForm('vypis')"><div>📞</div><span>Výpis</span></div>
+        <div class="opp-card" onclick="openForm('prolomeni')"><div>🔓</div><span>Prolomení</span></div>
+        <div class="opp-card" onclick="openForm('majetek')"><div>💰</div><span>Majetek</span></div>
+        <div class="opp-card" onclick="openForm('sledovani')"><div>📡</div><span>Sledování</span></div>
     </div>
-</div>
 
-<div id="form-container">
-    <button onclick="location.reload()" style="background:none; border:1px solid #8b949e; color:#8b949e; padding:5px 10px; cursor:pointer; margin-bottom:15px;">← MENU</button>
-    <div class="form-section">
-        <h2 id="form-title" style="margin: 0; color: var(--accent);"></h2>
+    <div id="form-container">
+        <button onclick="closeForm()" style="background:none; border:1px solid #8b949e; color:#8b949e; padding:4px 8px; cursor:pointer; margin-bottom:10px;"> Zavřít</button>
+        <h2 id="form-title" style="margin:0; color:var(--accent)"></h2>
         
-        <div class="section-title">Vyžadující příslušník</div>
+        <div class="section-title">Základní údaje</div>
         <div class="grid">
-            <div class="field"><label>👮 Příslušník</label><input type="text" id="detektiv"></div>
-            <div class="field"><label>🎖️ Hodnost</label><select id="hodnost"><option>Detective I</option><option>Detective II</option><option>Sergeant</option></select></div>
-            <div class="field"><label>📂 Case ID</label><input type="text" id="caseid" placeholder="#2026-XXXX"></div>
+            <div class="field"><label>Příslušník</label><input type="text" id="detektiv"></div>
+            <div class="field"><label>Hodnost</label><select id="hodnost"><option>Detective I</option><option>Detective II</option><option>Sergeant</option></select></div>
+            <div class="field"><label>Case ID</label><input type="text" id="caseid"></div>
         </div>
 
-        <div class="section-title">Podezřelé osoby</div>
+        <div class="section-title">Osoby</div>
         <div id="subjekty-list"></div>
-        <button class="btn-add" onclick="addSubjekt()">+ PŘIDAT OSOBU</button>
+        <button onclick="addSubjekt()" style="background:none; border:1px dashed var(--success); color:var(--success); width:100%; padding:5px; cursor:pointer;">+ Přidat osobu</button>
 
-        <div id="extra-fields"></div>
+        <div class="field" style="margin-top:15px;"><label>Odůvodnění</label><textarea id="skutecnosti"></textarea></div>
+        
+        <button class="btn-submit" onclick="generateAndSave()">GENEROVAT A ULOŽIT</button>
 
-        <div class="field"><label>📝 Skutečnosti / Odůvodnění</label><textarea id="skutecnosti"></textarea></div>
-        <div class="field"><label>📁 Přílohy</label><input type="text" id="prilohy" value="Kompletní spis, Souhlas SZ"></div>
-
-        <button class="btn-submit" onclick="generate()">📥 GENEROVAT FORMÁTY</button>
-        <button class="btn-save" onclick="saveToStorage()">💾 ULOŽIT DO MÉHO SEZNAMU</button>
-
-        <div id="output-modal" class="output-modal">
-            <div class="section-title" style="color: var(--accent);">📄 IC SPIS (PRO SOUD / SPIS)</div>
+        <div id="output-area" style="display:none; margin-top:20px;">
+            <div class="section-title">📄 IC SPIS (S mezerami)</div>
             <div class="output-box" id="output-ic"></div>
-
-            <div id="at-section">
-                <div class="section-title" style="color: var(--at-color);">⚙️ AT / FORENZNÍ TÝM</div>
-                <div class="output-box" id="output-at"></div>
+            
+            <div id="at-wrap" style="display:none;">
+                <hr class="divider">
+                <div class="section-title" style="color:var(--at-color)">⚙️ AT DODATEK</div>
+                <div class="output-box" id="output-at" style="border-left:3px solid var(--at-color)"></div>
             </div>
         </div>
     </div>
-</div>
 
-<div id="list-container">
-    <button onclick="location.reload()" style="background:none; border:1px solid #8b949e; color:#8b949e; padding:5px 10px; cursor:pointer; margin-bottom:15px;">← ZPĚT</button>
-    <div class="form-section">
-        <h2 style="color: var(--accent);">MOJE ULOŽENÉ SPISY</h2>
-        <div id="my-spisy-list"></div>
+    <div class="list-section">
+        <h3 style="margin:0; color:var(--accent); font-size:14px;">📁 MOJE ULOŽENÉ SPISY (SOUKROMÉ)</h3>
+        <table class="spis-table">
+            <thead>
+                <tr>
+                    <th>Datum</th>
+                    <th>Case ID</th>
+                    <th>Typ</th>
+                    <th>Akce</th>
+                </tr>
+            </thead>
+            <tbody id="spis-body">
+                </tbody>
+        </table>
     </div>
 </div>
 
 <script>
-    let subCount = 0;
     let currentType = '';
-
-    function initSystem() {
-        const key = document.getElementById('user-key').value;
-        if(key) { alert('Systém odemčen pro tvůj klíč.'); }
-    }
+    let subCount = 0;
 
     function openForm(type) {
         currentType = type;
-        document.getElementById('main-menu').style.display = 'none';
         document.getElementById('form-container').style.display = 'block';
-        document.getElementById('form-title').innerText = type.toUpperCase();
-        
-        const extra = document.getElementById('extra-fields');
-        extra.innerHTML = '';
-        if(type === 'vypis') {
-            extra.innerHTML = `<div class="field"><label>Předmět výpisu</label><input type="text" id="v-predmet" value="Výpis hovorů a SMS zpráv"></div>`;
-        }
-        
-        subCount = 0;
+        document.getElementById('form-title').innerText = "Žádost: " + type.toUpperCase();
+        document.getElementById('output-area').style.display = 'none';
         document.getElementById('subjekty-list').innerHTML = '';
+        subCount = 0;
         addSubjekt();
     }
+
+    function closeForm() { document.getElementById('form-container').style.display = 'none'; }
 
     function addSubjekt() {
         subCount++;
         const div = document.createElement('div'); div.className = 'subjekt-row';
-        div.innerHTML = `<div class="grid"><div class="field"><label>Osoba</label><input type="text" class="sj"></div><div class="field"><label>Narození</label><input type="text" class="sd"></div><div class="field"><label>MDT ID</label><input type="text" class="si"></div></div>`;
+        div.innerHTML = `<div class="grid"><div class="field"><label>Jméno</label><input type="text" class="sj"></div><div class="field"><label>Narození</label><input type="text" class="sd"></div><div class="field"><label>MDT ID</label><input type="text" class="si"></div></div>`;
         document.getElementById('subjekty-list').appendChild(div);
     }
 
-    function generate() {
-        const d = (id) => document.getElementById(id) ? document.getElementById(id).value : '';
+    function generateAndSave() {
+        const key = document.getElementById('user-key').value;
+        if(!key) return alert("Zadej svůj klíč, jinak se spis neuloží!");
+
+        const d = (id) => document.getElementById(id).value;
         const subs = Array.from(document.querySelectorAll('.subjekt-row')).map(r => ({
             n: r.querySelector('.sj').value, d: r.querySelector('.sd').value, i: r.querySelector('.si').value
         }));
-        
         const sIC = subs.map(s => `${s.n} (${s.d}, MDT: ${s.i})`).join(', ');
         const sAT = subs.map(s => `**${s.n}**`).join('\n');
 
-        // MEZERY V IC SPISU (Dvojité řádkování pro přehlednost)
+        // IC SPIS - MEZERY MEZI ŘÁDKY
         let ic = `**ŽÁDOST O UŽITÍ OPP DLE § 37 Z.Č. 006-19**\n\n`;
         ic += `**Vyžadující příslušník:**\n${d('hodnost')} ${d('detektiv')}\n\n`;
         ic += `**Case ID:**\n${d('caseid')}\n\n`;
         ic += `**Podezřelá osoba:**\n${sIC}\n\n`;
-        ic += `**Zjištěné skutečnosti:**\n${d('skutecnosti')}\n\n`;
-        ic += `**Přílohy:**\n${d('prilohy')}`;
+        ic += `**Skutečnosti:**\n${d('skutecnosti')}\n\n`;
+        ic += `**Přílohy:**\nKompletní spis, Souhlas SZ`;
 
+        // AT DODATEK
         let at = ""; let hasAt = false;
-        if(currentType === 'prolomeni') {
+        if(currentType === 'prolomeni' || currentType === 'vypis') {
             hasAt = true;
-            at = `Dobrý den,\n\nna základě souhlasu SZ žádám o prolomení telefonů.\n\nOsoby:\n${sAT}\n\nŽádám o analýzu dat.\n\nSouhlas SZ přiložen.\n\n||<@654411469953302538>||`;
-        } else if (currentType === 'vypis') {
-            hasAt = true;
-            at = `Dobrý den,\n\nna základě souhlasu SZ žádám o výpis telekomunikace.\n\nOsoby:\n${sAT}\n\nŽádám o: ${d('v-predmet')}.\n\nSouhlas SZ přiložen.\n\n||<@654411469953302538>||`;
+            at = `Dobrý den,\n\nna základě souhlasu SZ žádám o provedení úkonů u osob:\n${sAT}\n\nSouhlas je v příloze.\n\n||<@654411469953302538>||`;
         }
 
         document.getElementById('output-ic').innerText = ic;
-        if(hasAt) { document.getElementById('output-at').innerText = at; document.getElementById('at-section').style.display = 'block'; }
-        else { document.getElementById('at-section').style.display = 'none'; }
-        
-        document.getElementById('output-modal').style.display = 'block';
-    }
+        document.getElementById('output-area').style.display = 'block';
+        if(hasAt) {
+            document.getElementById('output-at').innerText = at;
+            document.getElementById('at-wrap').style.display = 'block';
+        } else {
+            document.getElementById('at-wrap').style.display = 'none';
+        }
 
-    // SOUKROMÉ UKLÁDÁNÍ
-    function saveToStorage() {
-        const key = document.getElementById('user-key').value;
-        if(!key) return alert("Zadej svůj klíč v hlavním menu!");
-
-        const data = {
+        // ULOŽENÍ
+        const spisObj = {
             id: Date.now(),
-            case: document.getElementById('caseid').value,
-            text: document.getElementById('output-ic').innerText,
-            type: currentType
+            date: new Date().toLocaleDateString(),
+            case: d('caseid'),
+            type: currentType,
+            content: ic
         };
-
-        // Uloží se pod unikátním názvem spojeným s tvým klíčem
         let storageKey = "spisy_" + key;
-        let existujici = JSON.parse(localStorage.getItem(storageKey)) || [];
-        existujici.push(data);
-        localStorage.setItem(storageKey, JSON.stringify(existujici));
-        alert("Spis uložen do tvého soukromého seznamu!");
+        let data = JSON.parse(localStorage.getItem(storageKey)) || [];
+        data.push(spisObj);
+        localStorage.setItem(storageKey, JSON.stringify(data));
+        loadMySpisy();
     }
 
-    function viewList() {
+    function loadMySpisy() {
         const key = document.getElementById('user-key').value;
-        if(!key) return alert("Nejdříve zadej svůj klíč!");
+        const tbody = document.getElementById('spis-body');
+        tbody.innerHTML = '';
+        if(!key) return;
 
-        document.getElementById('main-menu').style.display = 'none';
-        document.getElementById('list-container').style.display = 'block';
-        
-        let storageKey = "spisy_" + key;
-        let moje = JSON.parse(localStorage.getItem(storageKey)) || [];
-        const container = document.getElementById('my-spisy-list');
-        container.innerHTML = moje.length ? '' : 'Žádné spisy pod tímto klíčem.';
-
-        moje.forEach(s => {
-            const div = document.createElement('div'); div.className = 'spis-item';
-            div.innerHTML = `<div><strong>${s.case}</strong> (${s.type})</div> <button onclick="alert('${s.text.replace(/\n/g, '\\n')}')">ZOBRAZIT</button>`;
-            container.appendChild(div);
+        let data = JSON.parse(localStorage.getItem("spisy_" + key)) || [];
+        data.reverse().forEach(s => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${s.date}</td>
+                <td>${s.case}</td>
+                <td><span style="color:var(--accent)">${s.type}</span></td>
+                <td><button class="btn-view" onclick="alert('${s.content.replace(/\n/g, '\\n')}')">Detail</button></td>
+            `;
+            tbody.appendChild(tr);
         });
     }
 </script>
