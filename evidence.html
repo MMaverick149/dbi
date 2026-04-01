@@ -3,175 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <style>
-        :root {
-            --bg-dark: #0d1117;
-            --card-bg: #161b22;
-            --border: #30363d;
-            --text-main: #c9d1d9;
-            --text-dim: #8b949e;
-            --blue: #58a6ff;
-            --green: #238636;
-            --yellow: #d29922;
-            --red: #f85149;
-        }
-
-        body { 
-            background-color: var(--bg-dark); 
-            color: var(--text-main); 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-            margin: 0; padding: 20px; 
-        }
-
-        /* Horní lišta a tlačítko */
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .title { color: var(--yellow); font-weight: bold; text-transform: uppercase; letter-spacing: 1px; font-size: 1.2em; }
-        .btn-new { 
-            background: var(--yellow); color: #000; border: none; padding: 10px 20px; 
-            border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 0.85em;
-        }
-
-        /* Karty statistik */
-        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 30px; }
-        .stat-card { background: var(--card-bg); border: 1px solid var(--border); padding: 15px; border-radius: 6px; }
-        .stat-card h4 { margin: 0; color: var(--blue); font-size: 0.75em; text-transform: uppercase; opacity: 0.8; }
-        .stat-card .value { font-size: 1.8em; font-weight: bold; margin-top: 5px; }
-
-        /* Tabulka */
-        .table-container { background: var(--card-bg); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
-        th { text-align: left; background: rgba(110, 118, 129, 0.1); color: var(--text-dim); padding: 12px; font-size: 0.8em; text-transform: uppercase; }
-        td { padding: 12px; border-bottom: 1px solid var(--border); }
-        tr:last-child td { border-bottom: none; }
-
-        /* Badge statusy */
-        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.75em; font-weight: bold; }
-        .badge-done { background: rgba(35, 134, 54, 0.2); color: #3fb950; border: 1px solid rgba(63, 185, 80, 0.3); }
-        .badge-open { background: rgba(56, 139, 253, 0.15); color: var(--blue); border: 1px solid rgba(88, 166, 255, 0.3); }
-
-        /* Akce v tabulce */
-        .action-link { text-decoration: none; font-size: 0.85em; margin-right: 10px; font-weight: 500; }
-        .link-view { color: var(--blue); }
-        .link-edit { color: var(--yellow); }
-        .link-delete { color: var(--red); }
-
-        /* Formolář - Detail Případu */
-        .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px; }
-        .form-group { display: flex; flex-direction: column; margin-bottom: 15px; }
-        .form-group label { color: var(--text-dim); font-size: 0.75em; text-transform: uppercase; margin-bottom: 5px; font-weight: bold; }
-        .form-group input, .form-group select, .form-group textarea {
-            background: var(--bg-dark); border: 1px solid var(--border); color: var(--text-main);
-            padding: 10px; border-radius: 4px; font-family: inherit;
-        }
-        .form-group textarea { min-height: 100px; resize: vertical; }
-        .full-width { grid-column: span 2; }
+        body { background: #0d1117; color: #c9d1d9; font-family: sans-serif; padding: 20px; font-size: 13px; }
+        .header { color: #58a6ff; font-size: 18px; margin-bottom: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 15px; }
+        .field { display: flex; flex-direction: column; }
+        label { color: #58a6ff; font-size: 10px; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; }
+        input, select, textarea { background: #010409; border: 1px solid #30363d; color: #c9d1d9; padding: 8px; border-radius: 4px; }
+        textarea { width: 100%; height: 80px; margin-top: 10px; }
+        .btn-submit { background: #1f6feb; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; float: right; margin-top: 15px; font-weight: bold; }
+        .btn-submit:hover { background: #388bfd; }
     </style>
 </head>
 <body>
 
-    <div id="view-list">
-        <div class="header">
-            <div class="title">Evidence Operativních Prostředků</div>
-            <button class="btn-new">+ Nový záznam</button>
-        </div>
+<div class="header">Evidence Operativních Prostředků</div>
 
-        <div class="stats-grid">
-            <div class="stat-card"><h4>Celkem záznamů</h4><div class="value">5</div></div>
-            <div class="stat-card"><h4>V řešení (otevřené)</h4><div class="value" style="color: var(--blue)">2</div></div>
-            <div class="stat-card"><h4>Archivováno (vyřešené)</h4><div class="value" style="color: var(--green)">3</div></div>
-            <div class="stat-card"><h4>Aktivní detektivové</h4><div class="value">2</div></div>
-        </div>
-
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Case ID</th>
-                        <th>Subjekt</th>
-                        <th>Detektiv</th>
-                        <th>Stav</th>
-                        <th>Akce</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><b style="color:var(--yellow)">#sda</b></td>
-                        <td>Michal Undefined</td>
-                        <td>Michala</td>
-                        <td><span class="badge badge-done">✓ Vyřešeno</span></td>
-                        <td>
-                            <a href="#" class="action-link link-view" onclick="showDetail()">🔍 Zobrazit</a>
-                            <a href="#" class="action-link link-delete">🗑 Smazat</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><b style="color:var(--yellow)">#re</b></td>
-                        <td>---</td>
-                        <td>Michal</td>
-                        <td><span class="badge badge-open">📁 Otevřený</span></td>
-                        <td>
-                            <a href="#" class="action-link link-edit" onclick="showDetail()">🖊 Upravit</a>
-                            <a href="#" class="action-link link-delete">🗑 Smazat</a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+<div class="grid">
+    <div class="field">
+        <label>Vyšetřující detektiv</label>
+        <input type="text" id="detektiv" placeholder="Jméno Příjmení">
     </div>
-
-    <div id="view-detail" style="display:none;">
-        <div class="header">
-            <div class="title">Detail Případu <span style="color:var(--text-dim); font-size: 0.8em;">#g</span></div>
-            <div style="border: 1px solid var(--red); color: var(--red); padding: 5px 10px; font-size: 0.7em; font-weight: bold;">ARCHIVOVÁNO</div>
-        </div>
-
-        <div class="table-container" style="padding: 20px;">
-            <div style="color: var(--blue); font-size: 0.8em; font-weight: bold; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">👤 PERSONÁLNÍ ÚDAJE</div>
-            
-            <div class="form-grid">
-                <div class="form-group">
-                    <label>Detektiv</label>
-                    <input type="text" value="Michala" readonly>
-                </div>
-                <div class="form-group">
-                    <label>Hodnost</label>
-                    <select><option>Detective II</option></select>
-                </div>
-                <div class="form-group">
-                    <label>Badge ID</label>
-                    <input type="text" value="g">
-                </div>
-                <div class="form-group">
-                    <label>Subjekt</label>
-                    <input type="text" value="---">
-                </div>
-                <div class="form-group">
-                    <label>Právní kvalifikace</label>
-                    <input type="text" placeholder="Vyberte v katalogu...">
-                </div>
-                <div class="form-group full-width">
-                    <label>Webové oznámení (Popis skutku)</label>
-                    <textarea>undefined</textarea>
-                </div>
-                <div class="form-group full-width">
-                    <label>📓 Operativní deník</label>
-                    <textarea placeholder="Zapište průběh vyšetřování..."></textarea>
-                </div>
-            </div>
-            
-            <button class="btn-new" style="background: var(--green); color: white; margin-top: 20px;" onclick="showList()">Uložit změny</button>
-            <button class="btn-new" style="background: var(--border); color: white; margin-left: 10px;" onclick="showList()">Zpět</button>
-        </div>
+    <div class="field">
+        <label>Hodnost</label>
+        <select id="hodnost">
+            <option>DBI Trainee</option>
+            <option>Detective I</option>
+            <option>Detective II</option>
+            <option>Detective III</option>
+        </select>
     </div>
+    <div class="field">
+        <label>Case ID</label>
+        <input type="text" id="caseid" placeholder="#2026-XXXX">
+    </div>
+    <div class="field">
+        <label>Subjekt (Jméno Příjmení)</label>
+        <input type="text" id="subjekt" placeholder="John Doe">
+    </div>
+    <div class="field">
+        <label>Datum narození</label>
+        <input type="text" id="narozeni" placeholder="DD.MM.YYYY">
+    </div>
+    <div class="field">
+        <label>MDT ID</label>
+        <input type="text" id="mdtid" placeholder="např. 8421">
+    </div>
+</div>
 
-    <script>
-        function showDetail() {
-            document.getElementById('view-list').style.display = 'none';
-            document.getElementById('view-detail').style.display = 'block';
-        }
-        function showList() {
-            document.getElementById('view-detail').style.display = 'none';
-            document.getElementById('view-list').style.display = 'block';
-        }
-    </script>
+<div class="field">
+    <label>Právní kvalifikace</label>
+    <select id="kvalifikace">
+        <option>Vražda (§ 140 TZ)</option>
+        <option>Loupež (§ 173 TZ)</option>
+        <option>Obchod s drogami (§ 283 TZ)</option>
+    </select>
+</div>
+
+<div class="field" style="margin-top:15px;">
+    <label>Typ OPP</label>
+    <select id="typopp">
+        <option>Prověrka majetku a finančních prostředků</option>
+        <option>Odposlech a záznam telekomunikačního provozu</option>
+        <option>Sledování osob a věcí</option>
+    </select>
+</div>
+
+<label style="margin-top:20px; display:block;">Zjištěné skutečnosti (systémový záznam)</label>
+<textarea id="skutecnosti">Na základě prvotního ohledání místa činu bylo zjištěno...</textarea>
+
+<label style="margin-top:20px; display:block;">Doplňující odůvodnění (vlastní text)</label>
+<textarea id="oduvodneni" placeholder="Zde uveďte vaše doplňující odůvodnění..."></textarea>
+
+<button class="btn-submit" onclick="vytvorZadost()">📥 SCHVÁLIT A ARCHIVOVAT</button>
+
+<script>
+function vytvorZadost() {
+    const d = (id) => document.getElementById(id).value;
+
+    const text = `ŽÁDOST O UŽITÍ OPP DLE § 37 Z.Č. 006-19
+Vyžadující příslušník:
+• ${d('detektiv')}
+
+Prostředek:
+• ${d('typopp')}
+
+Podezřelá osoba/Prověřovaná osobá (Oběť) :
+• ${d('subjekt')} (${d('narozeni')}, ${d('mdtid')})
+
+Trestný čin:
+${d('kvalifikace')}
+
+Předmět vydání:
+• Informace o veškerém evidovaném majetku osoby, zejména bankovních účtech, finančních prostředcích, registrovaných vozidlech, nemovitostech, movitém majetku vyšší hodnoty a případných závazcích či dluzích.
+
+Zjištěné skutečnosti:
+${d('skutecnosti')}
+
+Doplňující odůvodnění:
+${d('oduvodneni')}
+
+S pozdravem,
+San Andreas State Police
+${d('hodnost')} ${d('detektiv')}
+
+PŘÍLOHY:`;
+
+    // Pošle text do hlavního okna (index.html)
+    window.parent.postMessage(text, '*');
+}
+</script>
+
 </body>
 </html>
