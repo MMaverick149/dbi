@@ -22,7 +22,16 @@
         label { color: var(--blue); font-size: 11px; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 8px; }
         input, select, textarea { width: 100%; background: #05070a; border: 1px solid var(--border); color: white; padding: 12px; border-radius: 4px; font-size: 14px; box-sizing: border-box; }
         
-        .sys-box { background: rgba(0,0,0,0.3); border: 1px dashed #444; padding: 15px; color: #bbb; font-size: 13px; line-height: 1.6; border-radius: 4px; margin-bottom: 20px; font-style: italic; }
+        /* Styl pro Webové oznámení - nyní editovatelné */
+        .web-oznameni { 
+            border: 1px solid var(--blue); 
+            background: rgba(74, 158, 255, 0.05); 
+            color: #d1e8ff; 
+            min-height: 120px; 
+            margin-bottom: 20px; 
+            font-family: 'Segoe UI', sans-serif;
+            resize: vertical;
+        }
         
         .btn-catalog { background: #1c212b; border: 1px solid var(--gold); color: var(--gold); padding: 10px; cursor: pointer; border-radius: 4px; font-weight: bold; transition: 0.3s; margin-top: 5px; }
         .btn-catalog:hover { background: var(--gold); color: black; }
@@ -44,9 +53,7 @@
 
     <div class="container">
         <div class="header-title">
-            <div>
-                <h1 id="case-title-id">Evidence Operativních Prostředků</h1>
-            </div>
+            <div><h1 id="case-title-id">Evidence Operativních Prostředků</h1></div>
             <div id="status-tag" style="background: var(--blue); color: black; padding: 5px 15px; font-weight: bold; border-radius: 3px; font-size: 12px;">AKTIVNÍ</div>
         </div>
 
@@ -56,14 +63,10 @@
                 <div>
                     <label>Hodnost</label>
                     <select id="rank">
-                        <option>DBI Trainee</option>
-                        <option>Detective I</option>
-                        <option>Detective II</option>
-                        <option>Detective III</option>
-                        <option>Command Staff</option>
+                        <option>DBI Trainee</option><option>Detective I</option><option>Detective II</option><option>Detective III</option><option>Command Staff</option>
                     </select>
                 </div>
-                <div><label>Case ID</label><input type="text" id="case-id" placeholder="ID"></div>
+                <div><label>Case ID</label><input type="text" id="case-id" placeholder="#2026-XXXX"></div>
             </div>
 
             <div class="grid-3">
@@ -90,13 +93,11 @@
                 </div>
             </div>
 
-            <label>Zjištěné skutečnosti (Systémový záznam)</label>
-            <div class="sys-box">
-                Na základě prvotního ohledání místa činu bylo zjištěno, že došlo k násilnému trestnému činu, při kterém byly nalezeny osoby bez známek života s poraněními odpovídajícími násilnému útoku. V rámci probíhajícího vyšetřování byly zajištěny důkazní materiály a probíhá analýza stop z místa činu...
-            </div>
+            <label>Webové oznámení (Popis skutku)</label>
+            <textarea id="web-oznameni" class="web-oznameni" placeholder="Zde vypište oficiální znění oznámení..."></textarea>
 
-            <label>Doplňující odůvodnění žádosti (Vlastní text)</label>
-            <textarea id="note" style="height: 100px;" placeholder="Vložte vlastní odůvodnění..."></textarea>
+            <label>Doplňující odůvodnění žádosti (Interní)</label>
+            <textarea id="note" style="height: 80px;" placeholder="Vložte interní odůvodnění..."></textarea>
         </div>
 
         <div class="card" style="border-top: 2px solid var(--gold);">
@@ -116,7 +117,6 @@
         const cid = urlParams.get('id');
         let records = JSON.parse(localStorage.getItem(DB)) || [];
 
-        // Načtení dat
         if(cid !== null && records[cid]) {
             let r = records[cid];
             document.getElementById('author').value = r.author || '';
@@ -127,16 +127,14 @@
             document.getElementById('mdt-id').value = r.mdt || '';
             document.getElementById('legal').value = r.legal || '';
             document.getElementById('opp-type').value = r.oppType || '';
+            document.getElementById('web-oznameni').value = r.webOznameni || ''; // Načtení oznámení
             document.getElementById('note').value = r.note || '';
             document.getElementById('notes').value = r.notes || '';
             
             if(r.status === 'VYŘEŠENO') {
                 document.querySelectorAll('input, textarea, select, button').forEach(el => el.disabled = true);
                 document.getElementById('action-area').style.display = 'none';
-                
-                // TADY JE TA OPRAVA: Barva musí být v uvozovkách
                 document.getElementById('status-tag').style.background = "#2ea043"; 
-                document.getElementById('status-tag').style.color = "white";
                 document.getElementById('status-tag').innerText = "ARCHIVOVÁNO";
                 document.getElementById('locked-frame').style.display = 'block';
             }
@@ -152,25 +150,19 @@
                 mdt: document.getElementById('mdt-id').value,
                 legal: document.getElementById('legal').value,
                 oppType: document.getElementById('opp-type').value,
+                webOznameni: document.getElementById('web-oznameni').value, // Uložení oznámení
                 note: document.getElementById('note').value,
                 notes: document.getElementById('notes').value,
                 status: status
             };
-            
-            if(cid !== null) records[cid] = entry; 
-            else records.push(entry);
-            
+            if(cid !== null) records[cid] = entry; else records.push(entry);
             localStorage.setItem(DB, JSON.stringify(records));
             window.location.href = 'index.html';
         }
 
-        // Interval pro sledování výběru z katalogu
         setInterval(() => {
             const picked = localStorage.getItem('temp_crimes');
-            if(picked) {
-                document.getElementById('legal').value = picked;
-                localStorage.removeItem('temp_crimes');
-            }
+            if(picked) { document.getElementById('legal').value = picked; localStorage.removeItem('temp_crimes'); }
         }, 800);
     </script>
 </body>
