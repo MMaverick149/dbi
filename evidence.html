@@ -8,7 +8,7 @@
         .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 15px; }
         .field { display: flex; flex-direction: column; }
         label { color: var(--accent); font-size: 10px; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; }
-        input, select, textarea { background: #010409; border: 1px solid var(--border); color: var(--text); padding: 8px; border-radius: 4px; }
+        input, select { background: #010409; border: 1px solid var(--border); color: var(--text); padding: 8px; border-radius: 4px; }
         
         .btn-submit { background: #1f6feb; color: white; border: none; padding: 12px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 20px; width: 100%; text-transform: uppercase; }
         .btn-laws { background: #ffa657; color: black; border: none; padding: 10px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-bottom: 15px; width: 100%; }
@@ -17,16 +17,17 @@
         #modal-laws { 
             display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
             background: #161b22; border: 1px solid var(--accent); padding: 20px; border-radius: 8px;
-            width: 80%; max-height: 80vh; overflow-y: auto; z-index: 100; box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            width: 85%; max-height: 85vh; overflow-y: auto; z-index: 100; box-shadow: 0 0 30px rgba(0,0,0,0.9);
         }
-        .law-item { padding: 10px; border-bottom: 1px solid var(--border); cursor: pointer; }
+        .law-category { color: #ffa657; font-weight: bold; margin: 15px 0 5px 0; border-bottom: 1px solid #30363d; padding-bottom: 5px; text-transform: uppercase; font-size: 11px; }
+        .law-item { padding: 10px; border-bottom: 1px solid var(--border); cursor: pointer; transition: 0.1s; }
         .law-item:hover { background: #21262d; color: var(--accent); }
-        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 99; }
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 99; }
     </style>
 </head>
 <body>
 
-<button class="btn-laws" onclick="toggleLaws()">📖 OTEVŘÍT KATALOG TRESTŮ</button>
+<button class="btn-laws" onclick="toggleLaws()">📖 OTEVŘÍT TRESTNÍ ZÁKONÍK (PENAL CODE)</button>
 
 <div id="form-title" style="color: var(--accent); font-size: 18px; margin-bottom: 20px; font-weight: bold;">DETAIL SPISU</div>
 
@@ -35,12 +36,8 @@
     <div class="field">
         <label>🎖️ Hodnost</label>
         <select id="hodnost">
-            <option>Detective I</option>
-            <option>Detective II</option>
-            <option>Detective III</option>
-            <option>Sergeant</option>
-            <option>Lieutenant</option>
-            <option>DBI Trainee</option>
+            <option>Detective I</option><option>Detective II</option><option>Detective III</option>
+            <option>Sergeant</option><option>Lieutenant</option><option>DBI Trainee</option>
         </select>
     </div>
     <div class="field"><label>📂 Case ID</label><input type="text" id="caseid" placeholder="#2026-XXXX"></div>
@@ -50,7 +47,7 @@
 </div>
 
 <label>⚖️ Právní kvalifikace</label>
-<input type="text" id="kvalifikace" style="width:100%; margin-bottom: 15px;" placeholder="§ 12 Vražda...">
+<input type="text" id="kvalifikace" style="width:100%; margin-bottom: 15px;" placeholder="Klikni na katalog nahoře...">
 
 <label>🛠️ Prostředek (OPP)</label>
 <select id="typopp" style="width:100%; margin-bottom: 15px;">
@@ -63,60 +60,67 @@
 
 <div class="overlay" id="overlay" onclick="toggleLaws()"></div>
 <div id="modal-laws">
-    <h2 style="color:var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 10px;">Penal Code</h2>
-    <div class="law-item" onclick="selectLaw('§ 12 Vražda dle z.č. 002-19')">§ 12 Vražda</div>
-    <div class="law-item" onclick="selectLaw('§ 24 Loupež dle z.č. 002-19')">§ 24 Loupež</div>
-    <div class="law-item" onclick="selectLaw('§ 37 Maření spravedlnosti dle z.č. 002-19')">§ 37 Maření spravedlnosti</div>
-    <button onclick="toggleLaws()" style="margin-top: 20px; padding: 10px; width: 100%;">ZAVŘÍT</button>
+    <h2 style="color:var(--accent); margin-top: 0;">Katalog trestů</h2>
+    <input type="text" id="lawSearch" placeholder="Hledat trest..." onkeyup="filterLaws()" style="width:100%; margin-bottom: 10px; box-sizing: border-box;">
+    <div id="laws-list">Načítám data z laws.json...</div>
+    <button onclick="toggleLaws()" style="margin-top: 20px; padding: 10px; width: 100%; cursor: pointer; background: #30363d; color: white; border: none; border-radius: 4px;">ZAVŘÍT</button>
 </div>
 
 <script>
+    async function loadLaws() {
+        try {
+            const response = await fetch('laws.json');
+            const data = await response.json();
+            const list = document.getElementById('laws-list');
+            list.innerHTML = '';
+
+            // Tvůj JSON má strukturu: { categories: [ { paragraphs: [ { title, subs: [] } ] } ] }
+            data.categories.forEach(cat => {
+                const catTitle = document.createElement('div');
+                catTitle.className = 'law-category';
+                catTitle.innerText = cat.label || 'Kategorie';
+                list.appendChild(catTitle);
+
+                cat.paragraphs.forEach(par => {
+                    const div = document.createElement('div');
+                    div.className = 'law-item';
+                    div.innerHTML = `<strong>${par.title}</strong>`;
+                    
+                    div.onclick = () => {
+                        document.getElementById('kvalifikace').value = par.title;
+                        toggleLaws();
+                    };
+                    list.appendChild(div);
+                });
+            });
+        } catch (e) {
+            document.getElementById('laws-list').innerHTML = 'Chyba: laws.json nenalezen.';
+        }
+    }
+
+    loadLaws();
+
+    function filterLaws() {
+        let input = document.getElementById('lawSearch').value.toLowerCase();
+        let items = document.getElementsByClassName('law-item');
+        for (let i = 0; i < items.length; i++) {
+            items[i].style.display = items[i].innerText.toLowerCase().includes(input) ? "block" : "none";
+        }
+    }
+
     function toggleLaws() {
         const m = document.getElementById('modal-laws');
         const o = document.getElementById('overlay');
-        const isVisible = m.style.display === 'block';
-        m.style.display = isVisible ? 'none' : 'block';
-        o.style.display = isVisible ? 'none' : 'block';
-    }
-
-    function selectLaw(law) {
-        document.getElementById('kvalifikace').value = law;
-        toggleLaws();
+        const show = m.style.display !== 'block';
+        m.style.display = show ? 'block' : 'none';
+        o.style.display = show ? 'block' : 'none';
     }
 
     function vytvorZadost() {
         const d = (id) => document.getElementById(id).value;
-        
-        const pevnyText = `Na základě prvotního ohledání místa činu bylo zjištěno, že došlo k násilnému trestnému činu, při kterém byly nalezeny osoby bez známek života s poraněními odpovídajícími násilnému útoku. V rámci probíhajícího vyšetřování byly zajištěny důkazní materiály a probíhá analýza stop z místa činu.
+        const pevnyText = `Na základě prvotního ohledání místa činu bylo zjištěno, že došlo k násilnému trestnému činu, při kterém byly nalezeny osoby bez známek života s poraněními odpovídajícími násilnému útoku. V rámci probíhajícího vyšetřování byly zajištěny důkazní materiály a probíhá analýza stop z místa činu.\n\nZa účelem objasnění okolností případu je žádáno o poskytnutí informací o majetku a finančních prostředcích uvedených osob. Tyto informace mohou napomoci k identifikaci možného motivu trestné činnosti, prověření majetkových poměrů obětí a zjištění případných vazeb na další osoby, které by mohly souviset s vyšetřovaným případem.`;
 
-Za účelem objasnění okolností případu je žádáno o poskytnutí informací o majetku a finančních prostředcích uvedených osob. Tyto informace mohou napomoci k identifikaci možného motivu trestné činnosti, prověření majetkových poměrů obětí a zjištění případných vazeb na další osoby, které by mohly souviset s vyšetřovaným případem.`;
-
-        // FORMÁTOVÁNÍ PRO DISCORD (Tučné nadpisy, Emoji)
-        const discordText = `**ŽÁDOST O UŽITÍ OPP DLE § 37 Z.Č. 006-19** ⚖️
-
-**Vyžadující příslušník:**
-• 👮 ${d('detektiv')}
-
-**Prostředek:**
-• 🛠️ ${d('typopp')}
-
-**Podezřelá osoba/Prověřovaná osoba (Oběť):**
-• 👤 ${d('subjekt')} (${d('narozeni')}, ${d('mdtid')})
-
-**Trestný čin:**
-• ⚖️ ${d('kvalifikace')}
-
-**Předmět vydání:**
-• 📑 Informace o veškerém evidovaném majetku osoby, zejména bankovních účtech, finančních prostředcích, registrovaných vozidlech, nemovitostech, movitém majetku vyšší hodnoty a případných závazcích či dluzích.
-
-**Zjištěné skutečnosti:**
-${pevnyText}
-
-**S pozdravem,**
-🏙️ San Andreas State Police
-🎖️ ${d('hodnost')} ${d('detektiv')}
-
-**PŘÍLOHY:** 📁`;
+        const discordText = `**ŽÁDOST O UŽITÍ OPP DLE § 37 Z.Č. 006-19** ⚖️\n\n**Vyžadující příslušník:**\n• 👮 ${d('detektiv')}\n\n**Prostředek:**\n• 🛠️ ${d('typopp')}\n\n**Podezřelá osoba/Prověřovaná osoba (Oběť):**\n• 👤 ${d('subjekt')} (${d('narozeni')}, ${d('mdtid')})\n\n**Trestný čin:**\n• ⚖️ ${d('kvalifikace')}\n\n**Předmět vydání:**\n• 📑 Informace o veškerém evidovaném majetku osoby, zejména bankovních účtech, finančních prostředcích, registrovaných vozidlech, nemovitostech, movitém majetku vyšší hodnoty a případných závazcích či dluzích.\n\n**Zjištěné skutečnosti:**\n${pevnyText}\n\n**S pozdravem,**\n🏙️ San Andreas State Police\n🎖️ ${d('hodnost')} ${d('detektiv')}\n\n**PŘÍLOHY:** 📁`;
 
         window.parent.postMessage(discordText, '*');
     }
