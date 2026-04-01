@@ -31,10 +31,8 @@
             color: white; padding: 12px; border-radius: 3px; font-size: 14px; box-sizing: border-box; 
         }
 
-        /* Systémový záznam - fixní text */
-        .sys-record { border: 1px dashed #444; color: #aaa; font-size: 13px; font-style: italic; min-height: 150px; background: rgba(0,0,0,0.3); padding: 15px; line-height: 1.6; }
+        .sys-record { border: 1px dashed #444; color: #aaa; font-size: 13px; font-style: italic; min-height: 140px; background: rgba(0,0,0,0.3); padding: 15px; line-height: 1.6; margin-bottom: 20px; }
 
-        /* Poznámky se žlutým textem */
         .notes-card { border-top: 4px solid var(--gold); }
         .notes-header { 
             display: flex; align-items: center; gap: 10px; 
@@ -43,7 +41,6 @@
         }
         textarea#case-notes { min-height: 400px; font-family: 'Consolas', monospace; font-size: 15px; border-color: #444; }
 
-        /* Varování přes obrazovku */
         #locked-screen-warning {
             display: none;
             position: fixed;
@@ -72,7 +69,7 @@
 
 <div class="sidebar">
     <a href="index.html" style="color: var(--accent-blue); text-decoration: none; font-size: 12px; font-weight: bold;">
-        <i class="fa-solid fa-arrow-left"></i> ZPĚT
+        <i class="fa-solid fa-arrow-left"></i> ZPĚT DO COMMANDU
     </a>
 </div>
 
@@ -103,20 +100,34 @@
 
             <div class="grid-3">
                 <div style="grid-column: span 2;">
-                    <label>Právní kvalifikace (Editovatelné)</label>
-                    <input list="crimes-list" id="legal-qual" placeholder="Vyberte nebo dopište trest...">
+                    <label>Právní kvalifikace (Všechny trestné činy - editovatelné)</label>
+                    <input list="crimes-list" id="legal-qual" placeholder="Vyberte nebo dopište trestný čin...">
                     <datalist id="crimes-list">
                         <option value="§6 a) Zločin v organizaci (15 let - doživotí)">
                         <option value="§6 b) Zločin v organizaci s naplněním (Doživotí)">
-                        <option value="§7 a) Neúmyslně a zbraní (1-5 let)">
-                        <option value="§7 b) Úmyslně a zbraní (1-5 let)">
-                        <option value="§7 c) Úmyslně a střelnou zbraní (3-10 let)">
-                        <option value="§7 d) Úmyslně proti úřední osobě (5-15 let)">
-                        <option value="§7 e) Úmyslně proti IZS (10-20 let)">
+                        <option value="§7 a) Ublížení - neúmyslně zbraní (1-5 let)">
+                        <option value="§7 b) Ublížení - úmyslně zbraní (1-5 let)">
+                        <option value="§7 c) Ublížení - úmyslně střelnou zbraní (3-10 let)">
+                        <option value="§7 d) Ublížení - proti úřední osobě (5-15 let)">
+                        <option value="§7 e) Ublížení - proti IZS (10-20 let)">
                         <option value="§9 Vražda (Doživotí)">
                         <option value="§11 Pokus o vraždu (20-30 let)">
+                        <option value="§12 Zabití (15-20 let)">
+                        <option value="§13 Napadení se smrtícím účinkem (10-20 let)">
+                        <option value="§14 Únos (10-20 let)">
+                        <option value="§15 Braní rukojmí (15-25 let)">
+                        <option value="§16 Omezování osobní svobody (2-10 let)">
                         <option value="§18 Loupežné přepadení (10-20 let)">
+                        <option value="§19 a) Krádež vniknutím (5-15 let)">
+                        <option value="§19 b) Krádež bez vniknutí (2-10 let)">
+                        <option value="§20 a) Vloupání do obydlí (10-20 let)">
+                        <option value="§20 b) Vloupání do objektu (5-15 let)">
+                        <option value="§23 Žhářství (10-20 let)">
+                        <option value="§29 Výroba a distribuce drog (10-20 let)">
+                        <option value="§30 Přechovávání za účelem prodeje (5-15 let)">
+                        <option value="§36 Obchodování se zbraněmi (15-25 let)">
                         <option value="§57 Terorismus (Doživotí)">
+                        <option value="§58 Vlastizrada (Doživotí)">
                     </datalist>
                 </div>
                 <div>
@@ -124,25 +135,26 @@
                     <select id="opp-type">
                         <option>Prověrka majetku a finančních prostředků</option>
                         <option>Sledování osob a věcí</option>
-                        <option>Odposlech a záznam</option>
+                        <option>Odposlech a záznam provozu</option>
                     </select>
                 </div>
             </div>
 
             <label>Zjištěné skutečnosti (Systémový záznam)</label>
-            <textarea class="sys-record" readonly>Na základě prvotního ohledání místa činu bylo zjištěno, že došlo k násilnému trestnému činu, při kterém byly nalezeny osoby bez známek života s poraněními odpovídajícími násilnému útoku. V rámci probíhajícího vyšetřování byly zajištěny důkazní materiály a probíhá analýza stop z místa činu.
-
-Za účelem objasnění okolností případu je žádáno o poskytnutí informací o majetku a finančních prostředcích uvedených osob. Tyto informace mohou napomoci k identifikaci možného motivu trestné činnosti, prověření majetkových poměrů obětí a zjištění případných vazeb na další osoby, které by mohly souviset s vyšetřovaným případem.</textarea>
+            <div class="sys-record">
+                Na základě prvotního ohledání místa činu bylo zjištěno, že došlo k násilnému trestnému činu, při kterém byly nalezeny osoby bez známek života s poraněními odpovídajícími násilnému útoku. V rámci probíhajícího vyšetřování byly zajištěny důkazní materiály a probíhá analýza stop z místa činu.<br><br>
+                Za účelem objasnění okolností případu je žádáno o poskytnutí informací o majetku a finančních prostředcích uvedených osob. Tyto informace mohou napomoci k identifikaci možného motivu trestné činnosti, prověření majetkových poměrů obětí a zjištění případných vazeb na další osoby, které by mohly souviset s vyšetřovaným případem.
+            </div>
 
             <label>Doplňující odůvodnění žádosti (Vlastní text)</label>
-            <textarea id="user-note" style="min-height: 80px;" placeholder="Doplňte vlastní odůvodnění..."></textarea>
+            <textarea id="user-note" style="min-height: 80px;" placeholder="Doplňte vlastní odůvodnění žádosti..."></textarea>
         </div>
 
         <div class="card notes-card">
             <div class="notes-header">
                 <i class="fa-solid fa-clipboard-list"></i> PRŮBĚŽNÉ POZNÁMKY A OPERATIVNÍ DENÍK
             </div>
-            <textarea id="case-notes" placeholder="Zápis vyšetřování..."></textarea>
+            <textarea id="case-notes" placeholder="Zápis vyšetřování, časová osa, stopy..."></textarea>
         </div>
 
         <div class="btn-row" id="action-buttons">
@@ -180,11 +192,11 @@ Za účelem objasnění okolností případu je žádáno o poskytnutí informac
     function saveData(status) {
         let entry = {
             id: document.getElementById('case-id').value || '---',
-            author: document.getElementById('det-name').value || 'Anonym',
+            author: document.getElementById('det-name').value || '---',
             subject: document.getElementById('sub-name').value || '---',
             dob: document.getElementById('sub-dob').value || '',
             mdt: document.getElementById('mdt-id').value || '',
-            legal: document.getElementById('legal-qual').value,
+            legal: document.getElementById('legal-qual').value || '',
             opp: document.getElementById('opp-type').value,
             notes: document.getElementById('case-notes').value,
             note: document.getElementById('user-note').value,
