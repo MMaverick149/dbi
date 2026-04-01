@@ -3,18 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <style>
-        body { background-color: #0d1117; color: #c9d1d9; font-family: sans-serif; padding: 20px; }
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-        .stat-card { background: #161b22; border: 1px solid #30363d; padding: 20px; border-radius: 8px; text-align: center; }
-        .stat-card h3 { margin: 0; font-size: 0.8em; color: #8b949e; text-transform: uppercase; }
-        .stat-card .value { font-size: 2.5em; font-weight: bold; color: #58a6ff; margin: 10px 0; }
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --border: #30363d;
+            --blue: #58a6ff;
+            --red: #f85149;
+            --yellow: #d29922;
+            --text: #c9d1d9;
+        }
+        body { background-color: var(--bg); color: var(--text); font-family: sans-serif; padding: 25px; margin: 0; }
+        
+        .welcome-bar { margin-bottom: 30px; border-left: 4px solid var(--blue); padding-left: 15px; }
+        .welcome-bar h1 { margin: 0; font-size: 1.5em; }
+        .welcome-bar p { color: #8b949e; margin: 5px 0 0 0; font-size: 0.9em; }
+
+        .grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+
+        /* Karty s hlášením */
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
+        .card h3 { margin-top: 0; font-size: 0.9em; text-transform: uppercase; color: var(--blue); border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+
+        .dispatch-item { border-bottom: 1px solid #21262d; padding: 10px 0; display: flex; justify-content: space-between; }
+        .dispatch-item:last-child { border: none; }
+        .unit { color: var(--yellow); font-weight: bold; font-family: monospace; }
+        .msg { font-size: 0.9em; flex-grow: 1; margin-left: 15px; }
+        .time { color: #484f58; font-size: 0.8em; }
+
+        /* WANTED list */
+        .wanted-item { display: flex; align-items: center; background: #21262d; margin-bottom: 10px; padding: 10px; border-radius: 6px; border-left: 3px solid var(--red); }
+        .wanted-name { font-weight: bold; font-size: 0.9em; flex-grow: 1; }
+        .wanted-status { font-size: 0.7em; background: var(--red); color: white; padding: 2px 5px; border-radius: 3px; }
+
     </style>
 </head>
 <body>
-    <div class="stats-grid">
-        <div class="stat-card"><h3>Zatčení (24h)</h3><div class="value">14</div></div>
-        <div class="stat-card"><h3>Aktivní spisy</h3><div class="value">8</div></div>
-        <div class="stat-card"><h3>Hledané osoby</h3><div class="value">32</div></div>
+
+    <div class="welcome-bar">
+        <h1>Operační terminál SASP</h1>
+        <p>Vítejte zpět, systémy jsou nominální. Aktuální stav ohrožení: <b>KÓD 1</b></p>
     </div>
+
+    <div class="grid">
+        <div class="card">
+            <h3>Poslední aktivita na frekvenci</h3>
+            <div class="dispatch-item">
+                <span class="unit">ADAM-12</span>
+                <span class="msg">Provádím silniční kontrolu (černý Sultan, 44ABC123)</span>
+                <span class="time">před 2 min</span>
+            </div>
+            <div class="dispatch-item">
+                <span class="unit">LINCOLN-01</span>
+                <span class="msg">10-8, k dispozici pro hlášení</span>
+                <span class="time">před 5 min</span>
+            </div>
+            <div class="dispatch-item">
+                <span class="unit">AIR-1</span>
+                <span class="msg">Zahajuji přelet nad oblastí Mission Row</span>
+                <span class="time">před 12 min</span>
+            </div>
+            <div class="dispatch-item">
+                <span class="unit">MARY-20</span>
+                <span class="msg">Podezřelý zajištěn, směřuji na stanici</span>
+                <span class="time">před 15 min</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Aktivní pátrání (WANTED)</h3>
+            <div class="wanted-item">
+                <span class="wanted-name">T-Bone Mendez</span>
+                <span class="wanted-status">OZBROJEN</span>
+            </div>
+            <div class="wanted-item">
+                <span class="wanted-name">Unknown "Masked"</span>
+                <span class="wanted-status">NEBEZPEČNÝ</span>
+            </div>
+            <div class="wanted-item">
+                <span class="wanted-name">Jizzy B.</span>
+                <span class="wanted-status">DROGY</span>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
