@@ -2,120 +2,68 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>SASP - Command Center</title>
+    <title>SASP - Evidence OPP</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --bg-dark: #0b0e14; --sidebar-bg: #151921; --card-bg: #1c212b; --accent-blue: #4a9eff; --border: #2d333b; --gold: #ffcc00; --danger: #f85149; --success: #2ea043; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg-dark); color: white; margin: 0; display: flex; height: 100vh; }
-        .sidebar { width: 180px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 15px; flex-shrink: 0; }
-        .main { flex-grow: 1; padding: 30px; overflow-y: auto; }
-        
-        h1 { color: var(--gold); font-weight: 300; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 2px; }
-        
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
-        .stat-card { background: var(--card-bg); border: 1px solid var(--border); padding: 20px; border-radius: 4px; border-left: 4px solid var(--accent-blue); }
-        .stat-card.resolved { border-left-color: var(--success); }
-        
-        table { width: 100%; border-collapse: collapse; background: var(--card-bg); border: 1px solid var(--border); }
-        th { background: #151921; color: var(--accent-blue); text-align: left; padding: 15px; font-size: 11px; text-transform: uppercase; border-bottom: 1px solid var(--border); }
+        :root { --bg: #0b0e14; --sidebar: #151921; --card: #1c212b; --blue: #4a9eff; --gold: #ffcc00; --border: #2d333b; --success: #2ea043; --danger: #f85149; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; margin: 0; display: flex; height: 100vh; }
+        .sidebar { width: 200px; background: var(--sidebar); border-right: 1px solid var(--border); padding: 20px; flex-shrink: 0; }
+        .main { flex-grow: 1; padding: 40px; overflow-y: auto; }
+        h1 { color: var(--gold); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; }
+        .btn-new { background: var(--gold); color: black; border: none; padding: 12px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; margin-bottom: 25px; }
+        table { width: 100%; border-collapse: collapse; background: var(--card); border: 1px solid var(--border); }
+        th { background: #151921; color: var(--blue); text-align: left; padding: 15px; font-size: 12px; text-transform: uppercase; border-bottom: 1px solid var(--border); }
         td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 14px; }
-        tr:hover { background: rgba(255,255,255,0.02); }
-
-        .status { padding: 4px 10px; border-radius: 3px; font-size: 11px; font-weight: bold; }
-        .status-open { background: rgba(74, 158, 255, 0.2); color: var(--accent-blue); }
-        .status-closed { background: rgba(46, 160, 67, 0.2); color: var(--success); }
-
-        .btn-new { background: var(--gold); color: black; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; text-decoration: none; display: inline-block; margin-bottom: 20px; }
-        .btn-edit { color: var(--accent-blue); text-decoration: none; margin-right: 15px; font-weight: bold; }
-        .btn-delete { color: var(--danger); cursor: pointer; border: none; background: none; font-weight: bold; }
+        .status { padding: 4px 8px; border-radius: 3px; font-size: 11px; font-weight: bold; }
+        .status-open { background: rgba(74,158,255,0.2); color: var(--blue); }
+        .status-closed { background: rgba(46,160,67,0.2); color: var(--success); }
+        .btn-action { color: var(--blue); text-decoration: none; font-weight: bold; margin-right: 15px; }
+        .btn-del { color: var(--danger); cursor: pointer; background: none; border: none; font-weight: bold; }
     </style>
 </head>
 <body>
-
-<div class="sidebar">
-    <div style="color: var(--gold); font-weight: bold; margin-bottom: 30px;">SASP COMMAND</div>
-    <a href="detail.html" class="btn-new"><i class="fa-solid fa-plus"></i> NOVÝ ZÁZNAM</a>
-</div>
-
-<div class="main">
-    <h1>Přehled Operativních Prostředků</h1>
-
-    <div class="stats-grid">
-        <div class="stat-card">
-            <div style="font-size: 11px; color: #888;">AKTIVNÍ PŘÍPADY</div>
-            <div id="count-open" style="font-size: 24px; font-weight: bold;">0</div>
-        </div>
-        <div class="stat-card resolved">
-            <div style="font-size: 11px; color: #888;">SCHVÁLENO / ARCHIV</div>
-            <div id="count-closed" style="font-size: 24px; font-weight: bold;">0</div>
-        </div>
+    <div class="sidebar">
+        <div style="font-weight: bold; color: var(--gold); margin-bottom: 30px;">SASP COMMAND</div>
+        <a href="detail.html" class="btn-new"><i class="fa-solid fa-plus"></i> NOVÝ ZÁZNAM</a>
     </div>
-
-    <table>
-        <thead>
-            <tr>
-                <th>CASE ID</th>
-                <th>SUBJEKT</th>
-                <th>KVALIFIKACE</th>
-                <th>VYŠETŘOVATEL</th>
-                <th>STAV</th>
-                <th>AKCE</th>
-            </tr>
-        </thead>
-        <tbody id="case-table-body">
-            </tbody>
-    </table>
-</div>
-
-<script>
-    const DB_NAME = 'lspd_v15_data';
-    let cases = JSON.parse(localStorage.getItem(DB_NAME)) || [];
-
-    function renderTable() {
-        const tbody = document.getElementById('case-table-body');
-        tbody.innerHTML = '';
-        
-        let openCount = 0;
-        let closedCount = 0;
-
-        cases.forEach((c, index) => {
-            if(c.status === 'VYŘEŠENO') closedCount++; else openCount++;
-
-            const tr = document.createElement('tr');
-            const statusClass = c.status === 'VYŘEŠENO' ? 'status-closed' : 'status-open';
-            const statusText = c.status === 'VYŘEŠENO' ? 'ARCHIVOVÁNO' : 'OTEVŘENO';
-
-            tr.innerHTML = `
-                <td style="color: var(--gold); font-weight: bold;">${c.id || '---'}</td>
-                <td>${c.subject || '---'}</td>
-                <td style="font-size: 12px; color: #aaa;">${c.legal || '---'}</td>
-                <td>${c.author || '---'}</td>
-                <td><span class="status ${statusClass}">${statusText}</span></td>
-                <td>
-                    <a href="detail.html?id=${index}" class="btn-edit">
-                        <i class="fa-solid ${c.status === 'VYŘEŠENO' ? 'fa-eye' : 'fa-pen'}"></i> 
-                        ${c.status === 'VYŘEŠENO' ? 'ZOBRAZIT' : 'UPRAVIT'}
-                    </a>
-                    <button onclick="deleteCase(${index})" class="btn-delete"><i class="fa-solid fa-trash"></i></button>
-                </td>
-            `;
-            tbody.appendChild(tr);
-        });
-
-        document.getElementById('count-open').innerText = openCount;
-        document.getElementById('count-closed').innerText = closedCount;
-    }
-
-    function deleteCase(index) {
-        if(confirm('Opravdu chcete tento záznam smazat?')) {
-            cases.splice(index, 1);
-            localStorage.setItem(DB_NAME, JSON.stringify(cases));
-            renderTable();
+    <div class="main">
+        <h1>Evidence Operativních Prostředků</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>CASE ID</th>
+                    <th>SUBJEKT</th>
+                    <th>DETEKTIV</th>
+                    <th>STAV</th>
+                    <th>AKCE</th>
+                </tr>
+            </thead>
+            <tbody id="table-body"></tbody>
+        </table>
+    </div>
+    <script>
+        const DB = 'lspd_v15_data';
+        function load() {
+            const data = JSON.parse(localStorage.getItem(DB)) || [];
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = '';
+            data.forEach((c, i) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="color:var(--gold); font-weight:bold;">${c.id}</td>
+                    <td>${c.subject}</td>
+                    <td>${c.author}</td>
+                    <td><span class="status ${c.status === 'VYŘEŠENO' ? 'status-closed' : 'status-open'}">${c.status}</span></td>
+                    <td>
+                        <a href="detail.html?id=${i}" class="btn-action">${c.status === 'VYŘEŠENO' ? 'ZOBRAZIT' : 'UPRAVIT'}</a>
+                        <button onclick="del(${i})" class="btn-del">SMAZAT</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
         }
-    }
-
-    // Načíst tabulku při startu
-    renderTable();
-</script>
+        function del(i) { if(confirm('Smazat?')) { let d = JSON.parse(localStorage.getItem(DB)); d.splice(i,1); localStorage.setItem(DB, JSON.stringify(d)); load(); } }
+        load();
+    </script>
 </body>
 </html>

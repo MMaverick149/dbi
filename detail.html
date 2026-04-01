@@ -2,249 +2,103 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>SASP - Evidence OPP</title>
+    <title>SASP - Detail</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { 
-            --bg-dark: #0b0e14; --sidebar-bg: #151921; --card-bg: #1c212b; 
-            --accent-blue: #4a9eff; --border: #2d333b; --gold: #ffcc00; 
-            --danger: #f85149; --success: #2ea043; --card-hover: #262c36;
-        }
-        
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg-dark); color: white; margin: 0; display: flex; height: 100vh; overflow: hidden; }
-        .sidebar { width: 180px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 15px; flex-shrink: 0; }
-        .main { flex-grow: 1; padding: 20px 40px; overflow-y: auto; }
-        
-        h2 { font-weight: bold; margin-bottom: 25px; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; }
-        .card { background: var(--card-bg); border: 1px solid var(--border); padding: 25px; border-radius: 4px; margin-bottom: 20px; }
-        
-        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 25px; margin-bottom: 20px; }
-        label { color: var(--accent-blue); font-size: 11px; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 8px; }
-        
-        input, select, textarea { width: 100%; background: #0b0e14; border: 1px solid var(--border); color: white; padding: 12px; border-radius: 3px; font-size: 14px; box-sizing: border-box; }
-
-        /* Tlačítko pro otevření katalogu */
-        .btn-catalog { 
-            background: linear-gradient(135deg, #2d333b 0%, #1c212b 100%);
-            color: var(--gold); border: 1px solid var(--gold); padding: 12px; 
-            cursor: pointer; border-radius: 4px; font-weight: bold; width: 100%; margin-top: 5px;
-            transition: 0.3s;
-        }
+        :root { --bg: #0b0e14; --card: #1c212b; --blue: #4a9eff; --gold: #ffcc00; --border: #2d333b; --success: #2ea043; --danger: #f85149; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; margin: 0; display: flex; height: 100vh; overflow: hidden; }
+        .sidebar { width: 180px; background: #151921; border-right: 1px solid var(--border); padding: 15px; }
+        .main { flex-grow: 1; padding: 30px; overflow-y: auto; }
+        .card { background: var(--card); border: 1px solid var(--border); padding: 25px; border-radius: 4px; margin-bottom: 20px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        label { color: var(--blue); font-size: 11px; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 5px; }
+        input, select, textarea { width: 100%; background: #05070a; border: 1px solid var(--border); color: white; padding: 10px; border-radius: 3px; box-sizing: border-box; }
+        .btn-catalog { background: none; border: 1px solid var(--gold); color: var(--gold); padding: 10px; cursor: pointer; width: 100%; font-weight: bold; margin-top: 5px; }
         .btn-catalog:hover { background: var(--gold); color: black; }
-
-        /* MODÁLNÍ OKNO - KATALOG TRESTŮ */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; justify-content: center; align-items: center; }
-        .modal-content { background: var(--bg-dark); border: 1px solid var(--gold); width: 90%; max-width: 1100px; height: 85vh; display: flex; flex-direction: column; border-radius: 8px; position: relative; }
-        
-        .modal-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-        .modal-body { flex-grow: 1; overflow-y: auto; padding: 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; align-content: start; }
-        .modal-footer { padding: 20px; border-top: 1px solid var(--border); background: var(--sidebar-bg); }
-
-        /* Karta trestného činu */
-        .crime-card { 
-            background: var(--card-bg); border: 1px solid var(--border); padding: 15px; 
-            border-radius: 6px; cursor: pointer; transition: 0.2s; position: relative;
-            display: flex; flex-direction: column; justify-content: space-between;
-        }
-        .crime-card:hover { border-color: var(--accent-blue); background: var(--card-hover); }
-        .crime-card.selected { border-color: var(--gold); background: rgba(255, 204, 0, 0.05); box-shadow: 0 0 10px rgba(255, 204, 0, 0.2); }
-        .crime-card.selected::after { content: '\f058'; font-family: 'Font Awesome 5 Free'; font-weight: 900; position: absolute; top: 10px; right: 10px; color: var(--gold); }
-        
-        .crime-code { color: var(--accent-blue); font-weight: bold; font-size: 12px; margin-bottom: 5px; }
-        .crime-name { font-size: 14px; margin-bottom: 10px; line-height: 1.3; }
-        .crime-penalty { font-size: 11px; color: #888; font-style: italic; }
-
-        .sys-record { border: 1px dashed #444; color: #aaa; font-size: 13px; font-style: italic; min-height: 100px; background: rgba(0,0,0,0.3); padding: 15px; line-height: 1.6; border-radius: 4px; margin-bottom: 20px; }
-        .notes-card { border-top: 4px solid var(--gold); }
-        
-        #locked-screen-warning { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; border: 15px solid var(--danger); pointer-events: none; z-index: 9999; box-sizing: border-box; }
-
-        .btn-row { display: flex; justify-content: flex-end; gap: 15px; margin-bottom: 50px; }
-        .btn { border: none; padding: 14px 30px; border-radius: 4px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
-        .btn-resolve { background: var(--success); color: white; }
-        .btn-save { background: var(--accent-blue); color: black; }
-        .btn-confirm { background: var(--gold); color: black; width: 100%; padding: 15px; font-size: 16px; }
+        .btn-save { background: var(--blue); color: black; border: none; padding: 15px 30px; font-weight: bold; cursor: pointer; border-radius: 4px; }
+        .btn-resolve { background: var(--success); color: white; border: none; padding: 15px 30px; font-weight: bold; cursor: pointer; border-radius: 4px; margin-left: 10px; }
+        #lock-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; border: 15px solid var(--danger); pointer-events: none; z-index: 9999; box-sizing: border-box; }
     </style>
 </head>
 <body>
-
-<div id="locked-screen-warning"></div>
-
-<div id="crimeModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3 style="color: var(--gold); margin: 0; letter-spacing: 1px;">KATALOG TRESTNÝCH ČINŮ (PENAL CODE)</h3>
-            <button onclick="closeModal()" style="background:none; border:none; color:white; font-size:24px; cursor:pointer;">&times;</button>
-        </div>
-        <div class="modal-body" id="catalog-container">
-            </div>
-        <div class="modal-footer">
-            <button class="btn btn-confirm" onclick="confirmCrimes()">POTVRDIT VÝBĚR A ZAVŘÍT</button>
-        </div>
-    </div>
-</div>
-
-<div class="sidebar">
-    <a href="index.html" style="color: var(--accent-blue); text-decoration: none; font-size: 13px; font-weight: bold;">
-        <i class="fa-solid fa-arrow-left"></i> ZPĚT DO SEZNAMU
-    </a>
-</div>
-
-<div class="main">
-    <div class="container-fluid">
-        <div id="locked-msg" style="display:none; background: var(--danger); padding: 15px; text-align: center; margin-bottom: 20px; font-weight: bold;">ZÁZNAM UZAVŘEN</div>
-        
-        <h2>Evidence Operativních Prostředků</h2>
-        
+    <div id="lock-overlay"></div>
+    <div class="sidebar"><a href="index.html" style="color:var(--blue); text-decoration:none;">← ZPĚT</a></div>
+    <div class="main">
+        <h2 id="page-title" style="color:var(--gold);">Evidence OPP</h2>
         <div class="card">
-            <div class="grid-3">
-                <div><label>Vyšetřující detektiv</label><input type="text" id="det-name"></div>
-                <div><label>Hodnost</label><select id="det-rank"><option>DBI Trainee</option><option>Detective I</option><option>Detective II</option><option>Command</option></select></div>
-                <div><label>Case ID</label><input type="text" id="case-id" placeholder="#2026-XXXX"></div>
+            <div class="grid">
+                <div><label>Detektiv</label><input type="text" id="author"></div>
+                <div><label>Case ID</label><input type="text" id="case-id"></div>
+                <div><label>Subjekt</label><input type="text" id="subject"></div>
             </div>
-
-            <div class="grid-3">
-                <div><label>Subjekt (Jméno Příjmení)</label><input type="text" id="sub-name"></div>
-                <div><label>Datum narození</label><input type="text" id="sub-dob"></div>
-                <div><label>MDT ID</label><input type="text" id="mdt-id"></div>
-            </div>
-
-            <div class="grid-3" style="grid-template-columns: 2fr 1fr;">
+            <div class="grid" style="grid-template-columns: 2fr 1fr;">
                 <div>
-                    <label>Právní kvalifikace (Vybrané delikty)</label>
-                    <input type="text" id="legal-qual" readonly placeholder="Klikněte na tlačítko vpravo pro výběr..." style="background: #05070a; cursor: default;">
+                    <label>Právní kvalifikace</label>
+                    <input type="text" id="legal" placeholder="Vyberte v katalogu..." readonly>
                 </div>
                 <div>
                     <label>&nbsp;</label>
-                    <button class="btn-catalog" id="btn-open-modal" onclick="openModal()">
-                        <i class="fa-solid fa-book-open"></i> OTEVŘÍT KATALOG TRESTŮ
-                    </button>
+                    <button id="cat-btn" class="btn-catalog" onclick="window.open('trest.html','Katalog','width=1100,height=800')">OTEVŘÍT KATALOG TRESTŮ</button>
                 </div>
             </div>
-
-            <label>Zjištěné skutečnosti (Systémový záznam)</label>
-            <div class="sys-record">
-                Na základě prvotního ohledání místa činu bylo zjištěno, že došlo k násilnému trestnému činu, při kterém byly nalezeny osoby bez známek života s poraněními odpovídajícími násilnému útoku. V rámci probíhajícího vyšetřování byly zajištěny důkazní materiály a probíhá analýza stop z místa činu.<br><br>
-                Za účelem objasnění okolností případu je žádáno o poskytnutí informací o majetku a finančních prostředcích uvedených osob. Tyto informace mohou napomoci k identifikaci možného motivu trestné činnosti, prověření majetkových poměrů obětí a zjištění případných vazeb na další osoby, které by mohly souviset s vyšetřovaným případem.
+            <label>Zjištěné skutečnosti</label>
+            <div style="background:rgba(0,0,0,0.2); padding:15px; font-size:13px; color:#aaa; margin-bottom:15px; border-radius:4px; border:1px dashed #444;">
+                Na základě prvotního ohledání místa činu bylo zjištěno, že došlo k násilnému trestnému činu...
             </div>
-
-            <label>Doplňující odůvodnění žádosti (Vlastní text)</label>
-            <textarea id="user-note" style="min-height: 80px;" placeholder="Zde doplňte odůvodnění..."></textarea>
+            <label>Doplňující odůvodnění</label>
+            <textarea id="note" style="height:60px;"></textarea>
         </div>
-
-        <div class="card notes-card">
-            <div style="color: var(--gold); font-weight: bold; margin-bottom: 15px; font-size: 14px;">PRŮBĚŽNÉ POZNÁMKY A OPERATIVNÍ DENÍK</div>
-            <textarea id="case-notes" placeholder="Sem pište průběh vyšetřování..."></textarea>
+        <div class="card" style="border-top: 4px solid var(--gold);">
+            <label>Operativní deník / Poznámky</label>
+            <textarea id="notes" style="height:250px; font-family: monospace;"></textarea>
         </div>
-
-        <div class="btn-row" id="action-buttons">
-            <button class="btn btn-save" onclick="saveData('OTEVŘENO')">ULOŽIT KONCEPT</button>
-            <button class="btn btn-resolve" onclick="saveData('VYŘEŠENO')">SCHVÁLIT A ARCHIVOVAT</button>
+        <div id="btns">
+            <button class="btn-save" onclick="save('OTEVŘENO')">ULOŽIT KONCEPT</button>
+            <button class="btn-resolve" onclick="save('VYŘEŠENO')">SCHVÁLIT A UZAVŘÍT</button>
         </div>
     </div>
-</div>
+    <script>
+        const DB = 'lspd_v15_data';
+        const urlParams = new URLSearchParams(window.location.search);
+        const cid = urlParams.get('id');
+        let data = JSON.parse(localStorage.getItem(DB)) || [];
 
-<script>
-    const DB_NAME = 'lspd_v15_data';
-    
-    // Definice trestných činů jako objektů
-    const crimesData = [
-        { code: "§6 a)", name: "Zločin v organizaci", penalty: "15 let - doživotí" },
-        { code: "§6 b)", name: "Zločin v organizaci (naplnění)", penalty: "Doživotí" },
-        { code: "§7 a)", name: "Ublížení na zdraví - neúmyslné", penalty: "1-5 let" },
-        { code: "§7 c)", name: "Ublížení - úmyslné (střelná zbraň)", penalty: "3-10 let" },
-        { code: "§7 d)", name: "Ublížení - úřední osoba", penalty: "5-15 let" },
-        { code: "§9", name: "Vražda", penalty: "Doživotí" },
-        { code: "§11", name: "Pokus o vraždu", penalty: "20-30 let" },
-        { code: "§14", name: "Únos osoby", penalty: "10-20 let" },
-        { code: "§15", name: "Braní rukojmí", penalty: "15-25 let" },
-        { code: "§18", name: "Loupežné přepadení", penalty: "10-20 let" },
-        { code: "§19 a)", name: "Krádež vniknutím", penalty: "5-15 let" },
-        { code: "§20 a)", name: "Vloupání do obydlí", penalty: "10-20 let" },
-        { code: "§23", name: "Žhářství", penalty: "10-20 let" },
-        { code: "§29", name: "Výroba a distribuce drog", penalty: "10-20 let" },
-        { code: "§36", name: "Obchodování se zbraněmi", penalty: "15-25 let" },
-        { code: "§57", name: "Terorismus", penalty: "Doživotí" }
-    ];
-
-    let selectedCrimes = [];
-    const urlParams = new URLSearchParams(window.location.search);
-    const caseIndex = urlParams.get('id');
-    let cases = JSON.parse(localStorage.getItem(DB_NAME)) || [];
-
-    // Vygenerování katalogu karet
-    const container = document.getElementById('catalog-container');
-    crimesData.forEach((crime, index) => {
-        const card = document.createElement('div');
-        card.className = 'crime-card';
-        card.id = `crime-card-${index}`;
-        card.onclick = () => toggleCrime(index, crime);
-        card.innerHTML = `
-            <div class="crime-code">${crime.code}</div>
-            <div class="crime-name">${crime.name}</div>
-            <div class="crime-penalty">${crime.penalty}</div>
-        `;
-        container.appendChild(card);
-    });
-
-    function toggleCrime(index, crime) {
-        const card = document.getElementById(`crime-card-${index}`);
-        const crimeString = `${crime.code} ${crime.name}`;
-        
-        if (selectedCrimes.includes(crimeString)) {
-            selectedCrimes = selectedCrimes.filter(item => item !== crimeString);
-            card.classList.remove('selected');
-        } else {
-            selectedCrimes.push(crimeString);
-            card.classList.add('selected');
-        }
-    }
-
-    function openModal() { document.getElementById('crimeModal').style.display = 'flex'; }
-    function closeModal() { document.getElementById('crimeModal').style.display = 'none'; }
-
-    function confirmCrimes() {
-        document.getElementById('legal-qual').value = selectedCrimes.join(', ');
-        closeModal();
-    }
-
-    window.onload = function() {
-        if(caseIndex !== null && cases[caseIndex]) {
-            let c = cases[caseIndex];
-            document.getElementById('det-name').value = c.author || '';
-            document.getElementById('case-id').value = c.id || '';
-            document.getElementById('sub-name').value = c.subject || '';
-            document.getElementById('sub-dob').value = c.dob || '';
-            document.getElementById('mdt-id').value = c.mdt || '';
-            document.getElementById('legal-qual').value = c.legal || '';
-            document.getElementById('case-notes').value = c.notes || '';
-            document.getElementById('user-note').value = c.note || '';
-            
+        if(cid !== null && data[cid]) {
+            let c = data[cid];
+            document.getElementById('author').value = c.author;
+            document.getElementById('case-id').value = c.id;
+            document.getElementById('subject').value = c.subject;
+            document.getElementById('legal').value = c.legal;
+            document.getElementById('note').value = c.note;
+            document.getElementById('notes').value = c.notes;
             if(c.status === 'VYŘEŠENO') {
-                document.querySelectorAll('input, select, textarea').forEach(el => el.disabled = true);
-                document.getElementById('locked-msg').style.display = 'block';
-                document.getElementById('action-buttons').style.display = 'none';
-                document.getElementById('btn-open-modal').style.display = 'none';
+                document.querySelectorAll('input, textarea, select').forEach(el => el.disabled = true);
+                document.getElementById('btns').style.display = 'none';
+                document.getElementById('cat-btn').style.display = 'none';
+                document.getElementById('lock-overlay').style.display = 'block';
             }
         }
-    };
 
-    function saveData(status) {
-        let entry = {
-            id: document.getElementById('case-id').value || '---',
-            author: document.getElementById('det-name').value || '---',
-            subject: document.getElementById('sub-name').value || '---',
-            dob: document.getElementById('sub-dob').value || '',
-            mdt: document.getElementById('mdt-id').value || '',
-            legal: document.getElementById('legal-qual').value || '',
-            notes: document.getElementById('case-notes').value || '',
-            note: document.getElementById('user-note').value || '',
-            status: status
-        };
-        if(caseIndex !== null) cases[caseIndex] = entry; else cases.push(entry);
-        localStorage.setItem(DB_NAME, JSON.stringify(cases));
-        window.location.href = 'index.html';
-    }
-</script>
+        function save(st) {
+            let entry = {
+                author: document.getElementById('author').value,
+                id: document.getElementById('case-id').value,
+                subject: document.getElementById('subject').value,
+                legal: document.getElementById('legal').value,
+                note: document.getElementById('note').value,
+                notes: document.getElementById('notes').value,
+                status: st
+            };
+            if(cid !== null) data[cid] = entry; else data.push(entry);
+            localStorage.setItem(DB, JSON.stringify(data));
+            window.location.href = 'index.html';
+        }
+
+        // Automatické načtení z katalogu
+        setInterval(() => {
+            const temp = localStorage.getItem('temp_crimes');
+            if(temp) { document.getElementById('legal').value = temp; localStorage.removeItem('temp_crimes'); }
+        }, 800);
+    </script>
 </body>
 </html>
