@@ -16,11 +16,10 @@
             --success: #2ea043; 
         }
         
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg-dark); color: white; margin: 0; display: flex; height: 100vh; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg-dark); color: white; margin: 0; display: flex; height: 100vh; overflow: hidden; }
         .sidebar { width: 180px; background: var(--sidebar-bg); border-right: 1px solid var(--border); padding: 15px; flex-shrink: 0; }
-        .main { flex-grow: 1; padding: 20px 40px; overflow-y: auto; }
-        .container-fluid { width: 100%; }
-
+        .main { flex-grow: 1; padding: 20px 40px; overflow-y: auto; position: relative; }
+        
         h2 { font-weight: bold; margin-bottom: 25px; color: var(--gold); letter-spacing: 1px; text-transform: uppercase; }
         .card { background: var(--card-bg); border: 1px solid var(--border); padding: 25px; border-radius: 4px; margin-bottom: 20px; }
         .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 25px; margin-bottom: 20px; }
@@ -31,36 +30,26 @@
             color: white; padding: 12px; border-radius: 3px; font-size: 14px; box-sizing: border-box; 
         }
 
-        .sys-record { border: 1px dashed #444; color: #aaa; font-size: 13px; font-style: italic; min-height: 140px; background: rgba(0,0,0,0.3); padding: 15px; line-height: 1.6; margin-bottom: 20px; }
+        .sys-record { border: 1px dashed #444; color: #aaa; font-size: 13px; font-style: italic; min-height: 100px; background: rgba(0,0,0,0.3); padding: 15px; line-height: 1.6; margin-bottom: 20px; border-radius: 4px; }
 
         .notes-card { border-top: 4px solid var(--gold); }
-        .notes-header { 
-            display: flex; align-items: center; gap: 10px; 
-            color: var(--gold); 
-            margin-bottom: 15px; font-weight: bold; text-transform: uppercase; font-size: 14px; 
-        }
+        .notes-header { display: flex; align-items: center; gap: 10px; color: var(--gold); margin-bottom: 15px; font-weight: bold; text-transform: uppercase; font-size: 14px; }
         textarea#case-notes { min-height: 400px; font-family: 'Consolas', monospace; font-size: 15px; border-color: #444; }
 
+        /* Varování přes celou obrazovku */
         #locked-screen-warning {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            border: 12px solid var(--danger);
-            pointer-events: none;
-            z-index: 9999;
-            box-sizing: border-box;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            border: 15px solid var(--danger); pointer-events: none; z-index: 9999; box-sizing: border-box;
+            box-shadow: inset 0 0 100px rgba(248, 81, 73, 0.2);
         }
         
-        .locked-banner {
-            background: var(--danger); color: white; padding: 20px; 
-            font-size: 20px; font-weight: bold; text-align: center; 
-            margin-bottom: 30px; border-radius: 4px; display: none;
-        }
+        .locked-banner { background: var(--danger); color: white; padding: 20px; font-size: 20px; font-weight: bold; text-align: center; margin-bottom: 30px; border-radius: 4px; display: none; }
 
         .btn-row { display: flex; justify-content: flex-end; gap: 15px; margin-bottom: 50px; }
-        .btn { border: none; padding: 14px 30px; border-radius: 4px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 10px; }
+        .btn { border: none; padding: 14px 30px; border-radius: 4px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 10px; text-transform: uppercase; }
         .btn-resolve { background: var(--success); color: white; }
         .btn-save { background: var(--accent-blue); color: black; }
+        .btn:hover { opacity: 0.8; }
     </style>
 </head>
 <body>
@@ -68,15 +57,15 @@
 <div id="locked-screen-warning"></div>
 
 <div class="sidebar">
-    <a href="index.html" style="color: var(--accent-blue); text-decoration: none; font-size: 12px; font-weight: bold;">
-        <i class="fa-solid fa-arrow-left"></i> ZPĚT DO COMMANDU
+    <a href="index.html" style="color: var(--accent-blue); text-decoration: none; font-size: 13px; font-weight: bold;">
+        <i class="fa-solid fa-arrow-left"></i> ZPĚT DO SEZNAMU
     </a>
 </div>
 
 <div class="main">
     <div class="container-fluid">
         <div id="locked-msg" class="locked-banner">
-            <i class="fa-solid fa-triangle-exclamation"></i> TENTO ZÁZNAM JE UZAVŘEN - POUZE PRO ČTENÍ
+            <i class="fa-solid fa-lock"></i> TENTO ZÁZNAM JE UZAVŘEN (POUZE PRO ČTENÍ)
         </div>
         
         <h2>Evidence Operativních Prostředků</h2>
@@ -86,10 +75,10 @@
                 <div><label>Vyšetřující detektiv</label><input type="text" id="det-name"></div>
                 <div><label>Hodnost</label>
                     <select id="det-rank">
-                        <option>DBI Trainee</option><option>Detective I</option><option>Detective II</option><option>Command</option>
+                        <option>DBI Trainee</option><option>Detective I</option><option>Detective II</option><option>Detective III</option><option>Command</option>
                     </select>
                 </div>
-                <div><label>Case ID</label><input type="text" id="case-id"></div>
+                <div><label>Case ID</label><input type="text" id="case-id" placeholder="#2026-XXXX"></div>
             </div>
             
             <div class="grid-3">
@@ -100,14 +89,14 @@
 
             <div class="grid-3">
                 <div style="grid-column: span 2;">
-                    <label>Právní kvalifikace (Všechny trestné činy - editovatelné)</label>
-                    <input list="crimes-list" id="legal-qual" placeholder="Vyberte nebo dopište trestný čin...">
+                    <label>Právní kvalifikace (Všechny trestné činy - lze editovat)</label>
+                    <input list="crimes-list" id="legal-qual" placeholder="Vyberte nebo napište trestný čin...">
                     <datalist id="crimes-list">
                         <option value="§6 a) Zločin v organizaci (15 let - doživotí)">
                         <option value="§6 b) Zločin v organizaci s naplněním (Doživotí)">
-                        <option value="§7 a) Ublížení - neúmyslně zbraní (1-5 let)">
-                        <option value="§7 b) Ublížení - úmyslně zbraní (1-5 let)">
-                        <option value="§7 c) Ublížení - úmyslně střelnou zbraní (3-10 let)">
+                        <option value="§7 a) Ublížení - neúmyslně a zbraní (1-5 let)">
+                        <option value="§7 b) Ublížení - úmyslně a zbraní (1-5 let)">
+                        <option value="§7 c) Ublížení - úmyslně a střelnou zbraní (3-10 let)">
                         <option value="§7 d) Ublížení - proti úřední osobě (5-15 let)">
                         <option value="§7 e) Ublížení - proti IZS (10-20 let)">
                         <option value="§9 Vražda (Doživotí)">
@@ -122,9 +111,11 @@
                         <option value="§19 b) Krádež bez vniknutí (2-10 let)">
                         <option value="§20 a) Vloupání do obydlí (10-20 let)">
                         <option value="§20 b) Vloupání do objektu (5-15 let)">
+                        <option value="§22 Podvod (5-15 let)">
                         <option value="§23 Žhářství (10-20 let)">
                         <option value="§29 Výroba a distribuce drog (10-20 let)">
                         <option value="§30 Přechovávání za účelem prodeje (5-15 let)">
+                        <option value="§34 Nelegální ozbrojování (5-15 let)">
                         <option value="§36 Obchodování se zbraněmi (15-25 let)">
                         <option value="§57 Terorismus (Doživotí)">
                         <option value="§58 Vlastizrada (Doživotí)">
@@ -147,64 +138,82 @@
             </div>
 
             <label>Doplňující odůvodnění žádosti (Vlastní text)</label>
-            <textarea id="user-note" style="min-height: 80px;" placeholder="Doplňte vlastní odůvodnění žádosti..."></textarea>
+            <textarea id="user-note" style="min-height: 80px;" placeholder="Doplňte odůvodnění..."></textarea>
         </div>
 
         <div class="card notes-card">
             <div class="notes-header">
                 <i class="fa-solid fa-clipboard-list"></i> PRŮBĚŽNÉ POZNÁMKY A OPERATIVNÍ DENÍK
             </div>
-            <textarea id="case-notes" placeholder="Zápis vyšetřování, časová osa, stopy..."></textarea>
+            <textarea id="case-notes" placeholder="Zápis vyšetřování..."></textarea>
         </div>
 
         <div class="btn-row" id="action-buttons">
-            <button class="btn btn-save" onclick="saveData('OTEVŘENO')"><i class="fa-solid fa-save"></i> ULOŽIT</button>
-            <button class="btn btn-resolve" onclick="saveData('VYŘEŠENO')"><i class="fa-solid fa-check-double"></i> SCHVÁLIT A ARCHIVOVAT</button>
+            <button class="btn btn-save" onclick="saveData('OTEVŘENO')"><i class="fa-solid fa-save"></i> Uložit koncept</button>
+            <button class="btn btn-resolve" onclick="saveData('VYŘEŠENO')"><i class="fa-solid fa-check-double"></i> Schválit a Uzavřít</button>
         </div>
     </div>
 </div>
 
 <script>
+    // Inicializace databáze
+    const DB_NAME = 'lspd_v15_data';
     const urlParams = new URLSearchParams(window.location.search);
     const caseIndex = urlParams.get('id');
-    let cases = JSON.parse(localStorage.getItem('lspd_v15_data')) || [];
+    let cases = JSON.parse(localStorage.getItem(DB_NAME)) || [];
 
-    if(caseIndex !== null && cases[caseIndex]) {
-        let c = cases[caseIndex];
-        document.getElementById('det-name').value = c.author || '';
-        document.getElementById('case-id').value = c.id || '';
-        document.getElementById('sub-name').value = c.subject || '';
-        document.getElementById('sub-dob').value = c.dob || '';
-        document.getElementById('mdt-id').value = c.mdt || '';
-        document.getElementById('legal-qual').value = c.legal || '';
-        document.getElementById('opp-type').value = c.opp || '';
-        document.getElementById('case-notes').value = c.notes || '';
-        document.getElementById('user-note').value = c.note || '';
-        
-        if(c.status === 'VYŘEŠENO') {
-            document.querySelectorAll('input, select, textarea').forEach(el => el.disabled = true);
-            document.getElementById('locked-msg').style.display = 'block';
-            document.getElementById('locked-screen-warning').style.display = 'block';
-            document.getElementById('action-buttons').style.display = 'none';
+    // Funkce pro načtení existujících dat
+    window.onload = function() {
+        if(caseIndex !== null && cases[caseIndex]) {
+            let c = cases[caseIndex];
+            if(document.getElementById('det-name')) document.getElementById('det-name').value = c.author || '';
+            if(document.getElementById('case-id')) document.getElementById('case-id').value = c.id || '';
+            if(document.getElementById('sub-name')) document.getElementById('sub-name').value = c.subject || '';
+            if(document.getElementById('sub-dob')) document.getElementById('sub-dob').value = c.dob || '';
+            if(document.getElementById('mdt-id')) document.getElementById('mdt-id').value = c.mdt || '';
+            if(document.getElementById('legal-qual')) document.getElementById('legal-qual').value = c.legal || '';
+            if(document.getElementById('opp-type')) document.getElementById('opp-type').value = c.opp || '';
+            if(document.getElementById('case-notes')) document.getElementById('case-notes').value = c.notes || '';
+            if(document.getElementById('user-note')) document.getElementById('user-note').value = c.note || '';
+            
+            // Zámek pokud je vyřešeno
+            if(c.status === 'VYŘEŠENO') {
+                document.querySelectorAll('input, select, textarea').forEach(el => el.disabled = true);
+                document.getElementById('locked-msg').style.display = 'block';
+                document.getElementById('locked-screen-warning').style.display = 'block';
+                document.getElementById('action-buttons').style.display = 'none';
+            }
         }
-    }
+    };
 
+    // Funkce pro uložení
     function saveData(status) {
-        let entry = {
-            id: document.getElementById('case-id').value || '---',
-            author: document.getElementById('det-name').value || '---',
-            subject: document.getElementById('sub-name').value || '---',
-            dob: document.getElementById('sub-dob').value || '',
-            mdt: document.getElementById('mdt-id').value || '',
-            legal: document.getElementById('legal-qual').value || '',
-            opp: document.getElementById('opp-type').value,
-            notes: document.getElementById('case-notes').value,
-            note: document.getElementById('user-note').value,
-            status: status
-        };
-        if(caseIndex !== null) cases[caseIndex] = entry; else cases.push(entry);
-        localStorage.setItem('lspd_v15_data', JSON.stringify(cases));
-        window.location.href = 'index.html';
+        try {
+            let entry = {
+                id: document.getElementById('case-id').value || '---',
+                author: document.getElementById('det-name').value || 'Neznámý',
+                subject: document.getElementById('sub-name').value || '---',
+                dob: document.getElementById('sub-dob').value || '',
+                mdt: document.getElementById('mdt-id').value || '',
+                legal: document.getElementById('legal-qual').value || '',
+                opp: document.getElementById('opp-type').value,
+                notes: document.getElementById('case-notes').value || '',
+                note: document.getElementById('user-note').value || '',
+                status: status,
+                timestamp: new Date().toLocaleString()
+            };
+
+            if(caseIndex !== null) {
+                cases[caseIndex] = entry;
+            } else {
+                cases.push(entry);
+            }
+
+            localStorage.setItem(DB_NAME, JSON.stringify(cases));
+            window.location.href = 'index.html';
+        } catch (e) {
+            alert('Chyba při ukládání: ' + e);
+        }
     }
 </script>
 </body>
