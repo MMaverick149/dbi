@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>SASP - Case File</title>
+    <title>SASP - Detail</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { 
@@ -66,59 +66,54 @@
         .locked-mode { pointer-events: none; opacity: 0.8; }
     </style>
 </head>
-<body id="body-content">
-    
+<body>
     <div class="top-bar">
-        <div class="breadcrumb">
-            <a href="index.html">SASP Evidence</a> / <span>Detail Spisu</span>
-        </div>
-        <div id="case-number" style="font-weight: bold; color: #8b949e;">#2026-NEW</div>
+        <div class="breadcrumb"><a href="index.html">PŘEHLED</a> / <span style="color:white">DETAIL PŘÍPADU</span></div>
+        <div id="case-num" style="color: var(--gold); font-weight: bold;">#NEW</div>
     </div>
 
     <div class="container">
         <div class="header-section">
-            <h1 id="main-title">Operativní spis</h1>
-            <div id="status-tag" class="status-badge">ACTIVE</div>
+            <h1>Evidence Operativních Prostředků</h1>
+            <div id="status-tag" class="status-tag status-open">AKTIVNÍ</div>
         </div>
 
-        <div id="main-form">
-            <div class="section-title"><i class="fa-solid fa-user-shield"></i> Detektiv</div>
-            <div class="grid">
-                <div class="input-group"><label>Jméno</label><input type="text" id="author"></div>
-                <div class="input-group">
-                    <label>Hodnost</label>
-                    <select id="rank">
-                        <option>Detective Trainee</option><option>Detective I</option><option>Detective II</option><option>Detective III</option>
-                    </select>
+        <div id="form-content">
+            <div class="card">
+                <div class="section-title"><i class="fa-solid fa-user-shield"></i> Personální údaje</div>
+                <div class="grid-3">
+                    <div class="input-group"><label>Detektiv</label><input type="text" id="author"></div>
+                    <div class="input-group"><label>Hodnost</label><select id="rank"><option>Detective I</option><option>Detective II</option><option>Command</option></select></div>
+                    <div class="input-group"><label>Badge ID</label><input type="text" id="case-id"></div>
                 </div>
-                <div class="input-group"><label>Badge ID</label><input type="text" id="case-id"></div>
+                <div class="grid-3">
+                    <div class="input-group"><label>Subjekt</label><input type="text" id="subject"></div>
+                    <div class="input-group"><label>Narození</label><input type="text" id="birth"></div>
+                    <div class="input-group"><label>MDT ID</label><input type="text" id="mdt-id"></div>
+                </div>
+
+                <label>Právní kvalifikace</label>
+                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <input type="text" id="legal" readonly placeholder="Vyberte v katalogu...">
+                    <button id="cat-btn" class="btn btn-catalog" onclick="window.open('trest.html', 'PC', 'width=1100,height=800')">KATALOG</button>
+                </div>
+
+                <label>Webové oznámení (Popis skutku)</label>
+                <textarea id="web-oznameni" class="web-oznameni"></textarea>
+
+                <label>Doplňující odůvodnění (Interní)</label>
+                <textarea id="note" style="height: 60px;"></textarea>
             </div>
 
-            <div class="section-title"><i class="fa-solid fa-id-card"></i> Subjekt</div>
-            <div class="grid">
-                <div class="input-group"><label>Celé jméno</label><input type="text" id="subject"></div>
-                <div class="input-group"><label>Narození</label><input type="text" id="birth"></div>
-                <div class="input-group"><label>MDT ID</label><input type="text" id="mdt-id"></div>
+            <div class="card" style="border-top: 2px solid var(--gold);">
+                <div class="section-title"><i class="fa-solid fa-book"></i> Operativní deník</div>
+                <textarea id="notes" style="height: 200px;"></textarea>
             </div>
-
-            <div class="section-title"><i class="fa-solid fa-gavel"></i> Kvalifikace</div>
-            <div style="margin-bottom: 25px;">
-                <textarea id="legal" readonly style="height: 60px; width:100%; margin-bottom: 10px; background: #010409;"></textarea>
-                <button id="catalog-btn" class="btn-catalog" onclick="window.open('trest.html', 'PC', 'width=1100,height=800')">Otevřít katalog</button>
-            </div>
-
-            <div class="section-title"><i class="fa-solid fa-file-lines"></i> Webové oznámení</div>
-            <div class="web-box">
-                <textarea id="web-oznameni"></textarea>
-            </div>
-
-            <div class="section-title"><i class="fa-solid fa-pen-nib"></i> Interní deník</div>
-            <textarea id="notes" style="height: 150px; width: 100%; background: var(--input-bg); border: 1px solid var(--border); color: white; padding: 10px; border-radius: 6px;"></textarea>
         </div>
 
-        <div class="footer-actions" id="action-area">
-            <button class="btn btn-secondary" onclick="saveData('OTEVŘENO')">Uložit koncept</button>
-            <button class="btn btn-primary" onclick="saveData('VYŘEŠENO')">Archivovat spis</button>
+        <div class="footer-btns" id="action-area">
+            <button class="btn btn-save" onclick="saveData('OTEVŘENO')">Uložit rozpracované</button>
+            <button class="btn btn-close" onclick="saveData('VYŘEŠENO')">Schválit a archivovat</button>
         </div>
     </div>
 
@@ -130,28 +125,25 @@
 
         if(cid !== null && records[cid]) {
             let r = records[cid];
-            document.getElementById('author').value = r.author || '';
-            document.getElementById('rank').value = r.rank || 'Detective Trainee';
-            document.getElementById('case-id').value = r.id || '';
-            document.getElementById('subject').value = r.subject || '';
-            document.getElementById('birth').value = r.birth || '';
-            document.getElementById('mdt-id').value = r.mdt || '';
-            document.getElementById('legal').value = r.legal || '';
-            document.getElementById('web-oznameni').value = r.webOznameni || '';
-            document.getElementById('notes').value = r.notes || '';
-            document.getElementById('case-number').innerText = "#" + (r.id || 'N/A');
-            
+            document.getElementById('author').value = r.author;
+            document.getElementById('rank').value = r.rank;
+            document.getElementById('case-id').value = r.id;
+            document.getElementById('subject').value = r.subject;
+            document.getElementById('birth').value = r.birth;
+            document.getElementById('mdt-id').value = r.mdt;
+            document.getElementById('legal').value = r.legal;
+            document.getElementById('web-oznameni').value = r.webOznameni;
+            document.getElementById('note').value = r.note;
+            document.getElementById('notes').value = r.notes;
+            document.getElementById('case-num').innerText = "#" + r.id;
+
             if(r.status === 'VYŘEŠENO') {
-                // Aktivace pulzujícího červeného štítku
                 const tag = document.getElementById('status-tag');
-                tag.innerText = "ARCHIVED";
-                tag.classList.add('status-archived');
-                
-                // Zamknutí formuláře
-                document.getElementById('main-form').classList.add('locked-mode');
+                tag.innerText = "ARCHIVOVÁNO";
+                tag.className = "status-tag status-archived";
+                document.getElementById('form-content').classList.add('locked-mode');
                 document.getElementById('action-area').style.display = 'none';
-                document.getElementById('catalog-btn').style.display = 'none';
-                document.querySelectorAll('input, textarea, select').forEach(el => el.readOnly = true);
+                document.getElementById('cat-btn').style.display = 'none';
             }
         }
 
@@ -165,6 +157,7 @@
                 mdt: document.getElementById('mdt-id').value,
                 legal: document.getElementById('legal').value,
                 webOznameni: document.getElementById('web-oznameni').value,
+                note: document.getElementById('note').value,
                 notes: document.getElementById('notes').value,
                 status: status
             };
@@ -172,10 +165,9 @@
             localStorage.setItem(DB, JSON.stringify(records));
             window.location.href = 'index.html';
         }
-
         setInterval(() => {
-            const picked = localStorage.getItem('temp_crimes');
-            if(picked) { document.getElementById('legal').value = picked; localStorage.removeItem('temp_crimes'); }
+            const p = localStorage.getItem('temp_crimes');
+            if(p) { document.getElementById('legal').value = p; localStorage.removeItem('temp_crimes'); }
         }, 800);
     </script>
 </body>
