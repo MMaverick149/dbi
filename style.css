@@ -18,7 +18,6 @@ body {
     padding: 0; 
 }
 
-/* Horní lišta */
 .top-bar { 
     background: var(--sidebar); 
     padding: 15px 40px; 
@@ -28,26 +27,54 @@ body {
     justify-content: space-between; 
 }
 
-.breadcrumb { font-size: 13px; font-weight: bold; }
-.breadcrumb a { color: var(--blue); text-decoration: none; }
+.breadcrumb { font-size: 13px; font-weight: bold; color: var(--gold); }
+.breadcrumb a { color: var(--blue); text-decoration: none; margin-right: 5px; }
 
 .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
 
-/* Nadpisy a karty */
 h1 { color: var(--gold); text-transform: uppercase; font-size: 24px; margin-bottom: 25px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
+
 .card { background: var(--card); border: 1px solid var(--border); padding: 25px; border-radius: 4px; margin-bottom: 25px; }
 
-/* Status Tagy */
-.status-tag { 
-    padding: 8px 18px; 
-    border-radius: 4px; 
-    font-size: 12px; 
-    font-weight: bold; 
-    text-transform: uppercase;
+/* Grid systém */
+.grid-3 { 
+    display: grid; 
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 20px; 
+    margin-bottom: 20px; 
 }
+
+.input-group { display: flex; flex-direction: column; width: 100%; }
+
+label { 
+    color: var(--blue); 
+    font-size: 11px; 
+    font-weight: bold; 
+    text-transform: uppercase; 
+    margin-bottom: 8px; 
+}
+
+input, select, textarea { 
+    width: 100%; 
+    background: var(--input-bg); 
+    border: 1px solid var(--border); 
+    color: white; 
+    padding: 12px; 
+    border-radius: 4px; 
+    font-size: 14px; 
+    outline: none; 
+    box-sizing: border-box; /* Důležité pro správnou šířku */
+}
+
+input:focus, textarea:focus { border-color: var(--blue); }
+
+/* Specifická pole */
+.web-oznameni { border: 1px solid var(--blue); background: rgba(74, 158, 255, 0.05); min-height: 150px; }
+
+/* Statusy */
+.status-tag { padding: 8px 18px; border-radius: 4px; font-size: 12px; font-weight: bold; text-transform: uppercase; }
 .status-active { background: var(--blue); color: black; }
 
-/* Pulzující ARCHIVED - Pouze na štítku */
 .status-archived {
     background: var(--danger) !important;
     color: white !important;
@@ -60,22 +87,12 @@ h1 { color: var(--gold); text-transform: uppercase; font-size: 24px; margin-bott
     100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(248, 81, 73, 0); }
 }
 
-/* Grid a Inputy */
-.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 20px; }
-label { color: var(--blue); font-size: 11px; font-weight: bold; text-transform: uppercase; display: block; margin-bottom: 8px; }
-
-input, select, textarea { 
-    width: 100%; background: var(--input-bg); border: 1px solid var(--border); color: white; 
-    padding: 12px; border-radius: 4px; font-size: 14px; outline: none; box-sizing: border-box;
-}
-
-.web-oznameni { border: 1px solid var(--blue); background: rgba(74, 158, 255, 0.05); min-height: 150px; }
-
 /* Tlačítka */
 .btn { padding: 12px 25px; border-radius: 4px; border: none; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
 .btn-save { background: var(--blue); color: black; }
 .btn-close { background: var(--success); color: white; }
-.btn-catalog { background: transparent; border: 1px solid var(--gold); color: var(--gold); margin-top: 5px; width: auto; display: inline-block; padding: 8px 15px; }
+.btn-catalog { background: transparent; border: 1px solid var(--gold); color: var(--gold); margin-top: 5px; width: fit-content; }
 
-.footer-btns { display: flex; justify-content: flex-end; gap: 15px; margin-top: 30px; }
+.footer-btns { display: flex; justify-content: flex-end; gap: 15px; margin-top: 30px; padding-bottom: 50px; }
+
 .locked-mode { pointer-events: none; opacity: 0.8; }
