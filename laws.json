@@ -53,7 +53,7 @@
             },
             {
               "label": "d)",
-              "text": "úmyslně a zbraní proti úřední osobě – odnětím svobody od 5 do 15 let – ODEBRAT Zbrojní Průkaz",
+              "text": "úmyslně a zbraní proti úřední osobě – odnětím svobody od 5 do 15 let",
               "minJ": 5,
               "maxJ": 15,
               "isLife": false,
@@ -66,7 +66,7 @@
             },
             {
               "label": "e)",
-              "text": "úmyslně a zbraní proti členům záchranných složek při výkonu povolání – odnětím svobody od 10 do 20 let – ODEBRAT Zbrojní Průkaz",
+              "text": "úmyslně a zbraní proti členům záchranných složek při výkonu povolání – odnětím svobody od 10 do 20 let  ",
               "minJ": 10,
               "maxJ": 20,
               "isLife": false,
@@ -117,7 +117,7 @@
             },
             {
               "label": "c)",
-              "text": "které způsobí vážnou újmu na zdraví – odnětím svobody od 1 do 5 let – ODEBRAT Zbrojní Průkaz",
+              "text": "které způsobí vážnou újmu na zdraví – odnětím svobody od 1 do 5 let  ",
               "minJ": 1,
               "maxJ": 5,
               "isLife": false,
@@ -138,7 +138,7 @@
           "subs": [
             {
               "label": "–",
-              "text": "Kruté či jiné zacházení působící jinému tělesné nebo duševní utrpení – odnětím svobody od 1 do 15 let – ODEBRAT Zbrojní Průkaz",
+              "text": "Kruté či jiné zacházení působící jinému tělesné nebo duševní utrpení – odnětím svobody od 1 do 15 let  ",
               "minJ": 1,
               "maxJ": 15,
               "isLife": false,
@@ -159,7 +159,7 @@
           "subs": [
             {
               "label": "–",
-              "text": "Neúmyslné usmrcení osoby v silném rozrušení nebo v důsledku předchozího zavrženíhodného jednání poškozeného – odnětím svobody od 1 do 10 let – ODEBRAT Zbrojní Průkaz",
+              "text": "Neúmyslné usmrcení osoby v silném rozrušení nebo v důsledku předchozího zavrženíhodného jednání poškozeného – odnětím svobody od 1 do 10 let ",
               "minJ": 1,
               "maxJ": 10,
               "isLife": false,
@@ -180,7 +180,7 @@
           "subs": [
             {
               "label": "–",
-              "text": "Plánování či neúspěšně plánovaný a úmyslný pokus o usmrcení jiné osoby – odnětím svobody od 25 let po doživotí – ODEBRAT Zbrojní Průkaz",
+              "text": "Plánování či neúspěšně plánovaný a úmyslný pokus o usmrcení jiné osoby – odnětím svobody od 25 let po doživotí",
               "minJ": 25,
               "maxJ": 99,
               "isLife": true,
@@ -201,7 +201,7 @@
           "subs": [
             {
               "label": "a)",
-              "text": "Úmyslné usmrcení jiné osoby – odnětím svobody od 25 let po doživotí – ODEBRAT Zbrojní Průkaz",
+              "text": "Úmyslné usmrcení jiné osoby – odnětím svobody od 25 let po doživotí",
               "minJ": 25,
               "maxJ": 99,
               "isLife": true,
@@ -214,7 +214,7 @@
             },
             {
               "label": "b)",
-              "text": "Úmyslné a plánované usmrcení jiné osoby – odnětím svobody na doživotí – ODEBRAT Zbrojní Průkaz",
+              "text": "Úmyslné a plánované usmrcení jiné osoby – odnětím svobody na doživotí",
               "minJ": 0,
               "maxJ": 99,
               "isLife": true,
@@ -235,7 +235,7 @@
           "subs": [
             {
               "label": "–",
-              "text": "Obchodování s lidmi – odnětím svobody od 1 do 10 let – ODEBRAT Zbrojní Průkaz",
+              "text": "Obchodování s lidmi – odnětím svobody od 1 do 10 let",
               "minJ": 1,
               "maxJ": 10,
               "isLife": false,
@@ -256,7 +256,7 @@
           "subs": [
             {
               "label": "a)",
-              "text": "pokud nedošlo k přesunutí osoby – odnětím svobody od 1 do 3 let nebo pokutou do 5.000 $ – ODEBRAT Zbrojní Průkaz",
+              "text": "pokud nedošlo k přesunutí osoby – odnětím svobody od 1 do 3 let nebo pokutou do 5.000 $",
               "minJ": 1,
               "maxJ": 3,
               "isLife": false,
@@ -271,7 +271,7 @@
             },
             {
               "label": "b)",
-              "text": "odnětím svobody od 1 do 10 let – ODEBRAT Zbrojní Průkaz",
+              "text": "odnětím svobody od 1 do 10 let",
               "minJ": 1,
               "maxJ": 10,
               "isLife": false,
@@ -284,7 +284,7 @@
             },
             {
               "label": "c)",
-              "text": "zaměstnanců státních institucí z důvodu výkonu povolání – odnětím svobody od 5 do 15 let – ODEBRAT Zbrojní Průkaz",
+              "text": "zaměstnanců státních institucí z důvodu výkonu povolání – odnětím svobody od 5 do 15 let",
               "minJ": 5,
               "maxJ": 15,
               "isLife": false,
@@ -320,7 +320,7 @@
             },
             {
               "label": "b)",
-              "text": "s cílem působit na úřední osobu – odnětím svobody od 1 do 10 let – ODEBRAT Zbrojní Průkaz",
+              "text": "s cílem působit na úřední osobu – odnětím svobody od 1 do 10 let",
               "minJ": 1,
               "maxJ": 10,
               "isLife": false,
@@ -341,7 +341,7 @@
           "subs": [
             {
               "label": "–",
-              "text": "Použití násilí, případně pohrůžky násilí či jiné těžké újmy na právech druhého – odnětím svobody od 1 do 5 let – ODEBRAT Zbrojní Průkaz",
+              "text": "Použití násilí, případně pohrůžky násilí či jiné těžké újmy na právech druhého – odnětím svobody od 1 do 5 let",
               "minJ": 1,
               "maxJ": 5,
               "isLife": false,
@@ -377,7 +377,7 @@
             },
             {
               "label": "b)",
-              "text": "způsobí-li vážnou újmu nebo za použití médií – odnětím svobody od 1 do 5 let – ODEBRAT Zbrojní Průkaz",
+              "text": "způsobí-li vážnou újmu nebo za použití médií – odnětím svobody od 1 do 5 let",
               "minJ": 1,
               "maxJ": 5,
               "isLife": false,
@@ -390,7 +390,7 @@
             },
             {
               "label": "c)",
-              "text": "zaměstnancem státem zřízené instituce – odnětím svobody od 1 do 10 let – ODEBRAT Zbrojní Průkaz",
+              "text": "zaměstnancem státem zřízené instituce – odnětím svobody od 1 do 10 let",
               "minJ": 1,
               "maxJ": 10,
               "isLife": false,
@@ -411,7 +411,7 @@
           "subs": [
             {
               "label": "a)",
-              "text": "odnětím svobody od 5 do 20 let – ODEBRAT Zbrojní Průkaz",
+              "text": "odnětím svobody od 5 do 20 let",
               "minJ": 5,
               "maxJ": 20,
               "isLife": false,
@@ -424,7 +424,7 @@
             },
             {
               "label": "b)",
-              "text": "v případě těžké újmy na zdraví – odnětím svobody od 20 let po doživotí – ODEBRAT Zbrojní Průkaz",
+              "text": "v případě těžké újmy na zdraví – odnětím svobody od 20 let po doživotí",
               "minJ": 20,
               "maxJ": 99,
               "isLife": true,
@@ -460,7 +460,7 @@
             },
             {
               "label": "b)",
-              "text": "v úmyslu způsobit trestní stíhání – odnětím svobody od 1 do 5 let – ODEBRAT Zbrojní Průkaz",
+              "text": "v úmyslu způsobit trestní stíhání – odnětím svobody od 1 do 5 let",
               "minJ": 1,
               "maxJ": 5,
               "isLife": false,
@@ -519,7 +519,7 @@
             },
             {
               "label": "b)",
-              "text": "pokud způsobí důvodnou obavu o život nebo zdraví – odnětím svobody od 1 do 5 let – ODEBRAT Zbrojní Průkaz",
+              "text": "pokud způsobí důvodnou obavu o život nebo zdraví – odnětím svobody od 1 do 5 let",
               "minJ": 1,
               "maxJ": 5,
               "isLife": false,
@@ -540,7 +540,7 @@
           "subs": [
             {
               "label": "–",
-              "text": "Vyhrožování nebo podněcování násilí proti skupině či jednotlivci z rasových, národnostních nebo jiných diskriminačních důvodů – odnětím svobody od 1 do 5 let – ODEBRAT Zbrojní Průkaz",
+              "text": "Vyhrožování nebo podněcování násilí proti skupině či jednotlivci z rasových, národnostních nebo jiných diskriminačních důvodů – odnětím svobody od 1 do 5 let",
               "minJ": 1,
               "maxJ": 5,
               "isLife": false,
@@ -561,7 +561,7 @@
           "subs": [
             {
               "label": "a)",
-              "text": "incest – jakýkoliv sexuální vztah mezi příbuznými v přímé rodinné vazbě – odnětím svobody od 1 do 5 let – ODEBRAT Zbrojní Průkaz",
+              "text": "incest – jakýkoliv sexuální vztah mezi příbuznými v přímé rodinné vazbě – odnětím svobody od 1 do 5 let",
               "minJ": 1,
               "maxJ": 5,
               "isLife": false,
@@ -574,7 +574,7 @@
             },
             {
               "label": "b)",
-              "text": "zoofilie – jakákoliv sexuální interakce se zvířaty – odnětím svobody od 5 do 10 let – ODEBRAT Zbrojní Průkaz",
+              "text": "zoofilie – jakákoliv sexuální interakce se zvířaty – odnětím svobody od 5 do 10 let",
               "minJ": 5,
               "maxJ": 10,
               "isLife": false,
@@ -587,7 +587,7 @@
             },
             {
               "label": "c)",
-              "text": "nekrofilie – jakákoliv sexuální interakce s mrtvým tělem – odnětím svobody od 5 do 10 let – ODEBRAT Zbrojní Průkaz",
+              "text": "nekrofilie – jakákoliv sexuální interakce s mrtvým tělem – odnětím svobody od 5 do 10 let",
               "minJ": 5,
               "maxJ": 10,
               "isLife": false,
@@ -600,7 +600,7 @@
             },
             {
               "label": "d)",
-              "text": "pedofilní jednání – jakákoliv sexuální interakce s dětmi do 14 let věku – odnětím svobody od 5 do 10 let – ODEBRAT Zbrojní Průkaz",
+              "text": "pedofilní jednání – jakákoliv sexuální interakce s dětmi do 14 let věku – odnětím svobody od 5 do 10 let",
               "minJ": 5,
               "maxJ": 10,
               "isLife": false,
@@ -621,7 +621,7 @@
           "subs": [
             {
               "label": "a)",
-              "text": "je trestný čin – odnětím svobody od 5 do 15 let – ODEBRAT Zbrojní Průkaz",
+              "text": "je trestný čin – odnětím svobody od 5 do 15 let",
               "minJ": 5,
               "maxJ": 15,
               "isLife": false,
@@ -634,7 +634,7 @@
             },
             {
               "label": "b)",
-              "text": "způsobí-li těžkou újmu na zdraví – odnětím svobody od 15 do 20 let – ODEBRAT Zbrojní Průkaz",
+              "text": "způsobí-li těžkou újmu na zdraví – odnětím svobody od 15 do 20 let",
               "minJ": 15,
               "maxJ": 20,
               "isLife": false,
@@ -677,7 +677,7 @@
             },
             {
               "label": "b)",
-              "text": "v hodnotě od 20.001 $ do 200.000 $ – odnětím svobody od 1 do 3 let nebo pokutou od 2.000 $ do 8.000 $ – ODEBRAT Zbrojní Průkaz",
+              "text": "v hodnotě od 20.001 $ do 200.000 $ – odnětím svobody od 1 do 3 let nebo pokutou od 2.000 $ do 8.000 $",
               "minJ": 1,
               "maxJ": 3,
               "isLife": false,
@@ -692,7 +692,7 @@
             },
             {
               "label": "c)",
-              "text": "v hodnotě nad 200.001 $ – odnětím svobody od 1 do 5 let – ODEBRAT Zbrojní Průkaz",
+              "text": "v hodnotě nad 200.001 $ – odnětím svobody od 1 do 5 let",
               "minJ": 1,
               "maxJ": 5,
               "isLife": false,
@@ -705,7 +705,7 @@
             },
             {
               "label": "d)",
-              "text": "krádež bankomatu – odnětím svobody od 1 do 5 let nebo pokutou od 1.000 $ do 5.000 $ – ODEBRAT Zbrojní Průkaz",
+              "text": "krádež bankomatu – odnětím svobody od 1 do 5 let nebo pokutou od 1.000 $ do 5.000 $",
               "minJ": 1,
               "maxJ": 5,
               "isLife": false,
@@ -728,7 +728,7 @@
           "subs": [
             {
               "label": "a)",
-              "text": "poškozené samoobslužné obchody – odnětím svobody od 1 do 3 let nebo pokutou do 5.000 $ – ODEBRAT Zbrojní Průkaz",
+              "text": "poškozené samoobslužné obchody – odnětím svobody od 1 do 3 let nebo pokutou do 5.000 $",
               "minJ": 1,
               "maxJ": 3,
               "isLife": false,
@@ -743,7 +743,7 @@
             },
             {
               "label": "b)",
-              "text": "poškozené finanční instituce nebo klenotnictví – odnětím svobody od 1 do 5 let – ODEBRAT Zbrojní Průkaz",
+              "text": "poškozené finanční instituce nebo klenotnictví – odnětím svobody od 1 do 5 let",
               "minJ": 1,
               "maxJ": 5,
               "isLife": false,
@@ -756,7 +756,7 @@
             },
             {
               "label": "c)",
-              "text": "obecná loupež – odnětím svobody od 1 do 10 let – ODEBRAT Zbrojní Průkaz",
+              "text": "obecná loupež – odnětím svobody od 1 do 10 let",
               "minJ": 1,
               "maxJ": 10,
               "isLife": false,
@@ -769,7 +769,7 @@
             },
             {
               "label": "d)",
-              "text": "poškozená centrální banka – odnětím svobody od 15 do 30 let – ODEBRAT Zbrojní Průkaz",
+              "text": "poškozená centrální banka – odnětím svobody od 15 do 30 let",
               "minJ": 15,
               "maxJ": 30,
               "isLife": false,
@@ -828,7 +828,7 @@
             },
             {
               "label": "b)",
-              "text": "v hodnotě od 20.001 $ do 200.000 $ – odnětím svobody od 1 do 5 let – ODEBRAT Zbrojní Průkaz",
+              "text": "v hodnotě od 20.001 $ do 200.000 $ – odnětím svobody od 1 do 5 let",
               "minJ": 1,
               "maxJ": 5,
               "isLife": false,
@@ -841,7 +841,7 @@
             },
             {
               "label": "c)",
-              "text": "v hodnotě nad 200.001 $ – odnětím svobody od 1 do 10 let – ODEBRAT Zbrojní Průkaz",
+              "text": "v hodnotě nad 200.001 $ – odnětím svobody od 1 do 10 let",
               "minJ": 1,
               "maxJ": 10,
               "isLife": false,
@@ -877,7 +877,7 @@
             },
             {
               "label": "b)",
-              "text": "opakovaně v krátké době (14 dní IRL) – odnětím svobody od 1 do 3 let nebo pokutou od 1.000 $ do 5.000 $ – ODEBRAT Zbrojní Průkaz",
+              "text": "opakovaně v krátké době (14 dní IRL) – odnětím svobody od 1 do 3 let nebo pokutou od 1.000 $ do 5.000 $",
               "minJ": 1,
               "maxJ": 3,
               "isLife": false,
@@ -892,7 +892,7 @@
             },
             {
               "label": "c)",
-              "text": "s překonáním překážky na registrované nemovitosti dle z.č. 004-21 – odnětím svobody od 1 do 10 let – ODEBRAT Zbrojní Průkaz",
+              "text": "s překonáním překážky na registrované nemovitosti dle z.č. 004-21 – odnětím svobody od 1 do 10 let",
               "minJ": 1,
               "maxJ": 10,
               "isLife": false,
@@ -905,7 +905,7 @@
             },
             {
               "label": "d)",
-              "text": "státních institucí – odnětím svobody od 5 do 10 let – ODEBRAT Zbrojní Průkaz",
+              "text": "státních institucí – odnětím svobody od 5 do 10 let",
               "minJ": 5,
               "maxJ": 10,
               "isLife": false,
@@ -941,7 +941,7 @@
             },
             {
               "label": "b)",
-              "text": "obecný podvod – odnětím svobody od 1 do 5 let – ODEBRAT Zbrojní Průkaz",
+              "text": "obecný podvod – odnětím svobody od 1 do 5 let",
               "minJ": 1,
               "maxJ": 5,
               "isLife": false,
@@ -954,7 +954,7 @@
             },
             {
               "label": "c)",
-              "text": "s úmyslem poškodit výdělečnou činnost dle z.č. 036-25 – odnětím svobody od 1 do 10 let – ODEBRAT Zbrojní Průkaz",
+              "text": "s úmyslem poškodit výdělečnou činnost dle z.č. 036-25 – odnětím svobody od 1 do 10 let",
               "minJ": 1,
               "maxJ": 10,
               "isLife": false,
@@ -967,7 +967,7 @@
             },
             {
               "label": "d)",
-              "text": "s úmyslem předstírat příslušnost ke státní složce – odnětím svobody od 5 do 15 let – ODEBRAT Zbrojní Průkaz",
+              "text": "s úmyslem předstírat příslušnost ke státní složce – odnětím svobody od 5 do 15 let",
               "minJ": 5,
               "maxJ": 15,
               "isLife": false,
@@ -1026,7 +1026,7 @@
             },
             {
               "label": "b)",
-              "text": "škoda v hodnotě nad 20.001 $ – odnětím svobody od 1 do 5 let – ODEBRAT Zbrojní Průkaz",
+              "text": "škoda v hodnotě nad 20.001 $ – odnětím svobody od 1 do 5 let",
               "minJ": 1,
               "maxJ": 5,
               "isLife": false,
@@ -1047,7 +1047,7 @@
           "subs": [
             {
               "label": "–",
-              "text": "Úmyslné založení požáru – odnětím svobody od 1 do 10 let – ODEBRAT Zbrojní Průkaz",
+              "text": "Úmyslné založení požáru – odnětím svobody od 1 do 10 let",
               "minJ": 1,
               "maxJ": 10,
               "isLife": false,
@@ -1105,7 +1105,7 @@
             },
             {
               "label": "c)",
-              "text": "s těžkou újmou na zdraví – odnětím svobody od 1 do 5 let a odebráním ŘP – ODEBRAT Řidičský Průkaz – ODEBRAT Zbrojní Průkaz",
+              "text": "s těžkou újmou na zdraví – odnětím svobody od 1 do 5 let a odebráním ŘP",
               "minJ": 1,
               "maxJ": 5,
               "isLife": false,
@@ -1118,7 +1118,7 @@
             },
             {
               "label": "d)",
-              "text": "pod vlivem alkoholu nebo omamných látek – odnětím svobody od 1 do 5 let + pokutou do 10.000 $ a odebráním ŘP – ODEBRAT Řidičský Průkaz – ODEBRAT Zbrojní Průkaz",
+              "text": "pod vlivem alkoholu nebo omamných látek – odnětím svobody od 1 do 5 let + pokutou do 10.000 $ a odebráním ŘP",
               "minJ": 1,
               "maxJ": 5,
               "isLife": false,
@@ -1156,7 +1156,7 @@
             },
             {
               "label": "b)",
-              "text": "opakovaně (14 dní IRL) – peněžitým trestem do 10.000 $ – ODEBRAT Zbrojní Průkaz",
+              "text": "opakovaně (14 dní IRL) – peněžitým trestem do 10.000 $",
               "minJ": 0,
               "maxJ": 0,
               "isLife": false,
@@ -1179,7 +1179,7 @@
           "subs": [
             {
               "label": "–",
-              "text": "Řízení vozidla pod vlivem alkoholu nebo omamné látky je přestupek – pokutou od 3.000 $ do 7.000 $ a odebráním ŘP – ODEBRAT Řidičský Průkaz",
+              "text": "Řízení vozidla pod vlivem alkoholu nebo omamné látky je přestupek – pokutou od 3.000 $ do 7.000 $ a odebráním ŘP",
               "minJ": 0,
               "maxJ": 0,
               "isLife": false,
@@ -1228,7 +1228,7 @@
             },
             {
               "label": "c)",
-              "text": "od 31 mph je přestupek – pokutou 2.000 $ a odebráním ŘP dle z.č. 001-20 §26 – ODEBRAT Řidičský Průkaz",
+              "text": "od 31 mph je přestupek – pokutou 2.000 $ a odebráním ŘP dle z.č. 001-20 §26",
               "minJ": 0,
               "maxJ": 0,
               "isLife": false,
@@ -1413,7 +1413,7 @@
             },
             {
               "label": "b)",
-              "text": "střelnou či jinou zbraní – odnětím svobody od 1 do 5 let – ODEBRAT Zbrojní Průkaz",
+              "text": "střelnou či jinou zbraní – odnětím svobody od 1 do 5 let",
               "minJ": 1,
               "maxJ": 5,
               "isLife": false,
@@ -1434,7 +1434,7 @@
           "subs": [
             {
               "label": "–",
-              "text": "Neposkytnutí první pomoci dle §8, z.č. 001-26 – odnětím svobody od 1 do 5 let – ODEBRAT Zbrojní Průkaz",
+              "text": "Neposkytnutí první pomoci dle §8, z.č. 001-26 – odnětím svobody od 1 do 5 let",
               "minJ": 1,
               "maxJ": 5,
               "isLife": false,
@@ -1462,7 +1462,7 @@
           "subs": [
             {
               "label": "a)",
-              "text": "zbraň nebo střelivo v kategorii ZP T1 – peněžitým trestem do 5.000 $ – ODEBRAT Zbrojní Průkaz",
+              "text": "zbraň nebo střelivo v kategorii ZP T1 – peněžitým trestem do 5.000 $",
               "minJ": 0,
               "maxJ": 0,
               "isLife": false,
@@ -1477,7 +1477,7 @@
             },
             {
               "label": "b)",
-              "text": "obecné nedovolené ozbrojování – odnětím svobody od 1 do 15 let nebo pokutou do 10.000 $ – ODEBRAT Zbrojní Průkaz",
+              "text": "obecné nedovolené ozbrojování – odnětím svobody od 1 do 15 let nebo pokutou do 10.000 $",
               "minJ": 1,
               "maxJ": 15,
               "isLife": false,
@@ -1492,7 +1492,7 @@
             },
             {
               "label": "c)",
-              "text": "za účelem prodeje a distribuce – odnětím svobody od 20 let po doživotí – ODEBRAT Zbrojní Průkaz",
+              "text": "za účelem prodeje a distribuce – odnětím svobody od 20 let po doživotí",
               "minJ": 20,
               "maxJ": 99,
               "isLife": true,
@@ -1513,7 +1513,7 @@
           "subs": [
             {
               "label": "–",
-              "text": "Porušení předpisu stanoveného v z.č. 005-20 nespadající pod §46 je přestupek – pokutou do 10.000 $ – ODEBRAT Zbrojní Průkaz",
+              "text": "Porušení předpisu stanoveného v z.č. 005-20 nespadající pod §46 je přestupek – pokutou do 10.000 $",
               "minJ": 0,
               "maxJ": 0,
               "isLife": false,
@@ -1543,7 +1543,7 @@
           "subs": [
             {
               "label": "a)",
-              "text": "do 50 gramů – odnětím svobody od 1 do 5 let nebo pokutou do 10.000 $ – ODEBRAT Zbrojní Průkaz",
+              "text": "do 50 gramů – odnětím svobody od 1 do 5 let nebo pokutou do 10.000 $",
               "minJ": 1,
               "maxJ": 5,
               "isLife": false,
@@ -1558,7 +1558,7 @@
             },
             {
               "label": "b)",
-              "text": "od 50 gramů – odnětím svobody od 1 do 10 let + pokutou do 50.000 $ – ODEBRAT Zbrojní Průkaz",
+              "text": "od 50 gramů – odnětím svobody od 1 do 10 let + pokutou do 50.000 $",
               "minJ": 1,
               "maxJ": 10,
               "isLife": false,
@@ -1573,7 +1573,7 @@
             },
             {
               "label": "c)",
-              "text": "od 1.000 gramů – odnětím svobody od 10 let po doživotí + pokutou do 500.000 $ – ODEBRAT Zbrojní Průkaz",
+              "text": "od 1.000 gramů – odnětím svobody od 10 let po doživotí + pokutou do 500.000 $",
               "minJ": 10,
               "maxJ": 99,
               "isLife": true,
@@ -1596,7 +1596,7 @@
           "subs": [
             {
               "label": "a)",
-              "text": "do 100 gramů – odnětím svobody od 1 do 5 let nebo pokutou do 10.000 $ – ODEBRAT Zbrojní Průkaz",
+              "text": "do 100 gramů – odnětím svobody od 1 do 5 let nebo pokutou do 10.000 $",
               "minJ": 1,
               "maxJ": 5,
               "isLife": false,
@@ -1611,7 +1611,7 @@
             },
             {
               "label": "b)",
-              "text": "od 100 gramů – odnětím svobody od 1 do 10 let + pokutou do 50.000 $ – ODEBRAT Zbrojní Průkaz",
+              "text": "od 100 gramů – odnětím svobody od 1 do 10 let + pokutou do 50.000 $",
               "minJ": 1,
               "maxJ": 10,
               "isLife": false,
@@ -1626,7 +1626,7 @@
             },
             {
               "label": "c)",
-              "text": "od 2.000 gramů – odnětím svobody od 10 let po doživotí + pokutou do 500.000 $ – ODEBRAT Zbrojní Průkaz",
+              "text": "od 2.000 gramů – odnětím svobody od 10 let po doživotí + pokutou do 500.000 $",
               "minJ": 10,
               "maxJ": 99,
               "isLife": true,
@@ -1662,7 +1662,7 @@
             },
             {
               "label": "b)",
-              "text": "nad 6 gramů – odnětím svobody od 1 do 5 let nebo pokutou do 5.000 $ a zabavením – ODEBRAT Zbrojní Průkaz",
+              "text": "nad 6 gramů – odnětím svobody od 1 do 5 let nebo pokutou do 5.000 $ a zabavením",
               "minJ": 1,
               "maxJ": 5,
               "isLife": false,
@@ -1677,7 +1677,7 @@
             },
             {
               "label": "c)",
-              "text": "od 50 gramů – odnětím svobody od 1 do 10 let + pokutou do 25.000 $ a zabavením – ODEBRAT Zbrojní Průkaz",
+              "text": "od 50 gramů – odnětím svobody od 1 do 10 let + pokutou do 25.000 $ a zabavením",
               "minJ": 1,
               "maxJ": 10,
               "isLife": false,
@@ -1692,7 +1692,7 @@
             },
             {
               "label": "d)",
-              "text": "od 1.000 gramů – odnětím svobody od 10 let po doživotí + pokutou do 250.000 $ a zabavením – ODEBRAT Zbrojní Průkaz",
+              "text": "od 1.000 gramů – odnětím svobody od 10 let po doživotí + pokutou do 250.000 $ a zabavením",
               "minJ": 10,
               "maxJ": 99,
               "isLife": true,
@@ -1781,7 +1781,7 @@
           "subs": [
             {
               "label": "a)",
-              "text": "do 50 gramů – odnětím svobody od 1 do 5 let nebo pokutou do 10.000 $ – ODEBRAT Zbrojní Průkaz",
+              "text": "do 50 gramů – odnětím svobody od 1 do 5 let nebo pokutou do 10.000 $",
               "minJ": 1,
               "maxJ": 5,
               "isLife": false,
@@ -1796,7 +1796,7 @@
             },
             {
               "label": "b)",
-              "text": "od 50 do 1.000 gramů – odnětím svobody od 5 do 20 let + pokutou do 100.000 $ – ODEBRAT Zbrojní Průkaz",
+              "text": "od 50 do 1.000 gramů – odnětím svobody od 5 do 20 let + pokutou do 100.000 $",
               "minJ": 5,
               "maxJ": 20,
               "isLife": false,
@@ -1811,7 +1811,7 @@
             },
             {
               "label": "c)",
-              "text": "od 1.000 gramů – odnětím svobody od 20 let po doživotí + pokutou do 1.000.000 $ – ODEBRAT Zbrojní Průkaz",
+              "text": "od 1.000 gramů – odnětím svobody od 20 let po doživotí + pokutou do 1.000.000 $",
               "minJ": 20,
               "maxJ": 99,
               "isLife": true,
@@ -1826,7 +1826,7 @@
             },
             {
               "label": "d)",
-              "text": "od 5 gramů, pachatel jako zaměstnanec státní organizace – odnětím svobody od 5 let po doživotí – ODEBRAT Zbrojní Průkaz",
+              "text": "od 5 gramů, pachatel jako zaměstnanec státní organizace – odnětím svobody od 5 let po doživotí",
               "minJ": 5,
               "maxJ": 99,
               "isLife": true,
@@ -1854,7 +1854,7 @@
           "subs": [
             {
               "label": "–",
-              "text": "Přijetí, nabídnutí, slíbení nebo žádání úplatku – odnětím svobody od 1 do 10 let – ODEBRAT Zbrojní Průkaz",
+              "text": "Přijetí, nabídnutí, slíbení nebo žádání úplatku – odnětím svobody od 1 do 10 let",
               "minJ": 1,
               "maxJ": 10,
               "isLife": false,
@@ -1888,7 +1888,7 @@
             },
             {
               "label": "b)",
-              "text": "od 10.001 $ do 100.000 $ – odnětím svobody od 1 do 10 let – ODEBRAT Zbrojní Průkaz",
+              "text": "od 10.001 $ do 100.000 $ – odnětím svobody od 1 do 10 let",
               "minJ": 1,
               "maxJ": 10,
               "isLife": false,
@@ -1901,7 +1901,7 @@
             },
             {
               "label": "c)",
-              "text": "nad 100.001 $ – odnětím svobody od 10 do 20 let – ODEBRAT Zbrojní Průkaz",
+              "text": "nad 100.001 $ – odnětím svobody od 10 do 20 let",
               "minJ": 10,
               "maxJ": 20,
               "isLife": false,
@@ -1922,7 +1922,7 @@
           "subs": [
             {
               "label": "–",
-              "text": "Úmyslné vyrušování soudního jednání nebo nerespektování nařízení soudu – odnětím svobody od 1 do 10 let nebo pokutou do 100.000 $ – ODEBRAT Zbrojní Průkaz",
+              "text": "Úmyslné vyrušování soudního jednání nebo nerespektování nařízení soudu – odnětím svobody od 1 do 10 let nebo pokutou do 100.000 $",
               "minJ": 1,
               "maxJ": 10,
               "isLife": false,
@@ -1945,7 +1945,7 @@
           "subs": [
             {
               "label": "–",
-              "text": "Útěk mimo prostory určené k výkonu trestu, vazby či zadržení – odnětím svobody od 1 do 5 let – ODEBRAT Zbrojní Průkaz",
+              "text": "Útěk mimo prostory určené k výkonu trestu, vazby či zadržení – odnětím svobody od 1 do 5 let",
               "minJ": 1,
               "maxJ": 5,
               "isLife": false,
@@ -1966,7 +1966,7 @@
           "subs": [
             {
               "label": "a)",
-              "text": "klást odpor nebo bránit výkonu zákonných povinností státní složky – odnětím svobody od 1 do 5 let + pokutou do 10.000 $ – ODEBRAT Zbrojní Průkaz",
+              "text": "klást odpor nebo bránit výkonu zákonných povinností státní složky – odnětím svobody od 1 do 5 let + pokutou do 10.000 $",
               "minJ": 1,
               "maxJ": 5,
               "isLife": false,
@@ -1981,7 +1981,7 @@
             },
             {
               "label": "b)",
-              "text": "úmyslné ovlivňování účastníků řízení nebo důkazů – odnětím svobody od 1 do 10 let + pokutou do 25.000 $ – ODEBRAT Zbrojní Průkaz",
+              "text": "úmyslné ovlivňování účastníků řízení nebo důkazů – odnětím svobody od 1 do 10 let + pokutou do 25.000 $",
               "minJ": 1,
               "maxJ": 10,
               "isLife": false,
@@ -1996,7 +1996,7 @@
             },
             {
               "label": "c)",
-              "text": "úmyslné ztěžování identifikace pachatele – odnětím svobody od 1 do 10 let + pokutou do 250.000 $ – ODEBRAT Zbrojní Průkaz",
+              "text": "úmyslné ztěžování identifikace pachatele – odnětím svobody od 1 do 10 let + pokutou do 250.000 $",
               "minJ": 1,
               "maxJ": 10,
               "isLife": false,
@@ -2019,7 +2019,7 @@
           "subs": [
             {
               "label": "a)",
-              "text": "je přestupek – pokutou do 3.000 $ – ODEBRAT Řidičský Průkaz",
+              "text": "je přestupek – pokutou do 3.000 $ – ",
               "minJ": 0,
               "maxJ": 0,
               "isLife": false,
@@ -2034,7 +2034,7 @@
             },
             {
               "label": "b)",
-              "text": "v přímém souběhu s dalším trestným činem – odnětím svobody od 1 do 3 let nebo pokutou do 5.000 $ – ODEBRAT Zbrojní Průkaz – ODEBRAT Řidičský Průkaz",
+              "text": "v přímém souběhu s dalším trestným činem – odnětím svobody od 1 do 3 let nebo pokutou do 5.000 $",
               "minJ": 1,
               "maxJ": 3,
               "isLife": false,
@@ -2080,7 +2080,7 @@
           "subs": [
             {
               "label": "–",
-              "text": "Úmyslné vyhýbání se trestu – odnětím svobody od 1 do 5 let – ODEBRAT Zbrojní Průkaz",
+              "text": "Úmyslné vyhýbání se trestu – odnětím svobody od 1 do 5 let",
               "minJ": 1,
               "maxJ": 5,
               "isLife": false,
@@ -2145,7 +2145,7 @@
           "subs": [
             {
               "label": "–",
-              "text": "Jakákoliv forma terorismu dle z.č. 018-25 – odnětím svobody od 20 let po doživotí – ODEBRAT Zbrojní Průkaz",
+              "text": "Jakákoliv forma terorismu dle z.č. 018-25 – odnětím svobody od 20 let po doživotí",
               "minJ": 20,
               "maxJ": 99,
               "isLife": true,
@@ -2188,7 +2188,7 @@
             },
             {
               "label": "b)",
-              "text": "usmrcení více než 5 kusů lovné zvěře bez ZP T3 – odnětím svobody od 1 do 3 let – ODEBRAT Zbrojní Průkaz",
+              "text": "usmrcení více než 5 kusů lovné zvěře bez ZP T3 – odnětím svobody od 1 do 3 let",
               "minJ": 1,
               "maxJ": 3,
               "isLife": false,
@@ -2216,7 +2216,7 @@
             },
             {
               "label": "d)",
-              "text": "usmrcení více než 3 kusů chráněné zvěře – odnětím svobody od 1 do 5 let – ODEBRAT Zbrojní Průkaz",
+              "text": "usmrcení více než 3 kusů chráněné zvěře – odnětím svobody od 1 do 5 let",
               "minJ": 1,
               "maxJ": 5,
               "isLife": false,
@@ -2320,7 +2320,7 @@
           "subs": [
             {
               "label": "a)",
-              "text": "úmyslné ublížení na zdraví zvířete – odnětím svobody od 1 do 5 let – ODEBRAT Zbrojní Průkaz",
+              "text": "úmyslné ublížení na zdraví zvířete – odnětím svobody od 1 do 5 let",
               "minJ": 1,
               "maxJ": 5,
               "isLife": false,
@@ -2333,7 +2333,7 @@
             },
             {
               "label": "b)",
-              "text": "úmyslné týrání nebo způsobení těžké újmy nebo smrti zvířete – odnětím svobody od 1 do 7 let – ODEBRAT Zbrojní Průkaz",
+              "text": "úmyslné týrání nebo způsobení těžké újmy nebo smrti zvířete – odnětím svobody od 1 do 7 let",
               "minJ": 1,
               "maxJ": 7,
               "isLife": false,
@@ -2346,7 +2346,7 @@
             },
             {
               "label": "c)",
-              "text": "ublížení zvířeti ve službách státní instituce – odnětím svobody od 5 do 10 let – ODEBRAT Zbrojní Průkaz",
+              "text": "ublížení zvířeti ve službách státní instituce – odnětím svobody od 5 do 10 let",
               "minJ": 5,
               "maxJ": 10,
               "isLife": false,
@@ -2427,7 +2427,7 @@
             },
             {
               "label": "c)",
-              "text": "s těžkou újmou na zdraví – trest určuje SZ ve spolupráci se SMA – ODEBRAT Zbrojní Průkaz",
+              "text": "s těžkou újmou na zdraví – trest určuje SZ ve spolupráci se SMA",
               "minJ": 0,
               "maxJ": 0,
               "isLife": false,
@@ -2440,7 +2440,7 @@
             },
             {
               "label": "d)",
-              "text": "pod vlivem omamné nebo psychotropní látky – trest určuje SZ ve spolupráci se SMA – ODEBRAT Zbrojní Průkaz",
+              "text": "pod vlivem omamné nebo psychotropní látky – trest určuje SZ ve spolupráci se SMA",
               "minJ": 0,
               "maxJ": 0,
               "isLife": false,
@@ -2537,7 +2537,7 @@
           "subs": [
             {
               "label": "–",
-              "text": "Řízení plavidla pod vlivem alkoholu nebo omamné látky je přestupek – pokutou do 20.000 $ a odebráním oprávnění – ODEBRAT Řidičský Průkaz",
+              "text": "Řízení plavidla pod vlivem alkoholu nebo omamné látky je přestupek – pokutou do 20.000 $ a odebráním oprávnění",
               "minJ": 0,
               "maxJ": 0,
               "isLife": false,
@@ -2613,7 +2613,7 @@
           "subs": [
             {
               "label": "–",
-              "text": "Maření přípravy a průběhu voleb dle z.č. 002-20 – odnětím svobody od 1 do 5 let – ODEBRAT Zbrojní Průkaz",
+              "text": "Maření přípravy a průběhu voleb dle z.č. 002-20 – odnětím svobody od 1 do 5 let",
               "minJ": 1,
               "maxJ": 5,
               "isLife": false,
