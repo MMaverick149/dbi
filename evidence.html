@@ -6,156 +6,143 @@
         :root { --bg: #0d1117; --accent: #58a6ff; --border: #30363d; --text: #c9d1d9; }
         body { background: var(--bg); color: var(--text); font-family: sans-serif; padding: 20px; font-size: 13px; margin: 0; }
         .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 15px; }
-        .field { display: flex; flex-direction: column; }
+        .field { display: flex; flex-direction: column; margin-bottom: 10px; }
         label { color: var(--accent); font-size: 10px; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; }
         input, select, textarea { background: #010409; border: 1px solid var(--border); color: var(--text); padding: 8px; border-radius: 4px; outline: none; width: 100%; box-sizing: border-box; }
-        textarea { resize: vertical; min-height: 100px; font-family: inherit; }
+        textarea { resize: vertical; min-height: 80px; }
 
         /* TAGY */
-        .tags-container { border: 1px solid var(--border); background: #010409; padding: 10px; border-radius: 4px; min-height: 45px; display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; }
+        .tags-container { border: 1px solid var(--border); background: #010409; padding: 10px; border-radius: 4px; min-height: 45px; display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
         .tag { background: #238636; color: white; padding: 5px 10px; border-radius: 20px; display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: bold; }
-        .tag span { cursor: pointer; background: rgba(0,0,0,0.2); border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; }
+        .tag span { cursor: pointer; opacity: 0.7; }
 
-        /* INTEGROVANÝ KATALOG */
-        .inline-catalog { border: 1px solid var(--border); background: #161b22; border-radius: 4px; max-height: 300px; overflow-y: auto; margin-bottom: 20px; padding: 10px; }
-        .law-item { padding: 8px; border-bottom: 1px solid var(--border); cursor: pointer; transition: 0.2s; }
-        .law-item:hover { background: #21262d; border-left: 3px solid var(--accent); }
+        /* KATALOG */
+        .inline-catalog { border: 1px solid var(--border); background: #161b22; border-radius: 4px; max-height: 200px; overflow-y: auto; margin-bottom: 20px; }
+        .law-item { padding: 8px; border-bottom: 1px solid var(--border); cursor: pointer; }
+        .law-item:hover { background: #21262d; }
         .law-item small { display: block; color: #8b949e; font-size: 10px; }
-        .law-category { color: #ffa657; font-weight: bold; margin: 10px 0 5px 0; border-bottom: 1px solid #30363d; font-size: 11px; text-transform: uppercase; }
-        #lawSearch { margin-bottom: 10px; border-color: var(--accent); }
+        .law-category { color: #ffa657; font-weight: bold; padding: 5px 10px; background: #0d1117; position: sticky; top: 0; font-size: 10px; }
 
-        .btn-submit { background: #1f6feb; color: white; border: none; padding: 15px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 20px; width: 100%; text-transform: uppercase; font-size: 14px; }
-        .btn-submit:hover { background: #388bfd; }
+        /* DYNAMICKÉ OPP SEKCE */
+        .opp-extra { background: #161b22; border: 1px dashed var(--accent); padding: 15px; border-radius: 4px; margin-top: 10px; display: none; }
+        .section-title { border-left: 3px solid #ffa657; padding-left: 10px; margin: 20px 0 10px 0; font-weight: bold; }
+        
+        .btn-submit { background: #1f6feb; color: white; border: none; padding: 15px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 20px; width: 100%; text-transform: uppercase; }
     </style>
 </head>
 <body>
 
-<div style="color: var(--accent); font-size: 18px; margin-bottom: 20px; font-weight: bold;">DETAIL SPISU</div>
+<div style="color: var(--accent); font-size: 18px; margin-bottom: 20px; font-weight: bold;">NOVÝ SPIS / ŽÁDOST O OPP</div>
 
 <div class="grid">
     <div class="field"><label>👮 Vyžadující příslušník</label><input type="text" id="detektiv" placeholder="Jméno Příjmení"></div>
-    <div class="field"><label>🎖️ Hodnost</label>
-        <select id="hodnost">
-            <option>Detective I</option><option>Detective II</option><option>Detective III</option>
-            <option>Sergeant</option><option>Lieutenant</option><option>DBI Trainee</option>
-        </select>
-    </div>
+    <div class="field"><label>🎖️ Hodnost</label><select id="hodnost"><option>Detective I</option><option>Detective II</option><option>Detective III</option><option>Sergeant</option><option>Lieutenant</option></select></div>
     <div class="field"><label>📂 Case ID</label><input type="text" id="caseid" placeholder="#2026-XXXX"></div>
-    <div class="field"><label>👤 Subjekt</label><input type="text" id="subjekt" placeholder="Jméno osoby"></div>
-    <div class="field"><label>📅 Datum narození</label><input type="text" id="narozeni" placeholder="13.03.1993"></div>
-    <div class="field"><label>🆔 Státní Indifikátor</label><input type="text" id="mdtid" placeholder="#YR4545"></div>
+    <div class="field"><label>👤 Subjekt</label><input type="text" id="subjekt"></div>
+    <div class="field"><label>📅 Narození</label><input type="text" id="narozeni"></div>
+    <div class="field"><label>🆔 MDT ID</label><input type="text" id="mdtid"></div>
 </div>
 
-<label>⚖️ Vybrané trestné činy (kliknutím na X smažete)</label>
-<div class="tags-container" id="kvalifikace-list">
-    <span style="color: #484f58; font-style: italic; font-size: 11px;">Vyberte tresty z katalogu níže...</span>
-</div>
+<div class="section-title">⚖️ PRÁVNÍ KVALIFIKACE</div>
+<div class="tags-container" id="kvalifikace-list"></div>
+<input type="text" id="lawSearch" placeholder="Hledat v zákoníku..." onkeyup="filterLaws()">
+<div class="inline-catalog" id="laws-list"></div>
 
-<input type="text" id="lawSearch" placeholder="🔍 Rychlé hledání v katalogu..." onkeyup="filterLaws()">
-<div class="inline-catalog" id="laws-list">Načítám laws.json...</div>
-
-<label>🛠️ Prostředek (OPP)</label>
-<select id="typopp" style="margin-bottom: 15px;">
-    <option>Výpis a prověrka majetku a finančních prostředků</option>
-    <option>Odposlech a záznam telekomunikačního provozu</option>
-    <option>Sledování osob a věcí</option>
+<div class="section-title">🛠️ VÝBĚR PROSTŘEDKU (OPP)</div>
+<select id="typopp" onchange="updateOppFields()">
+    <option value="">-- Vyberte typ OPP --</option>
+    <option value="banka">Výpis z bankovního účtu / majetek</option>
+    <option value="telefon">Odposlech / Výpis telekomunikačního provozu</option>
+    <option value="sledovani">Sledování osob a věcí (GPS/Fyzické)</option>
 </select>
 
-<label>📝 Zjištěné skutečnosti</label>
-<textarea id="skutecnosti" placeholder="Zde popište důvody žádosti a zjištěné stopy..."></textarea>
+<div id="opp-banka" class="opp-extra">
+    <div class="field"><label>🏦 Číslo účtu (pokud je známo)</label><input type="text" id="b-ucet" placeholder="Např. 123456/0100"></div>
+    <div class="field"><label>💰 Časové období výpisu</label><input type="text" id="b-obdobi" placeholder="Od - Do"></div>
+</div>
 
-<button class="btn-submit" onclick="vytvorZadost()">📥 GENEROVAT ŽÁDOST PRO DISCORD</button>
+<div id="opp-telefon" class="opp-extra">
+    <div class="field"><label>📱 Telefonní číslo</label><input type="text" id="t-cislo" placeholder="Např. 555-0123"></div>
+    <div class="field"><label>📡 Rozsah sledování</label><input type="text" id="t-rozsah" placeholder="Lokalizace, SMS, hovory..."></div>
+</div>
+
+<div id="opp-sledovani" class="opp-extra">
+    <div class="field"><label>🚗 Registrační značka vozidla</label><input type="text" id="s-spz" placeholder="Např. 4A2 1234"></div>
+    <div class="field"><label>📍 Typ sledování</label><input type="text" id="s-typ" placeholder="GPS tracker / skryté sledování příslušníky"></div>
+</div>
+
+<div class="section-title">📝 ZJIŠTĚNÉ SKUTEČNOSTI</div>
+<textarea id="skutecnosti" placeholder="Podrobné odůvodnění..."></textarea>
+
+<button class="btn-submit" onclick="vytvorZadost()">📥 GENEROVAT PRO DISCORD</button>
 
 <script>
     let selectedLaws = [];
 
+    // Přepínání políček podle typu OPP
+    function updateOppFields() {
+        document.querySelectorAll('.opp-extra').forEach(el => el.style.display = 'none');
+        const val = document.getElementById('typopp').value;
+        if (val) document.getElementById('opp-' + val).style.display = 'block';
+    }
+
+    // Katalog zákonů
     async function loadLaws() {
         const list = document.getElementById('laws-list');
         try {
-            // Použití relativní cesty, aby to fungovalo na mmaverick149.github.io/dbi/
-            const response = await fetch('laws.json?v=' + Date.now());
-            if (!response.ok) throw new Error('laws.json nenalezen');
-            const data = await response.json();
+            const res = await fetch('laws.json?v=' + Date.now());
+            const data = await res.json();
             list.innerHTML = '';
-
             data.categories.forEach(cat => {
-                const catTitle = document.createElement('div');
-                catTitle.className = 'law-category';
-                catTitle.innerText = cat.name;
-                list.appendChild(catTitle);
-
+                const head = document.createElement('div'); head.className = 'law-category'; head.innerText = cat.name;
+                list.appendChild(head);
                 cat.laws.forEach(law => {
-                    if (law.subs && law.subs.length > 0) {
-                        law.subs.forEach(sub => {
-                            const div = document.createElement('div');
-                            div.className = 'law-item';
-                            const title = `${law.title} ${sub.label}`;
-                            div.innerHTML = `<strong>${title}</strong><small>${sub.text}</small>`;
-                            div.onclick = () => addLaw(title);
-                            list.appendChild(div);
-                        });
-                    } else {
-                        const div = document.createElement('div');
-                        div.className = 'law-item';
-                        div.innerHTML = `<strong>${law.title}</strong><small>${law.description || ''}</small>`;
-                        div.onclick = () => addLaw(law.title);
+                    const subs = law.subs || [{label: '', text: law.description}];
+                    subs.forEach(s => {
+                        const div = document.createElement('div'); div.className = 'law-item';
+                        const t = `${law.title} ${s.label}`.trim();
+                        div.innerHTML = `<strong>${t}</strong><small>${s.text}</small>`;
+                        div.onclick = () => { if(!selectedLaws.includes(t)) { selectedLaws.push(t); renderTags(); } };
                         list.appendChild(div);
-                    }
+                    });
                 });
             });
-        } catch (e) {
-            list.innerHTML = `<span style="color:#f85149">Chyba: ${e.message}. Ujistěte se, že soubor laws.json je ve stejné složce jako evidence.html.</span>`;
-        }
-    }
-
-    function addLaw(title) {
-        if (!selectedLaws.includes(title)) {
-            selectedLaws.push(title);
-            renderTags();
-        }
-    }
-
-    function removeLaw(title) {
-        selectedLaws = selectedLaws.filter(item => item !== title);
-        renderTags();
+        } catch(e) { list.innerHTML = "Chyba načítání."; }
     }
 
     function renderTags() {
-        const container = document.getElementById('kvalifikace-list');
-        if (selectedLaws.length === 0) {
-            container.innerHTML = '<span style="color: #484f58; font-style: italic; font-size: 11px;">Vyberte tresty z katalogu níže...</span>';
-            return;
-        }
-        container.innerHTML = '';
-        selectedLaws.forEach(law => {
-            const tag = document.createElement('div');
-            tag.className = 'tag';
-            tag.innerHTML = `${law} <span onclick="removeLaw('${law.replace(/'/g, "\\'")}')">✖</span>`;
-            container.appendChild(tag);
+        const c = document.getElementById('kvalifikace-list'); c.innerHTML = '';
+        selectedLaws.forEach(l => {
+            const s = document.createElement('div'); s.className = 'tag';
+            s.innerHTML = `${l} <span onclick="selectedLaws=selectedLaws.filter(x=>x!=='${l}');renderTags()">✖</span>`;
+            c.appendChild(s);
         });
     }
 
     function filterLaws() {
-        let input = document.getElementById('lawSearch').value.toLowerCase();
-        let items = document.getElementsByClassName('law-item');
-        for (let i = 0; i < items.length; i++) {
-            items[i].style.display = items[i].innerText.toLowerCase().includes(input) ? "" : "none";
-        }
+        let val = document.getElementById('lawSearch').value.toLowerCase();
+        document.querySelectorAll('.law-item').forEach(i => i.style.display = i.innerText.toLowerCase().includes(val) ? '' : 'none');
     }
 
     function vytvorZadost() {
         const d = (id) => document.getElementById(id).value;
-        const kvalifikaceFinal = selectedLaws.join(', ');
+        const oppType = document.getElementById('typopp').options[document.getElementById('typopp').selectedIndex].text;
+        
+        // Sestavení extra informací podle OPP
+        let extra = "";
+        const val = d('typopp');
+        if(val === 'banka') extra = `• 🏦 **Číslo účtu:** ${d('b-ucet')}\n• 📅 **Období:** ${d('b-obdobi')}`;
+        if(val === 'telefon') extra = `• 📱 **Číslo:** ${d('t-cislo')}\n• 📡 **Rozsah:** ${d('t-rozsah')}`;
+        if(val === 'sledovani') extra = `• 🚗 **SPZ:** ${d('s-spz')}\n• 📍 **Způsob:** ${d('s-typ')}`;
 
-        const discordText = `**ŽÁDOST O UŽITÍ OPP DLE § 37 Z.Č. 006-19** ⚖️\n\n` +
-        `**Vyžadující příslušník:**\n• 👮 ${d('detektiv')}\n\n` +
-        `**Prostředek:**\n• 🛠️ ${d('typopp')}\n\n` +
-        `**Podezřelá osoba/Prověřovaná osoba (Oběť):**\n• 👤 ${d('subjekt')} (${d('narozeni')}, ${d('mdtid')})\n\n` +
-        `**Trestné činy:**\n• ⚖️ ${kvalifikaceFinal || 'NEPROVĚŘENO'}\n\n` +
-        `**Předmět vydání:**\n• 📑 Informace o veškerém majetku...\n\n` +
-        `**Zjištěné skutečnosti:**\n${d('skutecnosti') || 'Nebyly doplněny.'}\n\n` +
-        `**S pozdravem,**\n🏙️ San Andreas State Police\n🎖️ ${d('hodnost')} ${d('detektiv')}\n\n` +
-        `**PŘÍLOHY:** 📁`;
+        const discordText = `**ŽÁDOST O UŽITÍ OPP** ⚖️\n\n` +
+            `**Příslušník:** ${d('detektiv')} (${d('hodnost')})\n` +
+            `**Case:** ${d('caseid')}\n` +
+            `**Subjekt:** ${d('subjekt')} (${d('narozeni')}, ${d('mdtid')})\n\n` +
+            `**Kvalifikace:** ${selectedLaws.join(', ')}\n` +
+            `**Prostředek:** ${oppType}\n${extra}\n\n` +
+            `**Skutečnosti:**\n${d('skutecnosti')}\n\n` +
+            `**Přílohy:** 📁`;
 
         window.parent.postMessage(discordText, '*');
     }
