@@ -2,70 +2,134 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>SASP - Evidence Overview</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <title>Policejní Systém - Index</title>
     <style>
-        table { width: 100%; border-collapse: collapse; background: var(--card); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
-        th { text-align: left; padding: 15px; border-bottom: 1px solid var(--border); color: var(--blue); font-size: 11px; text-transform: uppercase; background: var(--sidebar); }
-        td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 13px; color: #c9d1d9; }
-        tr:hover { background: rgba(255,255,255,0.03); }
-        .action-link { color: var(--blue); text-decoration: none; font-weight: bold; font-size: 11px; margin-right: 15px; text-transform: uppercase; }
-        .action-link:hover { text-decoration: underline; }
-        .del-link { color: var(--danger); cursor: pointer; font-weight: bold; font-size: 11px; text-transform: uppercase; }
+        body {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            font-family: sans-serif;
+            margin: 0;
+            display: flex;
+        }
+
+        /* Sidebar pro navigaci */
+        .sidebar {
+            width: 220px;
+            height: 100vh;
+            background-color: #161b22;
+            padding: 20px;
+            border-right: 1px solid #30363d;
+            position: fixed;
+        }
+
+        .sidebar h2 { color: #58a6ff; font-size: 1.1em; }
+        .sidebar a {
+            display: block;
+            color: #8b949e;
+            text-decoration: none;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            background: #21262d;
+        }
+        .sidebar a:hover { background: #30363d; color: #fff; }
+
+        /* Hlavní plocha pro iframe */
+        .content-area {
+            margin-left: 260px;
+            width: calc(100% - 600px);
+            height: 100vh;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Pravý panel se spisem */
+        .report-panel {
+            width: 320px;
+            height: 100vh;
+            background-color: #161b22;
+            border-left: 1px solid #30363d;
+            padding: 20px;
+            position: fixed;
+            right: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #report-text-area {
+            flex-grow: 1;
+            background: #0d1117;
+            color: #c9d1d9;
+            border: 1px solid #30363d;
+            padding: 10px;
+            resize: none;
+            font-family: monospace;
+            border-radius: 4px;
+        }
+
+        .controls {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            flex: 1;
+        }
+        .btn-clear { background: #f85149; color: white; }
+        .btn-copy { background: #238636; color: white; }
     </style>
 </head>
 <body>
-    <div class="top-bar">
-        <div class="breadcrumb">SASP COMMAND CENTER</div>
-        <a href="detail.html" class="btn btn-save"><i class="fa-solid fa-plus"></i> NOVÝ ZÁZNAM</a>
+
+<div class="sidebar">
+    <h2>Menu</h2>
+    <a href="tresty.html" target="law-frame">Trestní zákoník</a>
+    <a href="#" onclick="alert('Zde budou další moduly...')">Evidence vozidel</a>
+    <a href="#" onclick="alert('Zde bude databáze osob...')">Databáze osob</a>
+</div>
+
+<div class="content-area">
+    <iframe name="law-frame" src="tresty.html"></iframe>
+</div>
+
+<div class="report-panel">
+    <h3 style="color: #58a6ff; margin-top: 0;">Generátor spisu</h3>
+    <textarea id="report-text-area" placeholder="Kliknutím v zákoníku přidáte paragrafy..."></textarea>
+    
+    <div class="controls">
+        <button class="btn btn-clear" onclick="clearReport()">Vymazat</button>
+        <button class="btn btn-copy" onclick="copyReport()">Kopírovat</button>
     </div>
+</div>
 
-    <div class="container">
-        <h1>Evidence Operativních Prostředků</h1>
-        <table>
-            <thead>
-                <tr>
-                    <th style="width: 100px;">Case ID</th>
-                    <th>Subjekt (Podezřelý)</th>
-                    <th>Vyšetřující důstojník</th>
-                    <th style="width: 150px;">Stav spisu</th>
-                    <th style="width: 200px;">Administrace</th>
-                </tr>
-            </thead>
-            <tbody id="table-body"></tbody>
-        </table>
-    </div>
+<script>
+    // Tato funkce přijímá data z iframe (tresty.html)
+    window.addEventListener('message', function(event) {
+        const textArea = document.getElementById('report-text-area');
+        textArea.value += (textArea.value ? '\n' : '') + event.data;
+        textArea.scrollTop = textArea.scrollHeight;
+    });
 
-    <script>
-        const DB = 'lspd_v15_data';
-        function render() {
-            const data = JSON.parse(localStorage.getItem(DB)) || [];
-            const body = document.getElementById('table-body');
-            body.innerHTML = '';
+    function clearReport() {
+        document.getElementById('report-text-area').value = '';
+    }
 
-            data.forEach((r, i) => {
-                const tr = document.createElement('tr');
-                const isDone = r.status === 'VYŘEŠENO';
-                tr.innerHTML = `
-                    <td style="color:var(--gold); font-weight:bold;">#${r.id || '---'}</td>
-                    <td style="color:white; font-weight:600;">${r.subject || 'Neznámý'}</td>
-                    <td>${r.author || 'Nepřiřazeno'}</td>
-                    <td>
-                        <span class="status-tag ${isDone ? 'status-archived' : 'status-active'}" style="font-size:9px; padding:4px 10px;">
-                            ${isDone ? 'ARCHIVOVÁNO' : 'AKTIVNÍ'}
-                        </span>
-                    </td>
-                    <td>
-                        <a href="detail.html?id=${i}" class="action-link">${isDone ? '🔍 Detail' : '✒️ Editovat'}</a>
-                        <span class="del-link" onclick="remove(${i})">🗑 Smazat</span>
-                    </td>
-                `;
-                body.appendChild(tr);
-            });
-        }
-        function remove(i) { if(confirm('Opravdu odstranit tento záznam?')) { let d = JSON.parse(localStorage.getItem(DB)); d.splice(i,1); localStorage.setItem(DB, JSON.stringify(d)); render(); } }
-        render();
-    </script>
+    function copyReport() {
+        const textArea = document.getElementById('report-text-area');
+        textArea.select();
+        document.execCommand('copy');
+        alert('Zkopírováno do schránky!');
+    }
+</script>
+
 </body>
 </html>
