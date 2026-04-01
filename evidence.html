@@ -2,9 +2,11 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
+    <title>SASP - Evidence Detail</title>
     <style>
         :root { --bg: #0d1117; --accent: #58a6ff; --border: #30363d; --text: #c9d1d9; }
         body { background: var(--bg); color: var(--text); font-family: sans-serif; padding: 20px; font-size: 13px; margin: 0; }
+        
         .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 15px; }
         .field { display: flex; flex-direction: column; }
         label { color: var(--accent); font-size: 10px; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; }
@@ -13,7 +15,7 @@
         .btn-submit { background: #1f6feb; color: white; border: none; padding: 12px 20px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 20px; width: 100%; text-transform: uppercase; }
         .btn-laws { background: #ffa657; color: black; border: none; padding: 10px; border-radius: 4px; cursor: pointer; font-weight: bold; margin-bottom: 15px; width: 100%; }
 
-        /* MODAL */
+        /* MODAL (PENAL CODE) */
         #modal-laws { 
             display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
             background: #161b22; border: 1px solid var(--accent); padding: 20px; border-radius: 8px;
@@ -23,13 +25,15 @@
         .law-item { padding: 10px; border-bottom: 1px solid var(--border); cursor: pointer; transition: 0.1s; }
         .law-item:hover { background: #21262d; color: var(--accent); }
         .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 99; }
+        
+        #lawSearch { width: 100%; padding: 10px; background: #010409; border: 1px solid var(--border); color: white; border-radius: 4px; margin-bottom: 10px; box-sizing: border-box; }
     </style>
 </head>
 <body>
 
-<button class="btn-laws" onclick="toggleLaws()">📖 OTEVŘÍT TRESTNÍ ZÁKONÍK (PENAL CODE)</button>
+<button class="btn-laws" onclick="toggleLaws()">📖 OTEVŘÍT KATALOG TRESTŮ (PENAL CODE)</button>
 
-<div id="form-title" style="color: var(--accent); font-size: 18px; margin-bottom: 20px; font-weight: bold;">DETAIL SPISU</div>
+<div id="form-title" style="color: var(--accent); font-size: 18px; margin-bottom: 20px; font-weight: bold; text-transform: uppercase;">Detail Spisu</div>
 
 <div class="grid">
     <div class="field"><label>👮 Vyžadující příslušník</label><input type="text" id="detektiv" placeholder="Jméno Příjmení"></div>
@@ -41,13 +45,13 @@
         </select>
     </div>
     <div class="field"><label>📂 Case ID</label><input type="text" id="caseid" placeholder="#2026-XXXX"></div>
-    <div class="field"><label>👤 Subjekt</label><input type="text" id="subjekt" placeholder="Luis Vega"></div>
-    <div class="field"><label>📅 Datum narození</label><input type="text" id="narozeni" placeholder="13.03.1993"></div>
-    <div class="field"><label>🆔 MDT ID</label><input type="text" id="mdtid" placeholder="NC5422"></div>
+    <div class="field"><label>👤 Subjekt</label><input type="text" id="subjekt" placeholder="Jméno osoby"></div>
+    <div class="field"><label>📅 Datum narození</label><input type="text" id="narozeni" placeholder="DD.MM.YYYY"></div>
+    <div class="field"><label>🆔 MDT ID</label><input type="text" id="mdtid" placeholder="např. NC5000"></div>
 </div>
 
 <label>⚖️ Právní kvalifikace</label>
-<input type="text" id="kvalifikace" style="width:100%; margin-bottom: 15px;" placeholder="Klikni na katalog nahoře...">
+<input type="text" id="kvalifikace" style="width:100%; margin-bottom: 15px;" placeholder="Vyberte z katalogu nahoře nebo napište...">
 
 <label>🛠️ Prostředek (OPP)</label>
 <select id="typopp" style="width:100%; margin-bottom: 15px;">
@@ -61,45 +65,50 @@
 <div class="overlay" id="overlay" onclick="toggleLaws()"></div>
 <div id="modal-laws">
     <h2 style="color:var(--accent); margin-top: 0;">Katalog trestů</h2>
-    <input type="text" id="lawSearch" placeholder="Hledat trest..." onkeyup="filterLaws()" style="width:100%; margin-bottom: 10px; box-sizing: border-box;">
+    <input type="text" id="lawSearch" placeholder="Hledat trest (název nebo číslo)..." onkeyup="filterLaws()">
     <div id="laws-list">Načítám data z laws.json...</div>
     <button onclick="toggleLaws()" style="margin-top: 20px; padding: 10px; width: 100%; cursor: pointer; background: #30363d; color: white; border: none; border-radius: 4px;">ZAVŘÍT</button>
 </div>
 
 <script>
+    // 1. NAČTENÍ TRESTŮ Z JSON
     async function loadLaws() {
         try {
-            const response = await fetch('laws.json');
+            const response = await fetch('./laws.json?nocache=' + new Date().getTime());
+            if (!response.ok) throw new Error('Nelze načíst laws.json');
+            
             const data = await response.json();
             const list = document.getElementById('laws-list');
             list.innerHTML = '';
 
-            // Tvůj JSON má strukturu: { categories: [ { paragraphs: [ { title, subs: [] } ] } ] }
+            // Přizpůsobeno tvé struktuře JSON: categories -> name, laws -> title
             data.categories.forEach(cat => {
                 const catTitle = document.createElement('div');
                 catTitle.className = 'law-category';
-                catTitle.innerText = cat.label || 'Kategorie';
+                catTitle.innerText = cat.name || 'Kategorie';
                 list.appendChild(catTitle);
 
-                cat.paragraphs.forEach(par => {
-                    const div = document.createElement('div');
-                    div.className = 'law-item';
-                    div.innerHTML = `<strong>${par.title}</strong>`;
-                    
-                    div.onclick = () => {
-                        document.getElementById('kvalifikace').value = par.title;
-                        toggleLaws();
-                    };
-                    list.appendChild(div);
-                });
+                if (cat.laws) {
+                    cat.laws.forEach(law => {
+                        const div = document.createElement('div');
+                        div.className = 'law-item';
+                        div.innerHTML = `<strong>${law.title}</strong>`;
+                        div.onclick = () => {
+                            document.getElementById('kvalifikace').value = law.title;
+                            toggleLaws();
+                        };
+                        list.appendChild(div);
+                    });
+                }
             });
         } catch (e) {
-            document.getElementById('laws-list').innerHTML = 'Chyba: laws.json nenalezen.';
+            document.getElementById('laws-list').innerHTML = '<span style="color:red">Chyba při načítání laws.json. Zkontroluj název a formát souboru.</span>';
         }
     }
 
     loadLaws();
 
+    // 2. FUNKCE PRO FILTROVÁNÍ V KATALOGU
     function filterLaws() {
         let input = document.getElementById('lawSearch').value.toLowerCase();
         let items = document.getElementsByClassName('law-item');
@@ -116,14 +125,34 @@
         o.style.display = show ? 'block' : 'none';
     }
 
+    // 3. GENERÁTOR ŽÁDOSTI PRO DISCORD
     function vytvorZadost() {
         const d = (id) => document.getElementById(id).value;
+        
+        // Pevně daný text zjištěných skutečností
         const pevnyText = `Na základě prvotního ohledání místa činu bylo zjištěno, že došlo k násilnému trestnému činu, při kterém byly nalezeny osoby bez známek života s poraněními odpovídajícími násilnému útoku. V rámci probíhajícího vyšetřování byly zajištěny důkazní materiály a probíhá analýza stop z místa činu.\n\nZa účelem objasnění okolností případu je žádáno o poskytnutí informací o majetku a finančních prostředcích uvedených osob. Tyto informace mohou napomoci k identifikaci možného motivu trestné činnosti, prověření majetkových poměrů obětí a zjištění případných vazeb na další osoby, které by mohly souviset s vyšetřovaným případem.`;
 
-        const discordText = `**ŽÁDOST O UŽITÍ OPP DLE § 37 Z.Č. 006-19** ⚖️\n\n**Vyžadující příslušník:**\n• 👮 ${d('detektiv')}\n\n**Prostředek:**\n• 🛠️ ${d('typopp')}\n\n**Podezřelá osoba/Prověřovaná osoba (Oběť):**\n• 👤 ${d('subjekt')} (${d('narozeni')}, ${d('mdtid')})\n\n**Trestný čin:**\n• ⚖️ ${d('kvalifikace')}\n\n**Předmět vydání:**\n• 📑 Informace o veškerém evidovaném majetku osoby, zejména bankovních účtech, finančních prostředcích, registrovaných vozidlech, nemovitostech, movitém majetku vyšší hodnoty a případných závazcích či dluzích.\n\n**Zjištěné skutečnosti:**\n${pevnyText}\n\n**S pozdravem,**\n🏙️ San Andreas State Police\n🎖️ ${d('hodnost')} ${d('detektiv')}\n\n**PŘÍLOHY:** 📁`;
+        const discordText = `**ŽÁDOST O UŽITÍ OPP DLE § 37 Z.Č. 006-19** ⚖️\n\n` +
+        `**Vyžadující příslušník:**\n• 👮 ${d('detektiv')}\n\n` +
+        `**Prostředek:**\n• 🛠️ ${d('typopp')}\n\n` +
+        `**Podezřelá osoba/Prověřovaná osoba (Oběť):**\n• 👤 ${d('subjekt')} (${d('narozeni')}, ${d('mdtid')})\n\n` +
+        `**Trestný čin:**\n• ⚖️ ${d('kvalifikace')}\n\n` +
+        `**Předmět vydání:**\n• 📑 Informace o veškerém evidovaném majetku osoby, zejména bankovních účtech, finančních prostředcích, registrovaných vozidlech, nemovitostech, movitém majetku vyšší hodnoty a případných závazcích či dluzích.\n\n` +
+        `**Zjištěné skutečnosti:**\n${pevnyText}\n\n` +
+        `**S pozdravem,**\n🏙️ San Andreas State Police\n🎖️ ${d('hodnost')} ${d('detektiv')}\n\n` +
+        `**PŘÍLOHY:** 📁`;
 
+        // Odeslání do pravého panelu v index.html
         window.parent.postMessage(discordText, '*');
     }
+
+    // Načtení Case ID z URL adresy (pokud je otevřeno z dashboardu)
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('id')) {
+        document.getElementById('caseid').value = urlParams.get('id');
+        document.getElementById('form-title').innerText = "Úprava spisu " + urlParams.get('id');
+    }
 </script>
+
 </body>
 </html>
