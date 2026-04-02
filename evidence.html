@@ -308,13 +308,8 @@
                 `**Podezřelá osoba / osoby:**\n${o.personList}\n` +
                 `**Trestný čin:** ${o.laws}\n` +
                 `**Předmět / Zařízení / Adresa:** ${o.spec}\n` +
-                `**Zjištěné skutečnosti:** ${o.text || "V rámci vyšetřování."}\n\n`;
-
-            if(o.atText && o.atText.length > 50) {
-                output += `--- 🟧 **ZPRÁVA PRO FORENZNÍ TÝM / AZ** 🟧 ---\n${o.atText}\n------------------------------------------\n\n`;
-            }
-
-            output += `S pozdravem,\n${o.officer}\n${o.rank}\n*San Andreas State Police*\n\n` +
+                `**Zjištěné skutečnosti:** ${o.text || "V rámci vyšetřování."}\n\n` +
+                `S pozdravem,\n${o.officer}\n${o.rank}\n*San Andreas State Police*\n\n` +
                 `**PŘILOHY:**\n${o.att || "Nebyly doloženy"}`;
             
             return output;
