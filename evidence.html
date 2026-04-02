@@ -18,7 +18,6 @@
 
         body { margin: 0; background-color: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; display: flex; height: 100vh; overflow: hidden; }
 
-        /* SIDEBAR */
         .sidebar { width: 250px; border-right: 1px solid var(--border); padding: 20px 10px; display: flex; flex-direction: column; flex-shrink: 0; }
         .sidebar-header { color: var(--warning); font-weight: bold; font-size: 14px; text-transform: uppercase; margin-bottom: 30px; padding-left: 10px; }
         .menu-item { padding: 12px 15px; border-radius: 6px; cursor: pointer; color: #8b949e; font-size: 14px; margin-bottom: 5px; display: flex; align-items: center; gap: 10px; text-decoration: none; }
@@ -26,14 +25,12 @@
 
         .main-content { flex: 1; padding: 30px; overflow-y: auto; }
 
-        /* KARTY */
         .opp-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 40px; }
         .opp-card { background: var(--card); border: 1px solid var(--border); padding: 20px; text-align: center; border-radius: 8px; cursor: pointer; transition: 0.2s; }
         .opp-card:hover { border-color: var(--accent); }
         .opp-card div { font-size: 24px; margin-bottom: 8px; }
         .opp-card span { font-size: 10px; font-weight: bold; text-transform: uppercase; color: var(--accent); }
 
-        /* TABULKA MOJE OPP */
         .table-container { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-top: 20px; }
         table { width: 100%; border-collapse: collapse; font-size: 13px; }
         th { background: #1c2128; padding: 12px; text-align: left; color: #8b949e; text-transform: uppercase; font-size: 10px; border-bottom: 1px solid var(--border); }
@@ -42,7 +39,6 @@
         .btn-copy { border-color: var(--success); color: var(--success); }
         .btn-del { border-color: var(--danger); color: var(--danger); }
 
-        /* FORMULÁŘ */
         #form-container { display: none; background: var(--card); border: 1px solid var(--border); padding: 30px; border-radius: 8px; max-width: 900px; margin: 0 auto; }
         .section-title { color: var(--accent); margin: 25px 0 15px; font-weight: bold; font-size: 11px; text-transform: uppercase; border-left: 3px solid var(--accent); padding-left: 10px; }
         
@@ -50,7 +46,6 @@
         label { display: block; font-size: 10px; color: #8b949e; margin-bottom: 5px; text-transform: uppercase; }
         input, select, textarea { width: 100%; padding: 10px; background: #05070a; border: 1px solid var(--border); color: white; border-radius: 4px; box-sizing: border-box; font-size: 13px; }
 
-        /* TRESTY */
         .selected-list { background: #000; border: 1px solid var(--border); border-radius: 4px; padding: 10px; margin-bottom: 10px; min-height: 40px; }
         .selected-item { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #161b22; font-size: 12px; }
         .item-remove { color: var(--danger); cursor: pointer; }
@@ -74,11 +69,11 @@
             <div class="opp-menu">
                 <div class="opp-card" onclick="openForm('📡', 'Sledování osoby', '', 'Na základě výše uvedených skutečností, žádám o vydání příkazu ke sledování osob a věcí. Sledování bude probíhat za účelem ztotožnění dalších pachatelů a místa pobytu.')"><div>📡</div><span>Sledování</span></div>
                 <div class="opp-card" onclick="openForm('📞', 'Výpis telekomunikace', 'Výpis hovorů a SMS', 'Žádám o vydání příkazu k výpisu z telekomunikačního provozu k doložení kontaktů mezi podezřelými.')"><div>📞</div><span>Telekomunikace</span></div>
-                <div class="opp-card" onclick="openForm('🔓', 'Prolomení telefonu', '', 'Žádám o vydání příkazu k prolomení datového nosiče za účelem získání důkazního materiálu z aplikací.')"><div>🔓</div><span>Telefon</span></div>
-                <div class="opp-card" onclick="openForm('💰', 'Prověrka majetku', '', 'Žádám o prověrku majetkových poměrů z důvodu podezření na legalizaci výnosů z trestné činnosti.')"><div>💰</div><span>Majetek</span></div>
-                <div class="opp-card" onclick="openForm('🕵️', 'Zastírající agent', '', 'Žádám o povolení nasazení zastírajícího agenta do struktury podezřelé skupiny.')"><div>🕵️</div><span>Agent</span></div>
-                <div class="opp-card" onclick="openForm('🏠', 'Výpis nemovitosti', '', 'Žádám o výpis z katastru nemovitostí u objektů spojených s podezřelou osobou.')"><div>🏠</div><span>Nemovitost</span></div>
-                <div class="opp-card" onclick="openForm('🏚️', 'Domovní prohlídka', '', 'Existuje důvodné podezření, že se v objektu nacházejí věci důležité pro trestní řízení.')"><div>🏚️</div><span>Prohlídka</span></div>
+                <div class="opp-card" onclick="openForm('🔓', 'Prolomení telefonu', 'Mobilní telefon s tel. číslem XXX-XXXX', 'Žádám o vydání příkazu k prolomení datového nosiče za účelem získání důkazního materiálu z aplikací.')"><div>🔓</div><span>Telefon</span></div>
+                <div class="opp-card" onclick="openForm('💰', 'Prověrka majetku', 'Majetkové poměry', 'Žádám o prověrku majetkových poměrů z důvodu podezření na legalizaci výnosů z trestné činnosti.')"><div>💰</div><span>Majetek</span></div>
+                <div class="opp-card" onclick="openForm('🕵️', 'Zastírající agent', 'Infiltrace', 'Žádám o povolení nasazení zastírajícího agenta do struktury podezřelé skupiny.')"><div>🕵️</div><span>Agent</span></div>
+                <div class="opp-card" onclick="openForm('🏠', 'Výpis nemovitosti', 'Evidence nemovitostí', 'Žádám o výpis z katastru nemovitostí u objektů spojených s podezřelou osobou.')"><div>🏠</div><span>Nemovitost</span></div>
+                <div class="opp-card" onclick="openForm('🏚️', 'Domovní prohlídka', 'Objekt / Nemovitost', 'Existuje důvodné podezření, že se v objektu nacházejí věci důležité pro trestní řízení.')"><div>🏚️</div><span>Prohlídka</span></div>
             </div>
 
             <div class="section-title">📊 Moje OPP</div>
@@ -93,8 +88,7 @@
                             <th>Akce</th>
                         </tr>
                     </thead>
-                    <tbody id="opp-table-body">
-                        </tbody>
+                    <tbody id="opp-table-body"></tbody>
                 </table>
             </div>
         </div>
@@ -105,26 +99,38 @@
             
             <div class="section-title">👮 Příslušník</div>
             <div class="grid-3">
-                <div><label>Příslušník</label><input type="text" id="off-name" placeholder="Jméno"></div>
-                <div><label>Hodnost</label><select id="off-rank"><option>Detective I</option><option>Detective II</option></select></div>
+                <div><label>Příslušník</label><input type="text" id="off-name" placeholder="Jméno a Příjmení"></div>
+                <div><label>Hodnost</label>
+                    <select id="off-rank">
+                        <option>Police Officer I</option>
+                        <option>Police Officer II</option>
+                        <option>Police Officer III</option>
+                        <option>Detective I</option>
+                        <option>Detective II</option>
+                        <option>Detective III</option>
+                        <option>Sergeant I</option>
+                        <option>Sergeant II</option>
+                    </select>
+                </div>
                 <div><label>Case ID</label><input type="text" id="case-id" value="#2026-XXXX"></div>
             </div>
 
-            <div class="section-title">👥 Osoba</div>
+            <div class="section-title">👥 Podezřelá osoba</div>
             <div class="grid-3">
                 <div><label>Jméno</label><input type="text" id="p-name"></div>
                 <div><label>Narození</label><input type="text" id="p-dob"></div>
                 <div><label>MDT ID</label><input type="text" id="p-id"></div>
             </div>
 
-            <div id="extra-fields"></div>
+            <div class="section-title">📦 Předmět / Zařízení</div>
+            <input type="text" id="spec-val" placeholder="Např. Mobilní telefon 777-777 nebo Adresa objektu">
 
-            <div class="section-title">⚖️ Kvalifikace</div>
+            <div class="section-title">⚖️ Kvalifikace (Trestný čin)</div>
             <div class="selected-list" id="selected-laws"></div>
-            <input type="text" id="law-search" placeholder="Hledat...">
+            <input type="text" id="law-search" placeholder="Hledat v zákoníku..." oninput="renderLaws(this.value)">
             <div class="law-list" id="law-list-box"></div>
 
-            <div class="section-title">📑 Odůvodnění (AT)</div>
+            <div class="section-title">📑 Zjištěné skutečnosti (Odůvodnění)</div>
             <textarea id="oduvodneni" rows="5"></textarea>
 
             <button class="btn-gen" onclick="saveOPP()">🚀 Generovat a uložit</button>
@@ -135,7 +141,6 @@
         let allLawsData = [];
         let savedOPPs = JSON.parse(localStorage.getItem('myOPPs')) || [];
 
-        // Načtení zákoníku
         fetch('laws.json').then(res => res.json()).then(data => {
             allLawsData = data.categories;
             renderLaws();
@@ -144,6 +149,7 @@
 
         function renderLaws(filter = '') {
             const box = document.getElementById('law-list-box');
+            if(!box) return;
             box.innerHTML = '';
             allLawsData.forEach(cat => {
                 cat.laws.forEach(law => {
@@ -172,10 +178,9 @@
         function openForm(icon, title, spec, atText) {
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('form-container').style.display = 'block';
-            document.getElementById('form-title').innerText = `${icon} ${title}`;
+            document.getElementById('form-title').innerText = title;
             document.getElementById('oduvodneni').value = atText;
-            const extra = document.getElementById('extra-fields');
-            extra.innerHTML = spec ? `<div class="section-title">📞 Specifikace</div><input type="text" id="spec-val" value="${spec}">` : '';
+            document.getElementById('spec-val').value = spec;
         }
 
         function hideForm() {
@@ -189,11 +194,13 @@
                 date: new Date().toLocaleDateString(),
                 type: document.getElementById('form-title').innerText,
                 caseId: document.getElementById('case-id').value,
+                officer: document.getElementById('off-name').value,
+                rank: document.getElementById('off-rank').value,
                 person: document.getElementById('p-name').value,
+                spec: document.getElementById('spec-val').value,
                 laws: [...document.querySelectorAll('.selected-item .txt')].map(el => el.innerText).join(', '),
                 text: document.getElementById('oduvodneni').value
             };
-            
             savedOPPs.push(newOPP);
             localStorage.setItem('myOPPs', JSON.stringify(savedOPPs));
             renderTable();
@@ -205,25 +212,37 @@
             tbody.innerHTML = '';
             savedOPPs.forEach(opp => {
                 const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${opp.date}</td>
-                    <td>${opp.type}</td>
-                    <td>${opp.caseId}</td>
-                    <td>${opp.person}</td>
+                tr.innerHTML = `<td>${opp.date}</td><td>${opp.type}</td><td>${opp.caseId}</td><td>${opp.person}</td>
                     <td>
-                        <button class="btn-table btn-copy" onclick="copyDC(${opp.id})">DC</button>
+                        <button class="btn-table btn-copy" onclick="copyDC(${opp.id})">Kopírovat DC</button>
                         <button class="btn-table btn-del" onclick="deleteOPP(${opp.id})">Smazat</button>
-                    </td>
-                `;
+                    </td>`;
                 tbody.appendChild(tr);
             });
         }
 
         function copyDC(id) {
-            const opp = savedOPPs.find(o => o.id === id);
-            const dcText = `**ŽÁDOST O OPP**\n**Typ:** ${opp.type}\n**Case ID:** ${opp.caseId}\n**Subjekt:** ${opp.person}\n**Kvalifikace:** ${opp.laws}\n**Odůvodnění:** ${opp.text}`;
+            const o = savedOPPs.find(opp => opp.id === id);
+            const isDP = o.type.includes("Domovní prohlídka");
+            
+            let header = isDP ? "**PODNĚT K VYDÁNÍ SOUHLASU STÁTNÍHO ZÁSTUPCE K PROVEDENÍ PROHLÍDKY DLE § 38 Z.Č. 006-19**" : "**ŽÁDOST O UŽITÍ OPP DLE § 37 Z.Č. 006-19**";
+            
+            const dcText = `${header}\n\n` +
+                `**Vyžadující příslušník:** ${o.officer}\n` +
+                `**Prostředek:** ${o.type}\n` +
+                `**Podezřelá osoba:** ${o.person}\n` +
+                `**Trestný čin:** ${o.laws}\n` +
+                `**Zařízení:** ${o.type.includes("Telefon") ? o.spec : "N/A"}\n` +
+                `**Předmět vydání:** ${o.spec}\n` +
+                `**Zjištěné skutečnosti:** ${o.text}\n\n` +
+                `S pozdravem,\n\n` +
+                `${o.officer}\n` +
+                `*San Andreas State Police*\n` +
+                `${o.rank}\n\n` +
+                `**PŘILOHY:**`;
+
             navigator.clipboard.writeText(dcText);
-            alert("Zkopírováno pro Discord!");
+            alert("Žádost zkopírována ve formátu pro Discord!");
         }
 
         function deleteOPP(id) {
@@ -231,8 +250,6 @@
             localStorage.setItem('myOPPs', JSON.stringify(savedOPPs));
             renderTable();
         }
-
-        document.getElementById('law-search').oninput = function() { renderLaws(this.value); };
     </script>
 </body>
 </html>
