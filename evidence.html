@@ -16,16 +16,15 @@
 
         body { margin: 0; background-color: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; display: flex; height: 100vh; }
 
-        /* SIDEBAR - OPRAVENO */
+        /* SIDEBAR */
         .sidebar { width: 250px; border-right: 1px solid var(--border); padding: 20px 10px; display: flex; flex-direction: column; flex-shrink: 0; }
         .sidebar-header { color: var(--warning); font-weight: bold; font-size: 14px; text-transform: uppercase; margin-bottom: 30px; padding-left: 10px; }
         .menu-item { padding: 12px 15px; border-radius: 6px; cursor: pointer; color: #8b949e; font-size: 14px; margin-bottom: 5px; display: flex; align-items: center; gap: 10px; }
-        .menu-item:hover { background: #1c2128; color: white; }
         .menu-item.active { background-color: #1f6feb; color: white; }
 
         .main-content { flex: 1; padding: 30px; overflow-y: auto; }
 
-        /* VŠECHNY OPP KARTY */
+        /* MENU KARTY */
         .opp-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
         .opp-card { background: var(--card); border: 1px solid var(--border); padding: 25px; text-align: center; border-radius: 8px; cursor: pointer; transition: 0.2s; }
         .opp-card:hover { border-color: var(--accent); transform: translateY(-3px); }
@@ -38,16 +37,18 @@
         
         .grid-3 { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 15px; margin-bottom: 15px; }
         label { display: block; font-size: 10px; color: #8b949e; margin-bottom: 8px; text-transform: uppercase; font-weight: bold; }
-        input, select, textarea { width: 100%; padding: 12px; background: #05070a; border: 1px solid var(--border); color: white; border-radius: 4px; box-sizing: border-box; }
+        input, textarea { width: 100%; padding: 12px; background: #05070a; border: 1px solid var(--border); color: white; border-radius: 4px; box-sizing: border-box; }
 
-        /* TRESTY - ČISTÝ TEXT */
+        /* VYBRANÉ TRESTY - ČISTÝ TEXT */
         .selected-list { background: #000; border: 1px solid var(--border); border-radius: 4px; padding: 15px; margin-bottom: 15px; min-height: 40px; }
         .selected-item { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #161b22; font-size: 13px; color: #fff; }
         .item-remove { color: #f85149; cursor: pointer; font-weight: bold; padding: 0 10px; }
 
-        .law-list { max-height: 250px; overflow-y: auto; background: #05070a; border: 1px solid var(--border); border-radius: 4px; }
+        /* ZÁKONÍK */
+        .law-list { max-height: 300px; overflow-y: auto; background: #05070a; border: 1px solid var(--border); border-radius: 4px; }
         .law-item { padding: 12px; cursor: pointer; border-bottom: 1px solid #161b22; font-size: 13px; }
         .law-item:hover { background: #1c2128; color: var(--accent); }
+        .law-cat { background: #161b22; padding: 5px 12px; font-size: 10px; color: var(--warning); text-transform: uppercase; font-weight: bold; }
 
         .btn-gen { background: var(--success); color: white; border: none; padding: 16px; width: 100%; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; margin-top: 25px; }
     </style>
@@ -58,8 +59,6 @@
         <div class="sidebar-header">SASP COMMAND</div>
         <div class="menu-item" onclick="location.reload()">🏠 Přehled systému</div>
         <div class="menu-item active">📂 Seznam spisů / OPP</div>
-        <div class="menu-item">📜 Zákoník</div>
-        <div style="margin-top: auto;" class="menu-item">🚪 Odhlásit se</div>
     </div>
 
     <div class="main-content">
@@ -75,44 +74,76 @@
 
         <div id="form-container">
             <button onclick="location.reload()" style="background:#21262d; border:1px solid var(--border); color:#8b949e; cursor:pointer; padding:8px 15px; border-radius:6px; margin-bottom:20px;">← ZPĚT DO MENU</button>
-            <h2 id="form-title" style="margin:0; text-transform:uppercase; font-size: 24px;"></h2>
+            <h2 id="form-title" style="margin:0; text-transform:uppercase;"></h2>
             
             <div class="section-title">Prověřované osoby</div>
-            <div id="subjekty-list">
-                <div class="grid-3">
-                    <div class="field"><label>👤 Osoba</label><input type="text" placeholder="Jméno a příjmení"></div>
-                    <div class="field"><label>🗓️ Narození</label><input type="text" placeholder="DD.MM.RRRR"></div>
-                    <div class="field"><label>🆔 MDT ID</label><input type="text" placeholder="XXXXXX"></div>
-                </div>
+            <div class="grid-3">
+                <div class="field"><label>👤 Osoba</label><input type="text" placeholder="Jméno a příjmení"></div>
+                <div class="field"><label>🗓️ Narození</label><input type="text" placeholder="DD.MM.RRRR"></div>
+                <div class="field"><label>🆔 MDT ID</label><input type="text" placeholder="XXXXXX"></div>
             </div>
 
             <div id="extra-fields"></div>
 
             <div class="section-title">Kvalifikace (Tresty)</div>
             <div class="selected-list" id="selected-laws"></div>
-            <input type="text" id="law-search" placeholder="Hledat v zákoníku (paragraf nebo název)..." style="margin-bottom:10px;">
-            <div class="law-list" id="law-list-box"></div>
-
-            <div class="section-title">Odůvodnění</div>
-            <textarea rows="5" placeholder="Vypište důvody žádosti..."></textarea>
+            <input type="text" id="law-search" placeholder="Hledat v zákoníku..." style="margin-bottom:10px;">
+            <div class="law-list" id="law-list-box">Načítám zákoník...</div>
 
             <button class="btn-gen">🚀 Generovat formáty</button>
         </div>
     </div>
 
     <script>
-        // TADY JSOU TRESTY - PŘIDEJ SI SEM DALŠÍ PODLE POTŘEBY
-        const myLaws = [
-            { title: "§7 Ubližování na zdraví", subs: ["(a) úmyslné", "(b) těžké"] },
-            { title: "§8 Napadení", subs: ["(a) fyzické"] },
-            { title: "§9 Mučení a nelidské zacházení", subs: [] },
-            { title: "§10 Zabití", subs: [] },
-            { title: "§11 Pokus o vraždu", subs: [] },
-            { title: "§12 Vražda", subs: [] },
-            { title: "§15 Ohrožení pod vlivem", subs: [] },
-            { title: "§20 Krádež", subs: ["(a) prostá", "(b) vloupáním"] },
-            { title: "§25 Loupež", subs: [] }
-        ];
+        let allLawsData = [];
+
+        // Načtení tvého laws.json
+        fetch('laws.json')
+            .then(res => res.json())
+            .then(data => {
+                allLawsData = data.categories; // Přístup do tvé struktury
+                renderLawList(allLawsData);
+            })
+            .catch(err => {
+                document.getElementById('law-list-box').innerHTML = '<div style="color:red">Chyba: laws.json musí být ve stejné složce.</div>';
+            });
+
+        function renderLawList(categories, filter = '') {
+            const box = document.getElementById('law-list-box');
+            box.innerHTML = '';
+            
+            categories.forEach(cat => {
+                let hasMatch = false;
+                const catHeader = document.createElement('div');
+                catHeader.className = 'law-cat';
+                catHeader.innerText = cat.name;
+                
+                cat.laws.forEach(law => {
+                    law.subs.forEach(sub => {
+                        const fullText = `${law.title} ${sub.label} ${sub.text}`.toLowerCase();
+                        if (fullText.includes(filter.toLowerCase())) {
+                            if (!hasMatch) { box.appendChild(catHeader); hasMatch = true; }
+                            
+                            const item = document.createElement('div');
+                            item.className = 'law-item';
+                            item.innerHTML = `<strong>${law.title}</strong> ${sub.label} <small style="color:#8b949e">${sub.text}</small>`;
+                            item.onclick = () => addLaw(`${law.title} ${sub.label}`);
+                            box.appendChild(item);
+                        }
+                    });
+                });
+            });
+        }
+
+        function addLaw(text) {
+            const container = document.getElementById('selected-laws');
+            if ([...container.querySelectorAll('.txt')].some(el => el.innerText === text)) return;
+            
+            const div = document.createElement('div');
+            div.className = 'selected-item';
+            div.innerHTML = `<span class="txt">${text}</span><span class="item-remove" onclick="this.parentElement.remove()">×</span>`;
+            container.appendChild(div);
+        }
 
         function openForm(icon, title, autoText) {
             document.getElementById('main-menu').style.display = 'none';
@@ -120,48 +151,12 @@
             document.getElementById('form-title').innerText = `${icon} ${title}`;
             
             const extra = document.getElementById('extra-fields');
-            if(autoText) {
-                extra.innerHTML = `<div class="section-title">Specifikace</div><label>Předmět výpisu</label><input type="text" value="${autoText}">`;
-            } else { extra.innerHTML = ''; }
-            
-            renderLaws(myLaws);
-        }
-
-        function renderLaws(laws) {
-            const box = document.getElementById('law-list-box');
-            box.innerHTML = '';
-            laws.forEach(l => {
-                if(l.subs.length > 0) {
-                    l.subs.forEach(s => {
-                        const div = document.createElement('div');
-                        div.className = 'law-item';
-                        div.innerHTML = `<strong>${l.title}</strong> <small style="color:#8b949e">${s}</small>`;
-                        div.onclick = () => addLaw(`${l.title} ${s}`);
-                        box.appendChild(div);
-                    });
-                } else {
-                    const div = document.createElement('div');
-                    div.className = 'law-item';
-                    div.innerHTML = `<strong>${l.title}</strong>`;
-                    div.onclick = () => addLaw(l.title);
-                    box.appendChild(div);
-                }
-            });
-        }
-
-        function addLaw(text) {
-            const container = document.getElementById('selected-laws');
-            if ([...container.querySelectorAll('.txt')].some(el => el.innerText === text)) return;
-            const div = document.createElement('div');
-            div.className = 'selected-item';
-            div.innerHTML = `<span class="txt">${text}</span><span class="item-remove" onclick="this.parentElement.remove()">×</span>`;
-            container.appendChild(div);
+            extra.innerHTML = autoText ? `<div class="section-title">Specifikace</div><label>Předmět výpisu</label><input type="text" value="${autoText}">` : '';
+            renderLawList(allLawsData);
         }
 
         document.getElementById('law-search').oninput = function() {
-            const q = this.value.toLowerCase();
-            const filtered = myLaws.filter(l => l.title.toLowerCase().includes(q));
-            renderLaws(filtered);
+            renderLawList(allLawsData, this.value);
         };
     </script>
 </body>
