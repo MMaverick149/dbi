@@ -6,48 +6,44 @@
     <style>
         :root { --bg: #0d1117; --accent: #2f81f7; --border: #30363d; --panel: #161b22; --text: #c9d1d9; }
         body { background: var(--bg); color: var(--text); font-family: -apple-system, sans-serif; margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; }
-        .login-card { background: var(--panel); border: 1px solid var(--border); width: 800px; height: 400px; display: flex; border-radius: 12px; overflow: hidden; box-shadow: 0 0 50px rgba(0,0,0,0.5); }
+        .login-card { background: var(--panel); border: 1px solid var(--border); width: 800px; height: 400px; display: flex; border-radius: 12px; overflow: hidden; }
         .login-left { width: 35%; background: rgba(47, 129, 247, 0.05); display: flex; flex-direction: column; align-items: center; justify-content: center; border-right: 1px solid var(--border); padding: 20px; text-align: center; }
         .login-right { flex: 1; padding: 40px; }
-        .badge-icon { width: 80px; height: 80px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; font-size: 40px; }
-        input, select { background: #010409; border: 1px solid var(--border); color: white; padding: 10px; border-radius: 6px; width: 100%; box-sizing: border-box; margin-top: 5px; }
-        label { font-size: 10px; color: #8b949e; text-transform: uppercase; font-weight: bold; }
+        .badge-icon { width: 80px; height: 80px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; font-size: 32px; box-shadow: 0 0 20px rgba(47, 129, 247, 0.2); }
+        input, select { background: #010409; border: 1px solid var(--border); color: white; padding: 12px; border-radius: 6px; width: 100%; box-sizing: border-box; margin-top: 5px; }
+        label { font-size: 11px; color: #8b949e; text-transform: uppercase; font-weight: bold; }
         .btn-login { background: var(--accent); color: white; border: none; padding: 15px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 25px; width: 100%; text-transform: uppercase; }
+        .remember { display: flex; align-items: center; gap: 8px; margin-top: 15px; font-size: 12px; color: #8b949e; }
     </style>
 </head>
 <body>
     <div class="login-card">
         <div class="login-left">
             <div class="badge-icon">🛡️</div>
-            <h2 style="margin:0;">SASP Terminal</h2>
-            <p style="font-size:10px; color:#8b949e;">SECURE ACCESS ONLY</p>
+            <h2 style="margin:0; font-size: 18px;">SASP Terminal</h2>
+            <p style="font-size:10px; color:#8b949e; letter-spacing: 1px; margin-top: 10px;">SECURE DOCUMENT TERMINAL<br>SAN ANDREAS STATE POLICE</p>
         </div>
         <div class="login-right">
-            <h3 style="margin-bottom:30px;">AUTENTIZACE</h3>
+            <h3 style="margin-bottom:30px; font-size: 14px; letter-spacing: 1px;">PŘIHLÁŠENÍ</h3>
             <div style="display:flex; flex-direction:column; gap:15px;">
                 <div><label>Hodnost</label>
-                    <select id="l-rank"><option>Detective I</option><option>Detective II</option><option>Sergeant</option></select>
+                    <select id="l-rank"><option>Cadet</option><option>Detective I</option><option>Detective II</option><option>Sergeant</option></select>
                 </div>
                 <div style="display:flex; gap:10px;">
-                    <div style="flex:1;"><label>Jméno</label><input type="text" id="l-fname"></div>
-                    <div style="flex:1;"><label>Příjmení</label><input type="text" id="l-lname"></div>
+                    <div style="flex:1;"><label>Jméno</label><input type="text" id="l-fname" placeholder="Nathaniel"></div>
+                    <div style="flex:1;"><label>Příjmení</label><input type="text" id="l-lname" placeholder="Hartman"></div>
                 </div>
-                <div><label>Volačka</label><input type="text" id="l-call"></div>
-                <button class="btn-login" onclick="submitLogin()">Vstoupit do systému</button>
+                <div><label>Volačka</label><input type="text" id="l-call" placeholder="7D-01"></div>
+                <button class="btn-login" onclick="submitLogin()">Přihlásit se</button>
+                <div class="remember"><input type="checkbox" checked style="width: auto; margin: 0;"> Zapamatovat přihlášení (auto-login)</div>
             </div>
         </div>
     </div>
-
     <script>
         function submitLogin() {
-            const user = {
-                rank: document.getElementById('l-rank').value,
-                name: document.getElementById('l-fname').value + ' ' + document.getElementById('l-lname').value,
-                callsign: document.getElementById('l-call').value,
-                phone: "---"
-            };
+            const user = { rank: document.getElementById('l-rank').value, name: document.getElementById('l-fname').value + ' ' + document.getElementById('l-lname').value, callsign: document.getElementById('l-call').value, phone: "Zadejte číslo..." };
             localStorage.setItem('sasp_user', JSON.stringify(user));
-            window.location.href = 'dashboard.html'; // Přesměrování
+            window.location.href = 'dashboard.html';
         }
     </script>
 </body>
