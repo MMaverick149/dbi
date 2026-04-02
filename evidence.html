@@ -11,14 +11,15 @@
             --card: #161b22;
             --border: #30363d;
             --accent: #58a6ff;
-            --success: #238636;
-            --at-color: #ff7b72;
+            --success: #2ea043;
+            --input-bg: #0d1117;
+            --text: #c9d1d9;
         }
 
         body {
             margin: 0;
             background-color: var(--bg);
-            color: #c9d1d9;
+            color: var(--text);
             font-family: 'Segoe UI', sans-serif;
             display: flex;
             height: 100vh;
@@ -34,8 +35,15 @@
             padding: 20px 10px;
         }
 
-        .sidebar-header { color: #ff9d00; font-weight: bold; margin-bottom: 30px; padding-left: 10px; text-transform: uppercase; }
-        
+        .sidebar-header {
+            color: #ff9d00;
+            font-weight: bold;
+            font-size: 14px;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+            padding-left: 10px;
+        }
+
         .menu-item {
             padding: 12px 15px;
             margin-bottom: 5px;
@@ -45,15 +53,26 @@
             text-decoration: none;
             display: flex;
             align-items: center;
+            font-size: 14px;
         }
 
-        .menu-item:hover, .menu-item.active { background-color: var(--card); color: white; }
+        .menu-item:hover { background-color: var(--card); color: white; }
+        .menu-item.active { background-color: #1f6feb; color: white; }
 
         /* HLAVNÍ OBSAH */
-        .main-content { flex: 1; padding: 40px; overflow-y: auto; }
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
 
         /* TVÉ OPP KARTY */
-        .opp-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .opp-menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
         .opp-card {
             background: var(--card);
             border: 1px solid var(--border);
@@ -63,28 +82,116 @@
             cursor: pointer;
             transition: 0.2s;
         }
-        .opp-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+        .opp-card:hover { border-color: var(--accent); }
         .opp-card div { font-size: 30px; margin-bottom: 10px; }
         .opp-card span { font-size: 11px; font-weight: bold; text-transform: uppercase; color: var(--accent); }
 
-        /* FORMULÁŘ */
-        #form-container { display: none; background: var(--card); border: 1px solid var(--border); padding: 30px; border-radius: 8px; margin-bottom: 30px; }
-        .section-title { border-left: 3px solid var(--accent); padding-left: 10px; margin: 25px 0 15px; font-weight: bold; font-size: 14px; text-transform: uppercase; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
+        /* TVŮJ PŮVODNÍ FORMULÁŘ (LAYOUT PODLE OBRÁZKU 1) */
+        #form-container {
+            display: none;
+            background: var(--card);
+            border: 1px solid var(--border);
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            color: #ff9d00;
+            margin: 25px 0 15px;
+            font-weight: bold;
+            font-size: 12px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
+        .grid-osoba { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+
         .field { margin-bottom: 15px; }
-        label { display: block; font-size: 11px; color: #8b949e; margin-bottom: 5px; }
-        input, select, textarea { width: 100%; padding: 10px; background: var(--bg); border: 1px solid var(--border); color: white; border-radius: 4px; box-sizing: border-box; }
+        label { display: block; font-size: 10px; color: #8b949e; margin-bottom: 5px; text-transform: uppercase; }
         
-        .btn-gen { background: var(--success); color: white; border: none; padding: 15px; width: 100%; font-weight: bold; border-radius: 4px; cursor: pointer; margin-top: 20px; }
-        .btn-save { background: #21262d; color: white; border: 1px solid var(--border); padding: 10px; width: 100%; border-radius: 4px; cursor: pointer; margin-top: 10px; }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            color: white;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 12px;
+        }
+
+        textarea { resize: vertical; font-family: 'Courier New', monospace; }
+
+        /* Tlačítko Přidat osobu přesně podle předlohy */
+        .btn-add {
+            background: none;
+            border: 1px dashed #238636;
+            color: #2ea043;
+            width: 100%;
+            padding: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-size: 11px;
+            margin-bottom: 20px;
+        }
+
+        /* BOX PRO VYBRANÉ TRESTY (TEN ČERNÝ, CO CHYBĚL) */
+        .tags-container {
+            background: black;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 10px;
+            min-height: 50px;
+            margin-bottom: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .tag {
+            background: #21262d;
+            border: 1px solid var(--border);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .tag-remove { color: #f85149; cursor: pointer; }
+
+        /* SEZNAM TRESTŮ K VÝBĚRU */
+        .law-list {
+            max-height: 150px;
+            overflow-y: auto;
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            padding: 10px;
+            font-size: 12px;
+            border-radius: 4px;
+        }
+        .law-item { padding: 5px; cursor: pointer; border-bottom: 1px solid #161b22; }
+        .law-item:hover { background: #161b22; color: white; }
+
+        /* TLAČÍTKA DOLE */
+        .btn-gen { background: #238636; color: white; border: none; padding: 15px; width: 100%; font-weight: bold; border-radius: 4px; cursor: pointer; text-transform: uppercase; margin-top: 20px; }
+        .btn-gen:hover { background: var(--success); }
+        .btn-save { background: none; border: 1px solid var(--border); color: #8b949e; padding: 10px; width: 100%; border-radius: 4px; cursor: pointer; margin-top: 10px; font-size: 11px; text-transform: uppercase; }
 
         /* TABULKA */
-        .spis-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th { text-align: left; font-size: 11px; color: #8b949e; padding: 10px; border-bottom: 1px solid var(--border); }
-        td { padding: 12px 10px; font-size: 13px; border-bottom: 1px solid #21262d; }
-        
-        .output-box { background: #000; padding: 15px; border-radius: 4px; font-family: monospace; position: relative; white-space: pre-wrap; margin-top: 10px; }
-        .copy-btn { position: absolute; top: 10px; right: 10px; background: var(--accent); border: none; color: white; padding: 5px; cursor: pointer; font-size: 10px; }
+        .spis-table { width: 100%; border-collapse: collapse; margin-top: 20px; background: var(--card); border-radius: 8px; border: 1px solid var(--border); }
+        th { text-align: left; font-size: 11px; color: #8b949e; padding: 10px; border-bottom: 1px solid var(--border); text-transform: uppercase; }
+        td { padding: 12px 10px; font-size: 12px; border-bottom: 1px solid #21262d; color: #c9d1d9; }
+
+        .logout { margin-top: auto; color: #f85149; padding: 10px; text-decoration: none; font-size: 12px; }
     </style>
 </head>
 <body>
@@ -94,27 +201,27 @@
         <a href="dashboard.html" class="menu-item">🏠 Přehled systému</a>
         <a href="evidence.html" class="menu-item active">📂 Seznam spisů / OPP</a>
         <a href="tresty.html" class="menu-item">📜 Zákoník</a>
-        <a href="login.html" style="margin-top:auto; color:#f85149; text-decoration:none; font-size:12px;">Odhlásit se</a>
+        <a href="login.html" class="logout">Odhlásit se</a>
     </div>
 
     <div class="main-content">
         
         <div id="main-menu" class="opp-menu">
-            <div class="opp-card" onclick="openForm('Sledování osoby', '📡')"><div>📡</div><span>Sledování osoby</span></div>
-            <div class="opp-card" onclick="openForm('Výpis telekomunikace', '📞')"><div>📞</div><span>Výpis telekomunikace</span></div>
-            <div class="opp-card" onclick="openForm('Prolomení telefonu', '🔓')"><div>🔓</div><span>Prolomení telefonu</span></div>
-            <div class="opp-card" onclick="openForm('Prověrka majetku', '💰')"><div>💰</div><span>Prověrka majetku</span></div>
-            <div class="opp-card" onclick="openForm('Zastírající agent', '🕵️')"><div>🕵️</div><span>Zastírající agent</span></div>
-            <div class="opp-card" onclick="openForm('Výpis nemovitosti', '🏠')"><div>🏠</div><span>Výpis nemovitosti</span></div>
-            <div class="opp-card" onclick="openForm('Domovní prohlídka', '🏚️')"><div>🏚️</div><span>Domovní prohlídka</span></div>
+            <div class="opp-card" onclick="openForm('📡 Sledování osoby')"><div>📡</div><span>Sledování osoby</span></div>
+            <div class="opp-card" onclick="openForm('📞 Výpis telekomunikace')"><div>📞</div><span>Výpis telekomunikace</span></div>
+            <div class="opp-card" onclick="openForm('🔓 Prolomení telefonu')"><div>🔓</div><span>Prolomení telefonu</span></div>
+            <div class="opp-card" onclick="openForm('💰 Prověrka majetku')"><div>💰</div><span>Prověrka majetku</span></div>
+            <div class="opp-card" onclick="openForm('🕵️ Zastírající agent')"><div>🕵️</div><span>Zastírající agent</span></div>
+            <div class="opp-card" onclick="openForm('🏠 Výpis nemovitosti')"><div>🏠</div><span>Výpis nemovitosti</span></div>
+            <div class="opp-card" onclick="openForm('🏚️ Domovní prohlídka')"><div>🏚️</div><span>Domovní prohlídka</span></div>
         </div>
 
         <div id="form-container">
             <button onclick="closeForm()" style="background:none; border:1px solid var(--border); color:#8b949e; padding:6px 12px; cursor:pointer; margin-bottom:20px; border-radius:4px;">← ZPĚT DO MENU</button>
-            <h2 id="form-title"></h2>
+            <h2 id="form-title" style="margin:0; color:white; text-transform: uppercase; font-size: 20px;"></h2>
             
             <div class="section-title">👮 Vyžadující příslušník</div>
-            <div class="grid">
+            <div class="grid-3">
                 <div class="field"><label>👤 Příslušník</label><input type="text" id="detektiv" placeholder="Jméno Příjmení"></div>
                 <div class="field"><label>🎖️ Hodnost</label>
                     <select id="hodnost">
@@ -126,28 +233,32 @@
             </div>
 
             <div class="section-title">👥 Prověřované osoby</div>
-            <div id="subjekty-list"></div>
-            <button onclick="addSubjekt()" style="background:none; border:1px dashed var(--success); color:var(--success); width:100%; padding:12px; cursor:pointer; font-weight:bold; border-radius:4px;">+ PŘIDAT OSOBU</button>
+            <div id="subjekty-list">
+                <div class="grid-osoba">
+                    <div class="field"><label>👤 Osoba</label><input type="text" placeholder="Jméno a příjmení"></div>
+                    <div class="field"><label>🗓️ Narození</label><input type="text" placeholder="DD.MM.RRRR"></div>
+                    <div class="field"><label>🆔 MDT ID</label><input type="text" placeholder="XXXXXX"></div>
+                </div>
+            </div>
+            <button class="btn-add" onclick="addSubjekt()">+ Přidat osobu</button>
 
             <div class="section-title">⚖️ Kvalifikace (Tresty)</div>
-            <input type="text" id="law-input" placeholder="Hledat v zákoníku..." style="margin-bottom:10px;">
-            <div id="law-list-box" style="max-height:150px; overflow-y:auto; background:#0d1117; border:1px solid var(--border); padding:10px; font-size:12px;">
+            <div class="tags-container" id="selected-laws">
                 </div>
+            <input type="text" id="law-search" placeholder="Hledat v zákoníku..." style="margin-bottom:10px;">
+            <div class="law-list" id="law-list-box">
+                <div style="color:#444; padding:10px;">Načítám zákoník...</div>
+            </div>
 
             <div class="section-title">📝 Skutečnosti / Odůvodnění</div>
-            <div class="field"><textarea id="skutecnosti" rows="6" placeholder="Vypište důvody žádosti..."></textarea></div>
+            <div class="field"><textarea id="skutecnosti" rows="6" placeholder="Vypište důvody žádosti a zjištěné skutečnosti..."></textarea></div>
             
-            <button class="btn-gen" onclick="generate()">🚀 Generovat formáty</button>
-            <button class="btn-save" onclick="saveSpis()">💾 Uložit do mojí databáze</button>
-
-            <div id="output-area" style="display:none; margin-top:40px;">
-                <div class="section-title">📄 IC SPIS (PRO SOUD)</div>
-                <div class="output-box" id="output-ic"></div>
-            </div>
+            <button class="btn-gen">🚀 Generovat formáty</button>
+            <button class="btn-save">💾 Uložit do mojí databáze</button>
         </div>
 
         <div class="list-section">
-            <h3 style="margin:0; color:var(--accent); font-size:12px; text-transform: uppercase;">📁 Moje uložené spisy (Soukromé)</h3>
+            <h3 style="margin:0; color:#ff9d00; font-size:12px; text-transform: uppercase;">📁 Moje uložené spisy (Soukromé)</h3>
             <table class="spis-table">
                 <thead>
                     <tr><th>Datum</th><th>Case ID</th><th>Typ OPP</th><th>Akce</th></tr>
@@ -160,62 +271,78 @@
     </div>
 
     <script>
-        // FUNKCE PRO OTEVŘENÍ FORMULÁŘE
-        function openForm(title, icon) {
+        // Otevření a zavření formuláře
+        function openForm(title) {
             document.getElementById('main-menu').style.display = 'none';
             document.getElementById('form-container').style.display = 'block';
-            document.getElementById('form-title').innerText = icon + " " + title;
-            // Automaticky přidat jedno pole pro subjekt
-            if(document.getElementById('subjekty-list').innerHTML === "") addSubjekt();
+            document.getElementById('form-title').innerText = title;
         }
 
         function closeForm() {
             document.getElementById('main-menu').style.display = 'grid';
             document.getElementById('form-container').style.display = 'none';
-            document.getElementById('output-area').style.display = 'none';
         }
 
+        // FUNKCE PRO PŘIDÁNÍ OSOBY (ZACHOVÁVÁ TVŮJ LAYOUT)
         function addSubjekt() {
+            const list = document.getElementById('subjekty-list');
             const div = document.createElement('div');
-            div.className = 'field';
-            div.innerHTML = '<input type="text" class="subjekt-input" placeholder="Jméno a příjmení subjektu">';
-            document.getElementById('subjekty-list').appendChild(div);
+            div.className = 'grid-osoba';
+            div.innerHTML = `
+                <div class="field"><label>👤 Osoba</label><input type="text" placeholder="Jméno a příjmení"></div>
+                <div class="field"><label>🗓️ Narození</label><input type="text" placeholder="DD.MM.RRRR"></div>
+                <div class="field"><label>🆔 MDT ID</label><input type="text" placeholder="XXXXXX"></div>
+            `;
+            list.appendChild(div);
         }
 
-        // NAČTENÍ TRESTŮ Z LAWS.JSON
-        fetch('laws.json').then(res => res.json()).then(data => {
-            const box = document.getElementById('law-list-box');
-            box.innerHTML = data.map(l => `
-                <div style="margin-bottom:5px;">
-                    <input type="checkbox" value="${l.title}"> ${l.title}
+        // NAČTENÍ A PRÁCE S TRESTY (ZACHOVÁVÁ ČERNÝ BOX)
+        const selectedLawsContainer = document.getElementById('selected-laws');
+        const searchInput = document.getElementById('law-search');
+        let allLaws = [];
+
+        fetch('laws.json')
+            .then(res => res.json())
+            .then(data => {
+                allLaws = data;
+                renderLawList(allLaws);
+            })
+            .catch(err => {
+                document.getElementById('law-list-box').innerHTML = '<div style="color:red; padding:10px;">Chyba načítání laws.json</div>';
+            });
+
+        function renderLawList(laws) {
+            const listBox = document.getElementById('law-list-box');
+            if (laws.length === 0) {
+                listBox.innerHTML = '<div style="color:#444; padding:10px;">Žádné tresty nenalezeny</div>';
+                return;
+            }
+            listBox.innerHTML = laws.map(l => `
+                <div class="law-item" onclick="addLawTag('${l.title}')">
+                    ${l.title}
                 </div>
             `).join('');
-        });
-
-        // GENERACE TEXTU
-        function generate() {
-            const detektiv = document.getElementById('detektiv').value;
-            const caseid = document.getElementById('caseid').value;
-            const popis = document.getElementById('skutecnosti').value;
-            
-            const text = `ŽÁDOST O OPP\n------------------\nŽadatel: ${detektiv}\nSpis: ${caseid}\nOdůvodnění: ${popis}`;
-            
-            document.getElementById('output-ic').innerText = text;
-            document.getElementById('output-area').style.display = 'block';
         }
 
-        // UKLÁDÁNÍ DO TABULKY
-        function saveSpis() {
-            const caseid = document.getElementById('caseid').value || "#NEMA";
-            const typ = document.getElementById('form-title').innerText;
-            const datum = new Date().toLocaleDateString();
-            
-            const tbody = document.getElementById('spis-body');
-            if(tbody.innerText.includes("Žádné uložené")) tbody.innerHTML = "";
-            
-            const row = `<tr><td>${datum}</td><td>${caseid}</td><td>${typ}</td><td><button style="color:red; background:none; border:none; cursor:pointer;">Smazat</button></td></tr>`;
-            tbody.innerHTML += row;
-            alert("Uloženo do lokální paměti.");
+        // Vyhledávání v zákoníku
+        searchInput.addEventListener('input', () => {
+            const query = searchInput.value.toLowerCase();
+            const filtered = allLaws.filter(l => l.title.toLowerCase().includes(query));
+            renderLawList(filtered);
+        });
+
+        // Přidání trestu do černého boxu
+        function addLawTag(title) {
+            // Kontrola, zda už tam trest není
+            const existingTags = selectedLawsContainer.querySelectorAll('.tag span');
+            for (let tag of existingTags) {
+                if (tag.innerText === title) return; 
+            }
+
+            const tag = document.createElement('div');
+            tag.className = 'tag';
+            tag.innerHTML = `<span>${title}</span> <b class="tag-remove" onclick="this.parentElement.remove()">×</b>`;
+            selectedLawsContainer.appendChild(tag);
         }
     </script>
 </body>
