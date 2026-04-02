@@ -2,7 +2,7 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <title>SASP Terminal - Dashboard</title>
+    <title>SASP OPP Žádosti</title>
     <style>
         :root { 
             --bg: #0d1117; 
@@ -99,7 +99,6 @@
         .btn-logout:hover { opacity: 1; transform: translateX(5px); }
         .logout-box { width: 4px; height: 14px; background: var(--danger); border-radius: 2px; }
 
-        /* HLAVNÍ PLOCHA */
         .main { flex: 1; padding: 40px; overflow-y: auto; }
         .db-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; max-width: 1200px; margin: 0 auto; }
         
@@ -122,7 +121,6 @@
             letter-spacing: 1px; 
         }
 
-        /* TABULKA A PRVKY */
         table { width: 100%; border-collapse: collapse; font-size: 13px; }
         th { text-align: left; color: #8b949e; font-size: 10px; text-transform: uppercase; padding-bottom: 10px; }
         td { padding: 12px 0; border-bottom: 1px solid #21262d; }
@@ -159,7 +157,7 @@
 <body>
 
     <div class="sidebar">
-        <div class="sidebar-brand">SASP COMMAND</div>
+        <div class="sidebar-brand">OPP Žádosti</div>
         
         <a href="dashboard.html" class="nav-item active">🏠 Přehled systému</a>
         <a href="evidence.html" class="nav-item">➕ Nový spis / OPP</a>
@@ -167,7 +165,7 @@
         
         <div class="logout-container">
             <button onclick="logout()" class="btn-logout">
-                <div class="logout-box"></div> Odhlásit se
+                <div class="logout-box"></div> 🚪Odhlásit se
             </button>
         </div>
     </div>
@@ -178,20 +176,6 @@
                 <div class="panel" style="margin-bottom:25px;">
                     <div class="panel-h"><h3>📝 Rychlé poznámky (Automatické ukládání)</h3></div>
                     <textarea id="dashNotes" class="notes-area" placeholder="Sem si pište průběžné poznámky k hlášením..."></textarea>
-                </div>
-
-                <div class="panel">
-                    <div class="panel-h"><h3>👥 Kolegové z DBI</h3></div>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Volačka</th>
-                                <th>Jméno a Příjmení</th>
-                                <th>Telefonní číslo</th>
-                            </tr>
-                        </thead>
-                        <tbody id="col-list"></tbody>
-                    </table>
                 </div>
             </div>
 
@@ -210,12 +194,10 @@
     </div>
 
     <script>
-        // Ověření přihlášení
         const rawData = localStorage.getItem('sasp_user');
         if (!rawData) { window.location.href = 'login.html'; }
         const user = JSON.parse(rawData);
 
-        // Naplnění dat
         document.getElementById('active-user-display').innerHTML = `
             <div style="font-size:13px; padding:5px 0; display:flex; align-items:center;">
                 <span class="status-dot"></span> 
@@ -229,11 +211,9 @@
                 <td><input type="text" value="${user.phone}" placeholder="Zadejte tel..." onchange="updatePhone(this.value)"></td>
             </tr>`;
 
-        // Funkce
         function updatePhone(val) { user.phone = val; localStorage.setItem('sasp_user', JSON.stringify(user)); }
         function logout() { localStorage.removeItem('sasp_user'); window.location.href = 'login.html'; }
 
-        // Poznámky
         const notePad = document.getElementById('dashNotes');
         notePad.value = localStorage.getItem('sasp_dash_notes') || "";
         notePad.addEventListener('input', () => { localStorage.setItem('sasp_dash_notes', notePad.value); });
