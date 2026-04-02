@@ -742,12 +742,34 @@
 </div>
 
 <script>
-        function toggle(element, text) {
-            window.parent.postMessage(text, '*');
-            const originalColor = element.style.backgroundColor;
-            element.style.backgroundColor = "#238636";
-            setTimeout(() => { element.style.backgroundColor = originalColor; }, 300);
-        }
-    </script>
+document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('laws-container');
+
+    fetch('laws.json')
+        .then(response => response.json())
+        .then(data => {
+            const laws = Array.isArray(data) ? data : data.laws;
+
+            container.innerHTML = laws.map(law => `
+                <div class="law-item" style="border-bottom: 1px solid #1a1f26; padding: 15px; margin-bottom: 5px; background: #0d1117;">
+                    <div style="font-weight: bold; color: #58a6ff; font-size: 1.1em;">
+                        ${law.title}
+                    </div>
+                    <div style="color: #8b949e; font-size: 0.9em; margin: 5px 0;">
+                        ${law.description}
+                    </div>
+                    <div style="margin-left: 20px; border-left: 2px solid #30363d; padding-left: 10px;">
+                        ${law.subs.map(sub => `
+                            <div style="margin-top: 4px; font-size: 0.85em;">
+                                <b style="color: #f85149;">${sub.label}</b> ${sub.text}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        })
+        .catch(err => console.error("Chyba při načítání JSON:", err));
+});
+</script>
 </body>
 </html>
