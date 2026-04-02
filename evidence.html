@@ -60,7 +60,8 @@
         .modal-content { background: var(--card); border: 1px solid var(--border); padding: 30px; border-radius: 8px; width: 750px; max-height: 90vh; overflow-y: auto; }
         .pre-text { white-space: pre-wrap; font-family: 'Consolas', monospace; font-size: 13px; color: #fff; background: #0d1117; padding: 25px; border-radius: 4px; border: 1px solid var(--border); line-height: 1.5; }
         
-        .btn-table { padding: 5px 10px; border-radius: 4px; border: 1px solid var(--border); background: var(--secondary); color: #c9d1d9; cursor: pointer; font-size: 11px; }
+        .btn-table { padding: 5px 8px; border-radius: 4px; border: 1px solid var(--border); background: var(--secondary); color: #c9d1d9; cursor: pointer; font-size: 11px; margin-right: 4px; }
+        .btn-at { color: var(--warning); border-color: var(--warning); }
         .law-tag { display: inline-block; background: #1f6feb; color: white; padding: 4px 8px; border-radius: 4px; margin-right: 5px; margin-bottom: 5px; font-size: 11px; }
     </style>
 </head>
@@ -68,17 +69,17 @@
 
     <div id="view-modal">
         <div class="modal-content">
-            <h3 style="color:var(--accent); margin:0 0 20px 0">NÁHLED ŽÁDOSTI</h3>
+            <h3 id="modal-title-text" style="color:var(--accent); margin:0 0 20px 0">NÁHLED ŽÁDOSTI</h3>
             <div id="modal-text" class="pre-text"></div>
             <div style="display:flex; gap:10px; margin-top:20px;">
-                <button onclick="copyCurrentView()" style="flex:1; padding:12px; background:var(--success); color:white; border:none; border-radius:4px; cursor:pointer; font-weight:bold;">KOPÍROVAT PRO DISCORD</button>
+                <button onclick="copyCurrentView()" style="flex:1; padding:12px; background:var(--success); color:white; border:none; border-radius:4px; cursor:pointer; font-weight:bold;">KOPÍROVAT TEXT</button>
                 <button onclick="document.getElementById('view-modal').style.display='none'" style="flex:1; padding:12px; background:var(--secondary); color:white; border:none; border-radius:4px; cursor:pointer;">ZAVŘÍT</button>
             </div>
         </div>
     </div>
 
     <div class="sidebar">
-        <div class="sidebar-header">DBI OPP</div>
+        <div class="sidebar-header">SASP COMMAND</div>
         <a href="dashboard.html" class="menu-item">🏠 Přehled systému</a>
         <a href="evidence.html" class="menu-item active">📂 Seznam spisů / OPP</a>
         <a href="https://genk.cz/hry/gta5/zakony-fivem/the-penal-code-of-the-state-of-san-andreas-002-19-r17/" class="menu-item" target="_blank">📜 Zákoník</a>
@@ -97,10 +98,10 @@
                 <div class="opp-card" onclick="openForm('🏚️', 'Domovní prohlídka')"><div>🏚️</div><span>Prohlídka</span></div>
             </div>
 
-            <div class="section-title">📂 Moje OPP</div>
+            <div class="section-title">📊 Moje OPP</div>
             <div class="table-container">
                 <table>
-                    <thead><tr><th>Datum</th><th>Typ</th><th>DBI ID</th><th>Osoba</th><th>Akce</th></tr></thead>
+                    <thead><tr><th>Datum</th><th>Typ</th><th>Case ID</th><th>Osoba</th><th>Akce</th></tr></thead>
                     <tbody id="opp-table-body"></tbody>
                 </table>
             </div>
@@ -117,7 +118,7 @@
                 <div><label>Hodnost</label>
                     <select id="off-rank" onchange="updateAT()">
                         <option>Detective I</option><option>Detective II</option><option>Detective III</option>
-                        <option>Captian</option>
+                        <option>Sergeant I</option><option>Sergeant II</option><option>Lieutenant</option>
                     </select>
                 </div>
                 <div><label>Case ID</label><input type="text" id="case-id" value="#2026-XXXX"></div>
@@ -137,10 +138,10 @@
             <input type="text" id="law-search" placeholder="Hledat v zákoníku..." oninput="renderLaws(this.value)" style="margin-top:10px;">
             <div id="law-list-box" style="max-height:120px; overflow-y:auto; background:#05070a; border:1px solid var(--border); margin-top:5px;"></div>
 
-            <div class="section-title">📑 Zjištěné skutečnosti</div>
+            <div class="section-title">📑 Zjištěné skutečnosti (IC)</div>
             <textarea id="oduvodneni" rows="4" placeholder="Zde vypište IC odůvodnění žádosti..."></textarea>
 
-            <div class="section-title at-header">🟠 Automatická zpráva pro Forenzní tým / AT 🟠</div>
+            <div class="section-title at-header">🟧 Automatická zpráva pro Forenzní tým / AZ (OOC)</div>
             <textarea id="at-message" class="at-textarea" rows="18" readonly placeholder="Tato zpráva se generuje automaticky..."></textarea>
 
             <div class="section-title">📎 Přílohy</div>
@@ -263,6 +264,7 @@
                 tr.innerHTML = `<td>${o.date}</td><td>${o.fullTitle}</td><td>${o.caseId}</td><td>${o.personList.split('\n')[0]}...</td>
                 <td>
                     <button class="btn-table" onclick="viewOPP(${o.id})">Zobrazit</button>
+                    <button class="btn-table btn-at" onclick="viewForenzni(${o.id})">Forenzní</button>
                     <button class="btn-table" style="color:var(--danger)" onclick="deleteOPP(${o.id})">Smazat</button>
                 </td>`;
                 tbody.appendChild(tr);
@@ -294,9 +296,7 @@
             span.innerHTML = `<span class="txt">${text}</span> <b onclick="this.parentElement.remove()" style="cursor:pointer;margin-left:5px">×</b>`;
             container.appendChild(span);
         }
-            if(o.atText && o.atText.length > 50) {
-                output += `--- 🟠 **ZPRÁVA PRO FORENZNÍ TÝM / AT** 🟠 ---\n${o.atText}\n------------------------------------------\n\n`;
-            }
+
         function formatDiscord(o) {
             const isFT = o.type.includes("Telefon") || o.type.includes("Telekomunikace");
             let ping = isFT ? "@Forenzní Tým" : "@State-Prosecutor";
@@ -310,6 +310,10 @@
                 `**Předmět / Zařízení / Adresa:** ${o.spec}\n` +
                 `**Zjištěné skutečnosti:** ${o.text || "V rámci vyšetřování."}\n\n`;
 
+            if(o.atText && o.atText.length > 50) {
+                output += `--- 🟧 **ZPRÁVA PRO FORENZNÍ TÝM / AZ** 🟧 ---\n${o.atText}\n------------------------------------------\n\n`;
+            }
+
             output += `S pozdravem,\n${o.officer}\n${o.rank}\n*San Andreas State Police*\n\n` +
                 `**PŘILOHY:**\n${o.att || "Nebyly doloženy"}`;
             
@@ -318,14 +322,24 @@
 
         function viewOPP(id) {
             const o = savedOPPs.find(x => x.id === id);
+            document.getElementById('modal-title-text').innerText = "NÁHLED ŽÁDOSTI";
+            document.getElementById('modal-title-text').style.color = "var(--accent)";
             document.getElementById('modal-text').innerText = formatDiscord(o);
+            document.getElementById('view-modal').style.display = 'flex';
+        }
+
+        function viewForenzni(id) {
+            const o = savedOPPs.find(x => x.id === id);
+            document.getElementById('modal-title-text').innerText = "ZPRÁVA PRO FORENZNÍ TÝM";
+            document.getElementById('modal-title-text').style.color = "var(--warning)";
+            document.getElementById('modal-text').innerText = o.atText || "Žádná zpráva nebyla vygenerována.";
             document.getElementById('view-modal').style.display = 'flex';
         }
 
         function copyCurrentView() {
             const text = document.getElementById('modal-text').innerText;
             navigator.clipboard.writeText(text);
-            alert("Zkopírováno pro Discord!");
+            alert("Text zkopírován!");
         }
 
         function deleteOPP(id) {
