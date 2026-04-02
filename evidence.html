@@ -11,14 +11,13 @@
             --accent: #58a6ff;
             --success: #2ea043;
             --text: #c9d1d9;
-            --warning: #ff9d00;
+            --warning: #ff9d00; /* Oranžová pro Forenzní tým */
             --danger: #f85149;
             --secondary: #21262d;
         }
 
         body { margin: 0; background-color: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; display: flex; height: 100vh; overflow: hidden; }
 
-        /* SIDEBAR */
         .sidebar { width: 250px; border-right: 1px solid var(--border); padding: 20px 10px; display: flex; flex-direction: column; flex-shrink: 0; }
         .sidebar-header { color: var(--warning); font-weight: bold; font-size: 14px; text-transform: uppercase; margin-bottom: 30px; padding-left: 10px; }
         .menu-item { padding: 12px 15px; border-radius: 6px; cursor: pointer; color: #8b949e; font-size: 14px; margin-bottom: 5px; display: flex; align-items: center; gap: 10px; }
@@ -26,36 +25,32 @@
 
         .main-content { flex: 1; padding: 30px; overflow-y: auto; }
 
-        /* KARTY */
         .opp-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 30px; }
         .opp-card { background: var(--card); border: 1px solid var(--border); padding: 15px; text-align: center; border-radius: 8px; cursor: pointer; transition: 0.2s; }
         .opp-card:hover { border-color: var(--accent); }
         .opp-card div { font-size: 24px; margin-bottom: 8px; }
         .opp-card span { font-size: 10px; font-weight: bold; text-transform: uppercase; color: var(--accent); }
 
-        /* TABULKA */
         .table-container { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-top: 20px; }
         table { width: 100%; border-collapse: collapse; font-size: 13px; }
         th { background: #1c2128; padding: 12px; text-align: left; color: #8b949e; text-transform: uppercase; font-size: 10px; border-bottom: 1px solid var(--border); }
-        td { padding: 12px; border-bottom: 1px solid var(--border); color: #fff; }
-        .btn-table { padding: 5px 10px; border-radius: 4px; border: 1px solid var(--border); background: var(--secondary); color: #c9d1d9; cursor: pointer; font-size: 11px; margin-right: 5px; }
+        td { padding: 12px; border-bottom: 1px solid var(--border); }
 
-        /* FORMULÁŘ */
         #form-container { display: none; background: var(--card); border: 1px solid var(--border); padding: 30px; border-radius: 8px; max-width: 1000px; margin: 0 auto; }
         .section-title { color: var(--accent); margin: 20px 0 10px; font-weight: bold; font-size: 11px; text-transform: uppercase; border-left: 3px solid var(--accent); padding-left: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .section-title.at-section { color: var(--warning); border-left-color: var(--warning); }
         
-        .grid-pd { display: grid; grid-template-columns: 2fr 0.8fr 1.2fr 1fr; gap: 15px; margin-bottom: 10px; }
         .person-row { display: grid; grid-template-columns: 2fr 1fr 1fr 40px; gap: 10px; margin-bottom: 8px; background: #0d1117; padding: 10px; border-radius: 4px; border: 1px solid var(--border); }
-        
-        label { display: block; font-size: 10px; color: #8b949e; margin-bottom: 5px; text-transform: uppercase; font-weight: bold; }
         input, select, textarea { width: 100%; padding: 10px; background: #05070a; border: 1px solid var(--border); color: white; border-radius: 4px; box-sizing: border-box; font-size: 13px; }
+        
+        /* Speciální styl pro Forenzní tým box */
+        .at-box { border: 1px solid var(--warning) !important; background: rgba(255, 157, 0, 0.05) !important; }
 
-        /* MODAL */
         #view-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; justify-content: center; align-items: center; }
         .modal-content { background: var(--card); border: 1px solid var(--border); padding: 30px; border-radius: 8px; width: 700px; max-height: 90vh; overflow-y: auto; }
-        .pre-text { white-space: pre-wrap; font-family: 'Consolas', monospace; font-size: 13px; color: #fff; background: #0d1117; padding: 20px; border-radius: 4px; border: 1px solid var(--border); line-height: 1.4; }
-
-        .btn-add { background: var(--secondary); color: var(--accent); border: 1px solid var(--accent); padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 10px; font-weight: bold; }
+        .pre-text { white-space: pre-wrap; font-family: 'Consolas', monospace; font-size: 13px; color: #fff; background: #0d1117; padding: 20px; border-radius: 4px; border: 1px solid var(--border); }
+        
+        .btn-table { padding: 5px 10px; border-radius: 4px; border: 1px solid var(--border); background: var(--secondary); color: #c9d1d9; cursor: pointer; font-size: 11px; }
         .law-tag { display: inline-block; background: #1f6feb; color: white; padding: 4px 8px; border-radius: 4px; margin-right: 5px; margin-bottom: 5px; font-size: 11px; }
     </style>
 </head>
@@ -66,7 +61,7 @@
             <h3 style="color:var(--accent); margin:0 0 20px 0">NÁHLED ŽÁDOSTI</h3>
             <div id="modal-text" class="pre-text"></div>
             <div style="display:flex; gap:10px; margin-top:20px;">
-                <button onclick="copyCurrentView()" style="flex:1; padding:12px; background:var(--success); color:white; border:none; border-radius:4px; cursor:pointer; font-weight:bold;">KOPÍROVAT TEXT</button>
+                <button onclick="copyCurrentView()" style="flex:1; padding:12px; background:var(--success); color:white; border:none; border-radius:4px; cursor:pointer; font-weight:bold;">KOPÍROVAT PRO DISCORD</button>
                 <button onclick="document.getElementById('view-modal').style.display='none'" style="flex:1; padding:12px; background:var(--secondary); color:white; border:none; border-radius:4px; cursor:pointer;">ZAVŘÍT</button>
             </div>
         </div>
@@ -74,9 +69,10 @@
 
     <div class="sidebar">
         <div class="sidebar-header">SASP COMMAND</div>
-        <div class="menu-item active">📂 Seznam spisů / OPP</div>
-        <div class="menu-item">📜 Zákoník</div>
-        <div style="margin-top: auto;" class="menu-item">🚪 Odhlásit se</div>
+        <a href="dashboard.html" class="menu-item">🏠 Přehled systému</a>
+        <a href="evidence.html" class="menu-item active">📂 Seznam spisů / OPP</a>
+        <a href="https://genk.cz/hry/gta5/zakony-fivem/the-penal-code-of-the-state-of-san-andreas-002-19-r17/" class="menu-item">📜 Zákoník</a>
+        <a href="login.html" style="margin-top:auto; color:#f85149; text-decoration:none; font-size:12px; padding: 10px;">🚪Odhlásit se</a>
     </div>
 
     <div class="main-content">
@@ -105,7 +101,7 @@
             <h2 id="form-title" style="margin:0; text-transform:uppercase; font-size: 22px; color:white;"></h2>
             
             <div class="section-title">👮 Vyžadující příslušník</div>
-            <div class="grid-pd">
+            <div style="display: grid; grid-template-columns: 2fr 0.8fr 1.2fr 1fr; gap: 15px;">
                 <div><label>Příslušník</label><input type="text" id="off-name" placeholder="Jméno Příjmení"></div>
                 <div><label>BN</label><input type="text" id="off-bn" maxlength="4" placeholder="0000"></div>
                 <div><label>Hodnost</label>
@@ -119,25 +115,28 @@
 
             <div class="section-title">
                 <span>👥 Podezřelé osoby</span>
-                <button class="btn-add" onclick="addPersonRow()">+ PŘIDAT OSOBU</button>
+                <button onclick="addPersonRow()" style="background:var(--secondary); color:var(--accent); border:1px solid var(--accent); padding:4px 8px; border-radius:4px; cursor:pointer; font-size:10px;">+ PŘIDAT OSOBU</button>
             </div>
             <div id="persons-list"></div>
 
             <div class="section-title">📦 Předmět / Zařízení / Adresa</div>
             <input type="text" id="spec-val" placeholder="Např. Mobilní telefon 777-777, Adresa objektu, Evidence bankovních účtů...">
 
-            <div class="section-title">⚖️ Kvalifikace (Paragrafy)</div>
+            <div class="section-title">⚖️ Kvalifikace</div>
             <div id="selected-laws" style="background:#000; padding:10px; border:1px solid var(--border); min-height:45px; border-radius:4px; margin-bottom:10px;"></div>
             <input type="text" id="law-search" placeholder="Hledat v zákoníku..." oninput="renderLaws(this.value)">
-            <div id="law-list-box" style="max-height:150px; overflow-y:auto; background:#05070a; border:1px solid var(--border);"></div>
+            <div id="law-list-box" style="max-height:120px; overflow-y:auto; background:#05070a; border:1px solid var(--border); margin-top:5px;"></div>
 
-            <div class="section-title">📑 Zjištěné skutečnosti</div>
-            <textarea id="oduvodneni" rows="7" placeholder="Zde vypište důvody žádosti a zjištěné poznatky z vyšetřování..."></textarea>
+            <div class="section-title">📑 Zjištěné skutečnosti (IC)</div>
+            <textarea id="oduvodneni" rows="5" placeholder="Zde vypište IC odůvodnění žádosti pro soud/státního zástupce..."></textarea>
+
+            <div class="section-title at-section">🟧 Zpráva pro Forenzní tým / AT</div>
+            <textarea id="at-message" class="at-box" rows="3" placeholder="Zde vypište instrukce pro Forenzní tým (např. co přesně chcete v telefonu najít, co chcete zkontrolovat v AZ atd.)"></textarea>
 
             <div class="section-title">📎 Přílohy</div>
             <textarea id="prilohy" rows="2" placeholder="Odkazy na záznamy, Imgur..."></textarea>
 
-            <button class="btn-gen" onclick="saveOPP()" style="background:var(--success); color:white; border:none; padding:15px; width:100%; font-weight:bold; cursor:pointer; margin-top:25px; border-radius:6px; font-size:14px; letter-spacing:1px;">🚀 ULOŽIT ŽÁDOST DO EVIDENCE</button>
+            <button onclick="saveOPP()" style="background:var(--success); color:white; border:none; padding:15px; width:100%; font-weight:bold; cursor:pointer; margin-top:25px; border-radius:6px;">🚀 ULOŽIT ŽÁDOST</button>
         </div>
     </div>
 
@@ -159,7 +158,7 @@
                 <input type="text" class="p-name" placeholder="Jméno Příjmení">
                 <input type="text" class="p-dob" placeholder="DD.MM.RRRR">
                 <input type="text" class="p-id" placeholder="MDT ID">
-                <button onclick="this.parentElement.remove()" style="background:none; border:none; color:red; cursor:pointer; font-weight:bold;">×</button>
+                <button onclick="this.parentElement.remove()" style="background:none; border:none; color:red; cursor:pointer;">×</button>
             `;
             container.appendChild(div);
         }
@@ -195,11 +194,12 @@
             document.getElementById('form-container').style.display = 'block';
             document.getElementById('form-title').innerText = `${icon} ${title}`;
             
-            // RESET FORMULÁŘE
+            // ČIŠTĚNÍ FORMULÁŘE
             document.getElementById('persons-list').innerHTML = '';
-            addPersonRow(); // Začít s jednou prázdnou osobou
+            addPersonRow();
             document.getElementById('spec-val').value = '';
             document.getElementById('oduvodneni').value = ''; 
+            document.getElementById('at-message').value = ''; 
             document.getElementById('selected-laws').innerHTML = '';
             document.getElementById('prilohy').value = '';
         }
@@ -210,11 +210,9 @@
         }
 
         function saveOPP() {
-            const persons = [];
-            document.querySelectorAll('.person-row').forEach(row => {
-                const name = row.querySelector('.p-name').value;
-                if(name) persons.push(name);
-            });
+            const personsDetails = [...document.querySelectorAll('.person-row')].map(r => 
+                `${r.querySelector('.p-name').value} (${r.querySelector('.p-dob').value}) [MDT:${r.querySelector('.p-id').value}]`
+            ).filter(t => t.length > 15).join('\n');
 
             const opp = {
                 id: Date.now(),
@@ -224,13 +222,11 @@
                 bn: document.getElementById('off-bn').value,
                 rank: document.getElementById('off-rank').value,
                 caseId: document.getElementById('case-id').value,
-                persons: persons.join(', '),
-                all_person_details: [...document.querySelectorAll('.person-row')].map(r => 
-                    `${r.querySelector('.p-name').value} (${r.querySelector('.p-dob').value}) [MDT:${r.querySelector('.p-id').value}]`
-                ).join('\n'),
+                personList: personsDetails,
                 spec: document.getElementById('spec-val').value,
                 laws: [...document.querySelectorAll('#selected-laws .txt')].map(el => el.innerText).join(', '),
                 text: document.getElementById('oduvodneni').value,
+                atText: document.getElementById('at-message').value,
                 att: document.getElementById('prilohy').value
             };
             savedOPPs.push(opp);
@@ -242,53 +238,52 @@
         function renderTable() {
             const tbody = document.getElementById('opp-table-body');
             tbody.innerHTML = '';
-            savedOPPs.reverse().forEach(o => {
+            [...savedOPPs].reverse().forEach(o => {
                 const tr = document.createElement('tr');
-                tr.innerHTML = `<td>${o.date}</td><td>${o.type}</td><td>${o.caseId}</td><td>${o.persons}</td>
+                tr.innerHTML = `<td>${o.date}</td><td>${o.type}</td><td>${o.caseId}</td><td style="font-size:11px">${o.personList.split('\n')[0]}...</td>
                 <td>
                     <button class="btn-table" onclick="viewOPP(${o.id})">Zobrazit</button>
-                    <button class="btn-table" style="color:red" onclick="deleteOPP(${o.id})">Smazat</button>
+                    <button class="btn-table" style="color:var(--danger)" onclick="deleteOPP(${o.id})">Smazat</button>
                 </td>`;
                 tbody.appendChild(tr);
             });
         }
 
-        function formatText(o) {
+        function formatDiscord(o) {
             const isDP = o.type.includes("Prohlídka");
-            const isPhone = o.type.includes("Telefon") || o.type.includes("Telekomunikace");
+            const isFT = o.type.includes("Telefon") || o.type.includes("Telekomunikace");
             
             let header = isDP ? "**PODNĚT K VYDÁNÍ SOUHLASU STÁTNÍHO ZÁSTUPCE K PROVEDENÍ PROHLÍDKY DLE § 38 Z.Č. 006-19**" : "**ŽÁDOST O UŽITÍ OPP DLE § 37 Z.Č. 006-19**";
-            
-            // PING pouze u Telefonu/Telekomunikace pro DC
-            let ping = isPhone ? "@State-Prosecutor" : "";
+            let ping = isFT ? "||<@654411469953302538>||" : "";
 
-            return `${ping}\n${header}\n\n` +
+            let output = `${ping}\n${header}\n\n` +
                 `**Vyžadující příslušník:** ${o.officer} [${o.bn}]\n` +
                 `**Prostředek:** ${o.type}\n` +
-                `**Podezřelá osoba / osoby:**\n${o.all_person_details}\n` +
+                `**Podezřelá osoba / osoby:**\n${o.personList}\n` +
                 `**Trestný čin:** ${o.laws}\n` +
-                `**Zařízení:** ${o.type.includes("Telefon") ? o.spec : "N/A"}\n` +
-                `**Předmět vydání:** ${o.spec}\n` +
-                `**Zjištěné skutečnosti:** ${o.text || "Doplněno v rámci vyšetřování."}\n\n` +
-                `S pozdravem,\n\n` +
-                `${o.officer}\n` +
-                `*San Andreas State Police*\n` +
-                `${o.rank}\n\n` +
+                `**Předmět / Zařízení / Adresa:** ${o.spec}\n` +
+                `**Zjištěné skutečnosti:** ${o.text || "Doplněno v rámci vyšetřování."}\n\n`;
+
+            if(o.atText) {
+                output += `--- 🟧 **ZPRÁVA PRO FORENZNÍ TÝM / AT** 🟧 ---\n${o.atText}\n------------------------------------------\n\n`;
+            }
+
+            output += `S pozdravem,\n${o.officer}\n*San Andreas State Police* [${o.rank}]\n\n` +
                 `**PŘILOHY:**\n${o.att || "Nebyly doloženy"}`;
+            
+            return output;
         }
 
-        let currentViewId = null;
         function viewOPP(id) {
-            currentViewId = id;
             const o = savedOPPs.find(x => x.id === id);
-            document.getElementById('modal-text').innerText = formatText(o);
+            document.getElementById('modal-text').innerText = formatDiscord(o);
             document.getElementById('view-modal').style.display = 'flex';
         }
 
         function copyCurrentView() {
             const text = document.getElementById('modal-text').innerText;
             navigator.clipboard.writeText(text);
-            alert("Žádost zkopírována!");
+            alert("Zkopírováno pro Discord!");
         }
 
         function deleteOPP(id) {
