@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SASP COMMAND - OPP Evidence</title>
-    <link rel="stylesheet" href="style.css">
     <style>
         :root {
             --bg: #0d1117;
@@ -19,42 +18,56 @@
 
         body { margin: 0; background-color: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; display: flex; height: 100vh; overflow: hidden; }
 
+        /* PŮVODNÍ SIDEBAR */
         .sidebar { width: 250px; background-color: var(--bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px 10px; }
         .sidebar-header { color: var(--warning); font-weight: bold; font-size: 14px; text-transform: uppercase; margin-bottom: 30px; padding-left: 10px; }
-        .menu-item { padding: 12px 15px; margin-bottom: 5px; border-radius: 6px; cursor: pointer; color: #8b949e; text-decoration: none; display: flex; align-items: center; font-size: 14px; }
+        .menu-item { padding: 12px 15px; margin-bottom: 5px; border-radius: 6px; cursor: pointer; color: #8b949e; text-decoration: none; display: flex; align-items: center; font-size: 14px; transition: 0.2s; }
         .menu-item:hover { background-color: var(--card); color: white; }
         .menu-item.active { background-color: #1f6feb; color: white; }
 
         .main-content { flex: 1; padding: 30px; overflow-y: auto; }
 
-        .opp-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-bottom: 30px; }
-        .opp-card { background: var(--card); border: 1px solid var(--border); padding: 20px; text-align: center; border-radius: 8px; cursor: pointer; transition: 0.2s; }
-        .opp-card:hover { border-color: var(--accent); }
-        .opp-card div { font-size: 30px; margin-bottom: 10px; }
+        /* PŮVODNÍ KARTY S IKONAMI */
+        .opp-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .opp-card { background: var(--card); border: 1px solid var(--border); padding: 25px; text-align: center; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+        .opp-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+        .opp-card div { font-size: 30px; margin-bottom: 12px; }
         .opp-card span { font-size: 11px; font-weight: bold; text-transform: uppercase; color: var(--accent); }
 
+        /* FORMULÁŘ */
         #form-container { display: none; background: var(--card); border: 1px solid var(--border); padding: 30px; border-radius: 8px; margin-bottom: 30px; }
-        .section-title { color: var(--warning); margin: 25px 0 15px; font-weight: bold; font-size: 12px; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
+        .back-btn { background: #21262d; border: 1px solid var(--border); color: #8b949e; padding: 8px 16px; cursor: pointer; margin-bottom: 25px; border-radius: 6px; font-size: 12px; text-transform: uppercase; }
+        
+        .section-title { color: var(--accent); margin: 25px 0 15px; font-weight: bold; font-size: 12px; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
+        .section-title::before { content: "┃"; color: var(--accent); font-weight: 900; }
 
-        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
-        .grid-osoba { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 15px; margin-bottom: 15px; }
-
+        .grid-3 { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 15px; }
         .field { margin-bottom: 15px; }
-        label { display: block; font-size: 10px; color: #8b949e; margin-bottom: 5px; text-transform: uppercase; }
-        input, select, textarea { width: 100%; padding: 10px; background: var(--input-bg); border: 1px solid var(--border); color: white; border-radius: 4px; box-sizing: border-box; font-size: 12px; }
+        label { display: block; font-size: 10px; color: #8b949e; margin-bottom: 8px; text-transform: uppercase; font-weight: bold; }
+        input, select, textarea { width: 100%; padding: 12px; background: var(--input-bg); border: 1px solid var(--border); color: white; border-radius: 4px; box-sizing: border-box; font-size: 13px; }
 
-        .btn-add { background: none; border: 1px dashed var(--success); color: var(--success); width: 100%; padding: 12px; cursor: pointer; font-weight: bold; border-radius: 4px; text-transform: uppercase; font-size: 11px; margin-bottom: 20px; }
+        .btn-add { background: none; border: 1px dashed var(--success); color: var(--success); width: 100%; padding: 12px; cursor: pointer; font-weight: bold; border-radius: 4px; text-transform: uppercase; font-size: 11px; margin: 15px 0; }
 
-        .tags-container { background: #000; border: 1px solid var(--border); border-radius: 4px; padding: 10px; min-height: 60px; margin-bottom: 15px; display: flex; flex-wrap: wrap; gap: 8px; }
-        .tag { background: #1f6feb; color: white; padding: 5px 10px; border-radius: 4px; font-size: 11px; display: flex; align-items: center; gap: 8px; }
-        .tag-remove { cursor: pointer; font-weight: bold; }
+        /* KVALIFIKACE */
+        .tags-container { background: #000; border: 1px solid var(--border); border-radius: 4px; padding: 15px; min-height: 80px; margin-bottom: 15px; display: flex; flex-wrap: wrap; gap: 10px; }
+        .tag { background: #1f6feb; color: white; padding: 6px 12px; border-radius: 4px; font-size: 12px; display: flex; align-items: center; gap: 10px; border: 1px solid #388bfd; }
+        .tag-remove { cursor: pointer; opacity: 0.7; font-weight: bold; }
 
-        .law-list { max-height: 200px; overflow-y: auto; background: var(--input-bg); border: 1px solid var(--border); border-radius: 4px; }
-        .law-item { padding: 10px; cursor: pointer; border-bottom: 1px solid #161b22; font-size: 12px; }
-        .law-item:hover { background: #1c2128; }
-        .law-item strong { color: var(--accent); }
+        .law-list { max-height: 250px; overflow-y: auto; background: var(--input-bg); border: 1px solid var(--border); border-radius: 4px; }
+        .law-item { padding: 12px; cursor: pointer; border-bottom: 1px solid #161b22; font-size: 13px; transition: 0.2s; }
+        .law-item:hover { background: #1c2128; color: var(--accent); }
+        .law-item small { color: #8b949e; display: block; margin-top: 4px; }
 
-        .btn-gen { background: var(--success); color: white; border: none; padding: 15px; width: 100%; font-weight: bold; border-radius: 4px; cursor: pointer; text-transform: uppercase; margin-top: 20px; }
+        /* BUTTONY JAKO NA SCREENU */
+        .btn-gen { background: var(--success); color: white; border: none; padding: 16px; width: 100%; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; margin-top: 25px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-save { background: #1c2128; border: 1px solid var(--border); color: #c9d1d9; padding: 12px; width: 100%; border-radius: 6px; cursor: pointer; margin-top: 10px; font-size: 11px; text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 8px; }
+
+        /* HISTORIE */
+        .history-section { margin-top: 40px; }
+        .history-title { color: var(--warning); font-size: 12px; text-transform: uppercase; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .spis-table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
+        th { text-align: left; font-size: 11px; color: #8b949e; padding: 15px; border-bottom: 1px solid var(--border); text-transform: uppercase; }
+        td { padding: 15px; font-size: 12px; border-bottom: 1px solid #21262d; color: #8b949e; }
     </style>
 </head>
 <body>
@@ -63,8 +76,8 @@
         <div class="sidebar-header">SASP COMMAND</div>
         <a href="dashboard.html" class="menu-item">🏠 Přehled systému</a>
         <a href="evidence.html" class="menu-item active">📂 Seznam spisů / OPP</a>
-        <a href="https://genk.cz/hry/gta5/zakony-fivem/the-penal-code-of-the-state-of-san-andreas-002-19-r17/" target="_blank" class="nav-item">📑 Zákoník</a>
-        <a href="login.html" style="margin-top:auto; color:#f85149; text-decoration:none; font-size:12px; padding: 10px;">🔓Odhlásit se</a>
+        <a href="https://genk.cz/hry/gta5/zakony-fivem/the-penal-code-of-the-state-of-san-andreas-002-19-r17/" class="menu-item">📜 Zákoník</a>
+        <a href="login.html" style="margin-top:auto; color:#f85149; text-decoration:none; font-size:12px; padding: 10px;">Odhlásit se</a>
     </div>
 
     <div class="main-content">
@@ -79,23 +92,24 @@
         </div>
 
         <div id="form-container">
-            <button onclick="closeForm()" style="background:none; border:1px solid var(--border); color:#8b949e; padding:6px 12px; cursor:pointer; margin-bottom:20px; border-radius:4px;">← ZPĚT DO MENU</button>
-            <h2 id="form-title" style="margin:0; color:white; text-transform: uppercase; font-size: 20px;"></h2>
+            <button class="back-btn" onclick="closeForm()">← Zpět do menu</button>
+            <h2 id="form-title" style="margin:0; color:white; text-transform: uppercase; font-size: 24px;"></h2>
             
-            <div class="section-title">👮 Vyžadující příslušník</div>
-            <div class="grid-3">
+            <div class="section-title">Vyžadující příslušník</div>
+            <div class="grid-3" style="grid-template-columns: 1fr 1fr 1fr;">
                 <div class="field"><label>👤 Příslušník</label><input type="text" id="detektiv" placeholder="Jméno Příjmení"></div>
                 <div class="field"><label>🎖️ Hodnost</label>
                     <select id="hodnost">
                         <option>Detective I</option><option>Detective II</option><option>Detective III</option>
+                        <option>Sergeant</option><option>Lieutenant</option>
                     </select>
                 </div>
                 <div class="field"><label>📂 Case ID</label><input type="text" id="caseid" placeholder="#2026-XXXX"></div>
             </div>
 
-            <div class="section-title">👥 Prověřované osoby</div>
+            <div class="section-title">Prověřované osoby</div>
             <div id="subjekty-list">
-                <div class="grid-osoba">
+                <div class="grid-3">
                     <div class="field"><label>👤 Osoba</label><input type="text" placeholder="Jméno a příjmení"></div>
                     <div class="field"><label>🗓️ Narození</label><input type="text" placeholder="DD.MM.RRRR"></div>
                     <div class="field"><label>🆔 MDT ID</label><input type="text" placeholder="XXXXXX"></div>
@@ -103,12 +117,26 @@
             </div>
             <button class="btn-add" onclick="addSubjekt()">+ Přidat osobu</button>
 
-            <div class="section-title">⚖️ Kvalifikace (Tresty)</div>
+            <div class="section-title">Kvalifikace (Tresty)</div>
             <div class="tags-container" id="selected-laws"></div>
-            <input type="text" id="law-search" placeholder="Hledat v zákoníku...">
+            <input type="text" id="law-search" placeholder="Hledat v zákoníku..." style="margin-bottom:10px;">
             <div class="law-list" id="law-list-box"></div>
 
-            <button class="btn-gen">🚀 Generovat formáty</button>
+            <div class="section-title">Skutečnosti / Odůvodnění</div>
+            <div class="field"><textarea id="skutecnosti" rows="6" placeholder="Vypište důvody žádosti..."></textarea></div>
+            
+            <button class="btn-gen" onclick="alert('Generuji...')">🚀 Generovat formáty</button>
+            <button class="btn-save">💾 Uložit do mojí databáze</button>
+        </div>
+
+        <div class="history-section">
+            <div class="history-title">■ Moje uložené spisy (Soukromé)</div>
+            <table class="spis-table">
+                <thead><tr><th>Datum</th><th>Case ID</th><th>Typ OPP</th><th>Akce</th></tr></thead>
+                <tbody id="spis-body">
+                    <tr><td colspan="4" style="text-align:center; padding:30px;">Žádné uložené záznamy</td></tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
@@ -130,7 +158,7 @@
         function addSubjekt() {
             const list = document.getElementById('subjekty-list');
             const div = document.createElement('div');
-            div.className = 'grid-osoba';
+            div.className = 'grid-3';
             div.innerHTML = `
                 <div class="field"><label>👤 Osoba</label><input type="text" placeholder="Jméno a příjmení"></div>
                 <div class="field"><label>🗓️ Narození</label><input type="text" placeholder="DD.MM.RRRR"></div>
@@ -143,28 +171,24 @@
             try {
                 const res = await fetch('laws.json');
                 const data = await res.json();
-                
-                // OPRAVA: Pokud je JSON pole, vezmi ho, pokud ne, hledej pole v něm
-                allLaws = Array.isArray(data) ? data : (data.laws || Object.values(data)[0] || []);
-                
+                allLaws = Array.isArray(data) ? data : (data.laws || []);
                 renderLawList(allLaws);
             } catch (err) {
-                listBox.innerHTML = `<div style="color:red; padding:10px;">Chyba při načítání laws.json</div>`;
+                listBox.innerHTML = `<div style="color:#f85149; padding:15px; font-size:12px;">Chyba načítání laws.json</div>`;
             }
         }
 
         function renderLawList(laws) {
             const listBox = document.getElementById('law-list-box');
             listBox.innerHTML = '';
-            
             laws.forEach(par => {
                 if (par.subs) {
                     par.subs.forEach(sub => {
                         const item = document.createElement('div');
                         item.className = 'law-item';
-                        const text = `${par.title} - ${sub.label} ${sub.text}`;
-                        item.onclick = () => addTag(text);
-                        item.innerHTML = `<strong>${par.title}</strong><br><small>${sub.label} ${sub.text}</small>`;
+                        const fullText = `${par.title} - ${sub.label} ${sub.text}`;
+                        item.onclick = () => addTag(fullText);
+                        item.innerHTML = `<strong>${par.title}</strong><small>${sub.label} ${sub.text}</small>`;
                         listBox.appendChild(item);
                     });
                 } else {
