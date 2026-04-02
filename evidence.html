@@ -18,7 +18,7 @@
 
         body { margin: 0; background-color: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; display: flex; height: 100vh; overflow: hidden; }
 
-        /* SIDEBAR */
+        /* SIDEBAR PODLE TVÉHO NÁVRHU */
         .sidebar { width: 250px; border-right: 1px solid var(--border); padding: 20px 10px; display: flex; flex-direction: column; flex-shrink: 0; }
         .sidebar-header { color: var(--warning); font-weight: bold; font-size: 14px; text-transform: uppercase; margin-bottom: 30px; padding-left: 10px; }
         .menu-item { padding: 12px 15px; border-radius: 6px; cursor: pointer; color: #8b949e; font-size: 14px; margin-bottom: 5px; display: flex; align-items: center; gap: 10px; text-decoration: none; }
@@ -27,18 +27,12 @@
 
         .main-content { flex: 1; padding: 30px; overflow-y: auto; }
 
-        /* KARTY */
+        /* KARTY OPP */
         .opp-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 30px; }
         .opp-card { background: var(--card); border: 1px solid var(--border); padding: 15px; text-align: center; border-radius: 8px; cursor: pointer; transition: 0.2s; }
         .opp-card:hover { border-color: var(--accent); transform: translateY(-2px); }
         .opp-card div { font-size: 24px; margin-bottom: 8px; }
         .opp-card span { font-size: 10px; font-weight: bold; text-transform: uppercase; color: var(--accent); }
-
-        /* TABULKA */
-        .table-container { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-top: 20px; }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        th { background: #1c2128; padding: 12px; text-align: left; color: #8b949e; text-transform: uppercase; font-size: 10px; border-bottom: 1px solid var(--border); }
-        td { padding: 12px; border-bottom: 1px solid var(--border); color: #fff; }
 
         /* FORMULÁŘ */
         #form-container { display: none; background: var(--card); border: 1px solid var(--border); padding: 30px; border-radius: 8px; max-width: 1000px; margin: 0 auto; }
@@ -48,15 +42,20 @@
         .person-row { display: grid; grid-template-columns: 2fr 1fr 1fr 40px; gap: 10px; margin-bottom: 8px; background: #0d1117; padding: 10px; border-radius: 4px; border: 1px solid var(--border); }
         input, select, textarea { width: 100%; padding: 10px; background: #05070a; border: 1px solid var(--border); color: white; border-radius: 4px; box-sizing: border-box; font-size: 13px; }
         
-        /* Forenzní tým styl */
-        .at-textarea { border: 1px solid var(--warning) !important; background: rgba(255, 157, 0, 0.03) !important; font-family: 'Consolas', monospace; }
+        .at-textarea { border: 1px solid var(--warning) !important; background: rgba(255, 157, 0, 0.03) !important; font-family: 'Consolas', monospace; line-height: 1.4; color: #ffca28; }
+
+        /* TABULKA */
+        .table-container { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-top: 20px; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th { background: #1c2128; padding: 12px; text-align: left; color: #8b949e; text-transform: uppercase; font-size: 10px; border-bottom: 1px solid var(--border); }
+        td { padding: 12px; border-bottom: 1px solid var(--border); }
 
         /* MODAL */
         #view-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; justify-content: center; align-items: center; }
         .modal-content { background: var(--card); border: 1px solid var(--border); padding: 30px; border-radius: 8px; width: 750px; max-height: 90vh; overflow-y: auto; }
         .pre-text { white-space: pre-wrap; font-family: 'Consolas', monospace; font-size: 13px; color: #fff; background: #0d1117; padding: 25px; border-radius: 4px; border: 1px solid var(--border); line-height: 1.5; }
         
-        .btn-table { padding: 5px 10px; border-radius: 4px; border: 1px solid var(--border); background: var(--secondary); color: #c9d1d9; cursor: pointer; font-size: 11px; margin-right: 5px; }
+        .btn-table { padding: 5px 10px; border-radius: 4px; border: 1px solid var(--border); background: var(--secondary); color: #c9d1d9; cursor: pointer; font-size: 11px; }
         .law-tag { display: inline-block; background: #1f6feb; color: white; padding: 4px 8px; border-radius: 4px; margin-right: 5px; margin-bottom: 5px; font-size: 11px; }
     </style>
 </head>
@@ -75,19 +74,19 @@
 
     <div class="sidebar">
         <div class="sidebar-header">SASP COMMAND</div>
-        <a href="#" class="menu-item">🏠 Přehled systému</a>
-        <a href="#" class="menu-item active">📂 Seznam spisů / OPP</a>
-        <a href="https://genk.cz/hry/gta5/zakony-fivem/the-penal-code-of-the-state-of-san-andreas-002-19-r17/" target="_blank" class="menu-item">📜 Zákoník</a>
-        <a href="#" style="margin-top:auto; color:#f85149; text-decoration:none; font-size:12px; padding: 10px;"> 🚪 Odhlásit se</a>
+        <a href="dashboard.html" class="menu-item">🏠 Přehled systému</a>
+        <a href="evidence.html" class="menu-item active">📂 Seznam spisů / OPP</a>
+        <a href="https://genk.cz/hry/gta5/zakony-fivem/the-penal-code-of-the-state-of-san-andreas-002-19-r17/" class="menu-item" target="_blank">📜 Zákoník</a>
+        <a href="login.html" style="margin-top:auto; color:#f85149; text-decoration:none; font-size:12px; padding: 10px;">🚪 Odhlásit se</a>
     </div>
 
     <div class="main-content">
         <div id="dashboard">
             <div class="opp-menu">
+                <div class="opp-card" onclick="openForm('📞', 'Výpis Telekomunikace')"><div>📞</div><span>Telekomunikace</span></div>
+                <div class="opp-card" onclick="openForm('🔓', 'Prolomení Telefonu')"><div>🔓</div><span>Telefon</span></div>
+                <div class="opp-card" onclick="openForm('💰', 'Majetek')"><div>💰</div><span>Majetek</span></div>
                 <div class="opp-card" onclick="openForm('📡', 'Sledování osoby')"><div>📡</div><span>Sledování</span></div>
-                <div class="opp-card" onclick="openForm('📞', 'Výpis telekomunikace')"><div>📞</div><span>Telekomunikace</span></div>
-                <div class="opp-card" onclick="openForm('🔓', 'Prolomení telefonu')"><div>🔓</div><span>Telefon</span></div>
-                <div class="opp-card" onclick="openForm('💰', 'Prověrka majetku')"><div>💰</div><span>Majetek</span></div>
                 <div class="opp-card" onclick="openForm('🕵️', 'Zastírající agent')"><div>🕵️</div><span>Agent</span></div>
                 <div class="opp-card" onclick="openForm('🏠', 'Výpis nemovitosti')"><div>🏠</div><span>Nemovitost</span></div>
                 <div class="opp-card" onclick="openForm('🏚️', 'Domovní prohlídka')"><div>🏚️</div><span>Prohlídka</span></div>
@@ -96,7 +95,7 @@
             <div class="section-title">📊 Moje OPP</div>
             <div class="table-container">
                 <table>
-                    <thead><tr><th>Datum</th><th>Typ</th><th>Case ID</th><th>Podezřelí</th><th>Akce</th></tr></thead>
+                    <thead><tr><th>Datum</th><th>Typ</th><th>Case ID</th><th>Osoba</th><th>Akce</th></tr></thead>
                     <tbody id="opp-table-body"></tbody>
                 </table>
             </div>
@@ -137,7 +136,7 @@
             <textarea id="oduvodneni" rows="4" placeholder="Zde vypište IC odůvodnění žádosti..."></textarea>
 
             <div class="section-title at-header">🟧 Zpráva pro Forenzní tým / AZ (OOC)</div>
-            <textarea id="at-message" class="at-textarea" rows="12"></textarea>
+            <textarea id="at-message" class="at-textarea" rows="14"></textarea>
 
             <div class="section-title">📎 Přílohy</div>
             <textarea id="prilohy" rows="2" placeholder="Odkazy na záznamy, Imgur..."></textarea>
@@ -151,6 +150,7 @@
         let savedOPPs = JSON.parse(localStorage.getItem('myOPPs')) || [];
         let currentType = "";
 
+        // Načtení zákonů
         fetch('laws.json').then(res => res.json()).then(data => {
             allLawsData = data.categories;
             renderLaws();
@@ -173,48 +173,17 @@
         function updateAT() {
             const atBox = document.getElementById('at-message');
             const name = document.getElementById('off-name').value || "[Jméno Příjmení]";
-            const rank = document.getElementById('off-rank').value;
-            
-            const persons = Array.from(document.querySelectorAll('.p-name'))
-                                .map(i => i.value)
-                                .filter(v => v !== "")
-                                .join(', ') || "[Podezřelá Osoba]";
+            const persons = Array.from(document.querySelectorAll('.p-name')).map(i => i.value).filter(v => v !== "").join(', ') || "[Podezřelá Osoba]";
 
-            if (currentType.includes("Telekomunikace")) {
-                atBox.value = `Dobrý den,\n\nna základě souhlasu státního zástupce žádám o poskytnutí výpisu telekomunikačního provozu v rámci probíhajícího vyšetřování.\n\nŽádost se týká těchto osob:\n${persons}\n\nŽádám o:\n- výpis telekomunikačního provozu,\n- historii hovorů a SMS,\n- identifikaci kontaktovaných čísel,\n- případné lokalizační údaje zařízení, pokud jsou k dispozici.\n\nSouhlas státního zástupce je přiložen v příloze.\n\nDěkuji za spolupráci.\n\n${name}\n*San Andreas State Police* [${rank}]`;
-            } else if (currentType.includes("Telefon")) {
-                atBox.value = `Dobrý den,\n\nna základě souhlasu státního zástupce žádám forenzní tým o prolomení mobilních telefonů a analýzu zajištěných dat v rámci probíhajícího vyšetřování.\n\nŽádost se týká těchto osob:\n${persons}\n\nŽádám o:\n- prolomení zajištěných mobilních telefonů,\n- analýzu uložených dat,\n- zajištění komunikace, kontaktů, zpráv a dalších relevantních dat,\n- vyhodnocení případných souvislostí s vyšetřovaným případem.\n\nSouhlas státního zástupce je přiložen v příloze.\n\nDěkuji za spolupráci.\n\n${name}\n*San Andreas State Police* [${rank}]`;
-            } else if (currentType.includes("Majetek")) {
-                atBox.value = `Dobrý den,\n\nna základě souhlasu státního zástupce žádám v rámci probíhajícího vyšetřování o výpis a prověrku majetku následujících osob:\n\nŽádost se týká těchto osob:\n${persons}\n\nŽádám o prověření a poskytnutí informací zejména o:\n- bankovních účtech a finančních prostředcích,\n- movitém majetku vyšší hodnoty,\n- případných závazcích nebo dluzích,\n- dalších evidovaných majetkových položkách.\n\nSouhlas státního zástupce k použití operativně pátracích prostředků je přiložen v příloze.\n\nDěkuji za spolupráci.\n\n${name}\n*San Andreas State Police* [${rank}]`;
+            if (currentType === "Výpis Telekomunikace") {
+                atBox.value = `Dobrý den,\n\nna základě souhlasu státního zástupce žádám o poskytnutí výpisu telekomunikačního provozu v rámci probíhajícího vyšetřování.\n\nŽádost se týká těchto osob:\n${persons}\n\nŽádám o:\n- výpis telekomunikačního provozu,\n- historii hovorů a SMS,\n- identifikaci kontaktovaných čísel,\n- případné lokalizační údaje zařízení, pokud jsou k dispozici.\n\nSouhlas státního zástupce je přiložen v příloze.\n\nDěkuji za spolupráci.\n\n${name}\n*San Andreas State Police*`;
+            } else if (currentType === "Prolomení Telefonu") {
+                atBox.value = `Dobrý den,\n\nna základě souhlasu státního zástupce žádám forenzní tým o prolomení mobilních telefonů a analýzu zajištěných dat v rámci probíhajícího vyšetřování.\n\nŽádost se týká těchto osob:\n${persons}\n\nŽádám o:\n- prolomení zajištěných mobilních telefonů,\n- analýzu uložených dat,\n- zajištění komunikace, kontaktů, zpráv a dalších relevantních dat,\n- vyhodnocení případných souvislostí s vyšetřovaným případem.\n\nSouhlas státního zástupce je přiložen v příloze.\n\nDěkuji za spolupráci.\n\n${name}\n*San Andreas State Police*`;
+            } else if (currentType === "Majetek") {
+                atBox.value = `Dobrý den,\n\nna základě souhlasu státního zástupce žádám v rámci probíhajícího vyšetřování o výpis a prověrku majetku následujících osob:\n\nŽádost se týká těchto osob:\n${persons}\n\nŽádám o prověření a poskytnutí informací zejména o:\n- bankovních účtech a finančních prostředcích,\n- movitém majetku vyšší hodnoty,\n- případných závazcích nebo dluzích,\n- dalších evidovaných majetkových položkách.\n\nSouhlas státního zástupce k použití operativně pátracích prostředků je přiložen v příloze.\n\nDěkuji za spolupráci.\n\n${name}\n*San Andreas State Police*`;
             } else {
                 atBox.value = "";
             }
-        }
-
-        function renderLaws(filter = '') {
-            const box = document.getElementById('law-list-box');
-            box.innerHTML = '';
-            allLawsData.forEach(cat => {
-                cat.laws.forEach(law => {
-                    law.subs.forEach(sub => {
-                        if (`${law.title} ${sub.text}`.toLowerCase().includes(filter.toLowerCase())) {
-                            const item = document.createElement('div');
-                            item.style.padding = '8px'; item.style.cursor = 'pointer'; item.style.borderBottom = '1px solid #161b22';
-                            item.innerHTML = `<strong>${law.title}</strong> <small>${sub.text}</small>`;
-                            item.onclick = () => addLaw(`${law.title} ${sub.label}`);
-                            box.appendChild(item);
-                        }
-                    });
-                });
-            });
-        }
-
-        function addLaw(text) {
-            const container = document.getElementById('selected-laws');
-            const span = document.createElement('span');
-            span.className = 'law-tag';
-            span.innerHTML = `<span class="txt">${text}</span> <b onclick="this.parentElement.remove()" style="cursor:pointer;margin-left:5px">×</b>`;
-            container.appendChild(span);
         }
 
         function openForm(icon, title) {
@@ -269,13 +238,39 @@
             tbody.innerHTML = '';
             [...savedOPPs].reverse().forEach(o => {
                 const tr = document.createElement('tr');
-                tr.innerHTML = `<td>${o.date}</td><td>${o.fullTitle}</td><td>${o.caseId}</td><td style="font-size:11px">${o.personList.split('\n')[0]}...</td>
+                tr.innerHTML = `<td>${o.date}</td><td>${o.fullTitle}</td><td>${o.caseId}</td><td>${o.personList.split('\n')[0]}...</td>
                 <td>
                     <button class="btn-table" onclick="viewOPP(${o.id})">Zobrazit</button>
                     <button class="btn-table" style="color:var(--danger)" onclick="deleteOPP(${o.id})">Smazat</button>
                 </td>`;
                 tbody.appendChild(tr);
             });
+        }
+
+        function renderLaws(filter = '') {
+            const box = document.getElementById('law-list-box');
+            box.innerHTML = '';
+            allLawsData.forEach(cat => {
+                cat.laws.forEach(law => {
+                    law.subs.forEach(sub => {
+                        if (`${law.title} ${sub.text}`.toLowerCase().includes(filter.toLowerCase())) {
+                            const item = document.createElement('div');
+                            item.style.padding = '8px'; item.style.cursor = 'pointer'; item.style.borderBottom = '1px solid #161b22';
+                            item.innerHTML = `<strong>${law.title}</strong> <small>${sub.text}</small>`;
+                            item.onclick = () => addLaw(`${law.title} ${sub.label}`);
+                            box.appendChild(item);
+                        }
+                    });
+                });
+            });
+        }
+
+        function addLaw(text) {
+            const container = document.getElementById('selected-laws');
+            const span = document.createElement('span');
+            span.className = 'law-tag';
+            span.innerHTML = `<span class="txt">${text}</span> <b onclick="this.parentElement.remove()" style="cursor:pointer;margin-left:5px">×</b>`;
+            container.appendChild(span);
         }
 
         function formatDiscord(o) {
@@ -287,7 +282,7 @@
 
             let output = `${ping}\n${header}\n\n` +
                 `**Vyžadující příslušník:** ${o.officer} [${o.bn}]\n` +
-                `**Prostředek:** ${o.type}\n` +
+                `**Prostředek:** ${o.fullTitle}\n` +
                 `**Podezřelá osoba / osoby:**\n${o.personList}\n` +
                 `**Trestný čin:** ${o.laws}\n` +
                 `**Předmět / Zařízení / Adresa:** ${o.spec}\n` +
