@@ -19,48 +19,46 @@
 
         body { margin: 0; background-color: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; display: flex; height: 100vh; overflow: hidden; }
 
+        /* SIDEBAR PODLE TVÉHO SCREENSHOTU */
         .sidebar { width: 250px; background-color: var(--bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px 10px; }
         .sidebar-header { color: var(--warning); font-weight: bold; font-size: 14px; text-transform: uppercase; margin-bottom: 30px; padding-left: 10px; }
         .menu-item { padding: 12px 15px; margin-bottom: 5px; border-radius: 6px; cursor: pointer; color: #8b949e; text-decoration: none; display: flex; align-items: center; font-size: 14px; }
+        .menu-item:hover { background-color: var(--card); color: white; }
         .menu-item.active { background-color: #1f6feb; color: white; }
 
         .main-content { flex: 1; padding: 30px; overflow-y: auto; }
 
-        /* GRID MENU */
-        .opp-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; max-width: 1000px; margin: 0 auto 30px; }
-        .opp-card { background: var(--card); border: 1px solid var(--border); padding: 20px; text-align: center; border-radius: 8px; cursor: pointer; transition: 0.2s; }
-        .opp-card:hover { border-color: var(--accent); }
-        .opp-card div { font-size: 30px; margin-bottom: 10px; }
+        /* GRID KARET */
+        .opp-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .opp-card { background: var(--card); border: 1px solid var(--border); padding: 25px; text-align: center; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+        .opp-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+        .opp-card div { font-size: 30px; margin-bottom: 12px; }
         .opp-card span { font-size: 10px; font-weight: bold; text-transform: uppercase; color: var(--accent); }
 
-        /* FORMULÁŘ STYL */
-        #form-container { display: none; background: var(--card); border: 1px solid var(--border); padding: 30px; border-radius: 8px; max-width: 1100px; margin: 0 auto; }
-        .back-btn { background: #21262d; border: 1px solid var(--border); color: #8b949e; padding: 6px 12px; cursor: pointer; border-radius: 4px; margin-bottom: 20px; font-size: 11px; text-transform: uppercase; }
-
-        .form-header { font-size: 22px; font-weight: bold; color: white; display: flex; align-items: center; gap: 12px; margin-bottom: 25px; text-transform: uppercase; }
+        /* FORMULÁŘ */
+        #form-container { display: none; background: var(--card); border: 1px solid var(--border); padding: 30px; border-radius: 8px; margin-bottom: 30px; }
+        .back-btn { background: #21262d; border: 1px solid var(--border); color: #8b949e; padding: 8px 16px; cursor: pointer; margin-bottom: 25px; border-radius: 6px; font-size: 11px; text-transform: uppercase; }
         
         .section-title { color: var(--accent); margin: 25px 0 15px; font-weight: bold; font-size: 11px; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
         .section-title::before { content: "┃"; color: var(--accent); }
 
-        .grid-3 { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 15px; margin-bottom: 10px; }
-        label { display: block; font-size: 10px; color: #8b949e; margin-bottom: 6px; text-transform: uppercase; font-weight: bold; }
-        label i { color: var(--purple); font-style: normal; margin-right: 5px; }
+        .grid-3 { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        label { display: block; font-size: 10px; color: #8b949e; margin-bottom: 8px; text-transform: uppercase; font-weight: bold; }
+        input, select, textarea { width: 100%; padding: 12px; background: var(--input-bg); border: 1px solid var(--border); color: white; border-radius: 4px; box-sizing: border-box; font-size: 13px; }
 
-        input, select, textarea { width: 100%; padding: 10px; background: var(--input-bg); border: 1px solid var(--border); color: white; border-radius: 4px; font-size: 12px; }
+        .btn-add { background: none; border: 1px dashed var(--success); color: var(--success); width: 100%; padding: 12px; cursor: pointer; font-weight: bold; border-radius: 4px; text-transform: uppercase; font-size: 11px; margin: 15px 0; }
 
-        .btn-add { background: none; border: 1px dashed var(--success); color: var(--success); width: 100%; padding: 10px; cursor: pointer; border-radius: 4px; text-transform: uppercase; font-size: 10px; margin-top: 10px; }
-
-        /* KVALIFIKACE BOX */
-        .tags-container { background: #000; border: 1px solid var(--border); border-radius: 4px; padding: 15px; min-height: 80px; margin-bottom: 15px; display: flex; flex-wrap: wrap; gap: 8px; }
-        .tag { background: #1f6feb; color: white; padding: 5px 10px; border-radius: 4px; font-size: 11px; display: flex; align-items: center; gap: 8px; }
+        /* KVALIFIKACE */
+        .tags-container { background: #000; border: 1px solid var(--border); border-radius: 4px; padding: 15px; min-height: 80px; margin-bottom: 15px; display: flex; flex-wrap: wrap; gap: 10px; }
+        .tag { background: #1f6feb; color: white; padding: 6px 12px; border-radius: 4px; font-size: 12px; display: flex; align-items: center; gap: 10px; }
         .tag-remove { cursor: pointer; font-weight: bold; }
 
-        .law-list { max-height: 200px; overflow-y: auto; background: var(--input-bg); border: 1px solid var(--border); border-radius: 4px; }
-        .law-item { padding: 10px; cursor: pointer; border-bottom: 1px solid #161b22; font-size: 12px; }
+        .law-list { max-height: 250px; overflow-y: auto; background: var(--input-bg); border: 1px solid var(--border); border-radius: 4px; }
+        .law-item { padding: 12px; cursor: pointer; border-bottom: 1px solid #161b22; font-size: 13px; }
         .law-item:hover { background: #1c2128; color: var(--accent); }
+        .law-item small { color: #8b949e; display: block; margin-top: 4px; }
 
-        .btn-gen { background: var(--success); color: white; border: none; padding: 14px; width: 100%; font-weight: bold; border-radius: 4px; cursor: pointer; text-transform: uppercase; margin-top: 20px; font-size: 12px; }
-        .btn-save { background: #1c2128; border: 1px solid var(--border); color: #8b949e; padding: 10px; width: 100%; border-radius: 4px; cursor: pointer; margin-top: 10px; font-size: 10px; text-transform: uppercase; }
+        .btn-gen { background: var(--success); color: white; border: none; padding: 16px; width: 100%; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; margin-top: 25px; }
     </style>
 </head>
 <body>
@@ -86,15 +84,13 @@
 
         <div id="form-container">
             <button class="back-btn" onclick="closeForm()">← Zpět do menu</button>
-            <div class="form-header" id="form-header"></div>
+            <h2 id="form-title" style="margin:0; color:white; text-transform: uppercase; font-size: 24px;"></h2>
             
             <div class="section-title">Vyžadující příslušník</div>
             <div class="grid-3" style="grid-template-columns: 1fr 1fr 1fr;">
                 <div class="field"><label>👤 Příslušník</label><input type="text" placeholder="Jméno Příjmení"></div>
                 <div class="field"><label>🎖️ Hodnost</label>
-                    <select>
-                        <option>Detective I</option><option>Detective II</option><option>Detective III</option>
-                    </select>
+                    <select><option>Detective I</option><option>Detective II</option><option>Detective III</option></select>
                 </div>
                 <div class="field"><label>📂 Case ID</label><input type="text" placeholder="#2026-XXXX"></div>
             </div>
@@ -118,32 +114,32 @@
 
             <div class="section-title">Skutečnosti / Odůvodnění</div>
             <textarea id="skutecnosti" rows="5" placeholder="Vypište důvody žádosti..."></textarea>
-
-            <button class="btn-gen">🚀 Generovat formáty</button>
-            <button class="btn-save">💾 Uložit do mojí databáze</button>
+            
+            <button class="btn-gen" onclick="alert('Generuji...')">🚀 Generovat formáty</button>
         </div>
     </div>
 
     <script>
-        let allLaws = [];
+        // TADY JSOU TVÉ TRESTY - UŽ ŽÁDNÝ EXTERNÍ SOUBOR
+        const myLaws = [
+            { title: "§7 Ubližování na zdraví", subs: [{label: "(a)", text: "úmyslné ublížení"}, {label: "(b)", text: "těžké ublížení"}] },
+            { title: "§8 Napadení", subs: [{label: "(a)", text: "fyzické napadení"}] },
+            { title: "§9 Mučení a nelidské zacházení", subs: [] },
+            { title: "§10 Zabití", subs: [] },
+            { title: "§11 Pokus o vraždu", subs: [] },
+            { title: "§12 Vražda", subs: [] }
+            // Sem můžeš dopisovat další řádky podle potřeby
+        ];
 
-        function openForm(icon, title, preddefinovanýText) {
+        function openForm(icon, title, autoText) {
             document.getElementById('main-menu').style.display = 'none';
             document.getElementById('form-container').style.display = 'block';
-            document.getElementById('form-header').innerHTML = `<span>${icon}</span> ${title}`;
+            document.getElementById('form-title').innerHTML = `<span style="margin-right:15px">${icon}</span>${title}`;
             
-            // Vyčištění a nastavení extra polí
             const extra = document.getElementById('extra-fields');
-            extra.innerHTML = '';
-            if(preddefinovanýText !== '') {
-                extra.innerHTML = `
-                    <div class="section-title">Specifikace</div>
-                    <label>📞 Předmět výpisu</label>
-                    <input type="text" value="${preddefinovanýText}">
-                `;
-            }
-
-            loadLaws();
+            extra.innerHTML = autoText ? `<div class="section-title">Specifikace</div><label>Předmět výpisu</label><input type="text" value="${autoText}">` : '';
+            
+            renderLawList(myLaws);
         }
 
         function closeForm() {
@@ -154,43 +150,21 @@
         function addSubjekt() {
             const div = document.createElement('div');
             div.className = 'grid-3';
-            div.innerHTML = `
-                <div class="field"><label>👤 Osoba</label><input type="text" placeholder="Jméno a příjmení"></div>
-                <div class="field"><label>🗓️ Narození</label><input type="text" placeholder="DD.MM.RRRR"></div>
-                <div class="field"><label>🆔 MDT ID</label><input type="text" placeholder="XXXXXX"></div>`;
+            div.innerHTML = `<div class="field"><label>👤 Osoba</label><input type="text"></div><div class="field"><label>🗓️ Narození</label><input type="text"></div><div class="field"><label>🆔 MDT ID</label><input type="text"></div>`;
             document.getElementById('subjekty-list').appendChild(div);
-        }
-
-        async function loadLaws() {
-            const listBox = document.getElementById('law-list-box');
-            listBox.innerHTML = '<div style="padding:10px; color:#555;">Načítání zákoníku...</div>';
-            
-            try {
-                const res = await fetch('laws.json');
-                if (!res.ok) throw new Error('Soubor nenalezen');
-                const data = await res.json();
-                
-                // Přizpůsobení struktuře JSONu
-                allLaws = Array.isArray(data) ? data : (data.laws || Object.values(data)[0] || []);
-                renderLawList(allLaws);
-            } catch (err) {
-                console.error(err);
-                listBox.innerHTML = `<div style="color:#f85149; padding:10px; font-size:11px;">⚠️ Nelze načíst laws.json. Zkontrolujte, zda je soubor ve stejné složce jako tento web.</div>`;
-            }
         }
 
         function renderLawList(laws) {
             const listBox = document.getElementById('law-list-box');
             listBox.innerHTML = '';
-            
             laws.forEach(par => {
-                if (par.subs && par.subs.length > 0) {
+                if (par.subs.length > 0) {
                     par.subs.forEach(sub => {
                         const item = document.createElement('div');
                         item.className = 'law-item';
-                        const text = `${par.title} - ${sub.label} ${sub.text}`;
-                        item.onclick = () => addTag(text);
-                        item.innerHTML = `<strong>${par.title}</strong><br><small style="color:#8b949e">${sub.label} ${sub.text}</small>`;
+                        const fullText = `${par.title} ${sub.label}`;
+                        item.onclick = () => addTag(fullText);
+                        item.innerHTML = `<strong>${par.title}</strong> <small>${sub.label} ${sub.text}</small>`;
                         listBox.appendChild(item);
                     });
                 } else {
@@ -205,10 +179,7 @@
 
         document.getElementById('law-search').oninput = function() {
             const q = this.value.toLowerCase();
-            const filtered = allLaws.filter(l => 
-                l.title.toLowerCase().includes(q) || 
-                (l.subs && l.subs.some(s => s.text.toLowerCase().includes(q)))
-            );
+            const filtered = myLaws.filter(l => l.title.toLowerCase().includes(q));
             renderLawList(filtered);
         };
 
