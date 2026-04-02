@@ -78,8 +78,8 @@
 
     <div class="sidebar">
         <div class="sidebar-header">SASP COMMAND</div>
-        <a href="dashboard.html" class="menu-item">🏠 Přehled systému</a>
-        <a href="evidence.html" class="menu-item active">📂 Seznam spisů / OPP</a>
+        <a href="dashboard.html?v=1.1" class="menu-item">🏠 Přehled systému</a>
+        <a href="evidence.html?v=1.1" class="menu-item">📂 Seznam spisů / OPP</a>
         <a href="https://genk.cz/hry/gta5/zakony-fivem/the-penal-code-of-the-state-of-san-andreas-002-19-r17/" class="menu-item" target="_blank">📜 Zákoník</a>
         <a href="login.html" style="margin-top:auto; color:#f85149; text-decoration:none; font-size:12px; padding: 10px;">🚪 Odhlásit se</a>
     </div>
@@ -346,6 +346,11 @@
             localStorage.setItem('myOPPs', JSON.stringify(savedOPPs));
             renderTable();
         }
+
+        window.onload = function() {
+        if(document.getElementById('off-name')) document.getElementById('off-name').value = '';
+        renderTable(); // Znovu vykreslí tabulku z localStorage
+        };
     </script>
 </body>
 </html>
