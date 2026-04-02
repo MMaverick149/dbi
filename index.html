@@ -29,19 +29,10 @@
     <button class="nav-item active" onclick="loadPage(this, 'dashboard.html')">🏠 Přehled systému</button>
     <button class="nav-item" onclick="loadPage(this, 'evidence.html')">📁 Seznam spisů</button>
     <button class="nav-item" style="color: #58a6ff; border-color: #58a6ff;" onclick="loadPage(this, 'evidence.html?new=true')">➕ Nový spis</button>
-</div>
+<button class="nav-item" style="color: #58a6ff; border-color: #58a6ff;" onclick="window.open('https://genk.cz/hry/gta5/zakony-fivem/the-penal-code-of-the-state-of-san-andreas-002-19-r17/', '_blank')">📑 Zákoník</button></div>
 
 <div class="main">
     <iframe id="content-frame" src="dashboard.html"></iframe>
-</div>
-
-<div class="right-panel">
-    <h3>Generátor žádosti</h3>
-    <textarea id="report-area" placeholder="Zde se objeví text žádosti..."></textarea>
-    <div class="btn-group">
-        <button class="btn btn-copy" onclick="copyText()">Kopírovat</button>
-        <button class="btn btn-clear" onclick="document.getElementById('report-area').value=''">Smazat</button>
-    </div>
 </div>
 
 <script>
