@@ -18,30 +18,25 @@
 
         body { margin: 0; background-color: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; display: flex; height: 100vh; overflow: hidden; }
 
-        /* SIDEBAR */
         .sidebar { width: 250px; border-right: 1px solid var(--border); padding: 20px 10px; display: flex; flex-direction: column; flex-shrink: 0; }
         .sidebar-header { color: var(--warning); font-weight: bold; font-size: 14px; text-transform: uppercase; margin-bottom: 30px; padding-left: 10px; }
         .menu-item { padding: 12px 15px; border-radius: 6px; cursor: pointer; color: #8b949e; font-size: 14px; margin-bottom: 5px; display: flex; align-items: center; gap: 10px; }
         .menu-item.active { background-color: #1f6feb; color: white; }
-        .menu-item:hover:not(.active) { background-color: #1c2128; }
 
         .main-content { flex: 1; padding: 30px; overflow-y: auto; }
 
-        /* KARTY - VŠECH 7 OPP */
         .opp-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 30px; }
         .opp-card { background: var(--card); border: 1px solid var(--border); padding: 15px; text-align: center; border-radius: 8px; cursor: pointer; transition: 0.2s; }
-        .opp-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+        .opp-card:hover { border-color: var(--accent); }
         .opp-card div { font-size: 24px; margin-bottom: 8px; }
         .opp-card span { font-size: 10px; font-weight: bold; text-transform: uppercase; color: var(--accent); }
 
-        /* TABULKA MOJE OPP */
         .table-container { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-top: 20px; }
         table { width: 100%; border-collapse: collapse; font-size: 13px; }
         th { background: #1c2128; padding: 12px; text-align: left; color: #8b949e; text-transform: uppercase; font-size: 10px; border-bottom: 1px solid var(--border); }
         td { padding: 12px; border-bottom: 1px solid var(--border); color: #fff; }
         .btn-table { padding: 5px 10px; border-radius: 4px; border: 1px solid var(--border); background: var(--secondary); color: #c9d1d9; cursor: pointer; font-size: 11px; margin-right: 5px; }
 
-        /* FORMULÁŘ */
         #form-container { display: none; background: var(--card); border: 1px solid var(--border); padding: 30px; border-radius: 8px; max-width: 950px; margin: 0 auto; }
         .section-title { color: var(--accent); margin: 20px 0 10px; font-weight: bold; font-size: 11px; text-transform: uppercase; border-left: 3px solid var(--accent); padding-left: 10px; }
         
@@ -52,13 +47,9 @@
 
         /* MODAL NÁHLED */
         #view-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; }
-        .modal-content { background: var(--card); border: 1px solid var(--border); padding: 30px; border-radius: 8px; width: 650px; max-height: 85vh; overflow-y: auto; position: relative; }
-        .modal-close { position: absolute; top: 15px; right: 20px; cursor: pointer; color: var(--danger); font-weight: bold; }
-        .pre-text { white-space: pre-wrap; font-family: 'Consolas', monospace; font-size: 13px; line-height: 1.5; color: #fff; background: #0d1117; padding: 20px; border-radius: 4px; }
+        .modal-content { background: var(--card); border: 1px solid var(--border); padding: 30px; border-radius: 8px; width: 650px; max-height: 85vh; overflow-y: auto; }
+        .pre-text { white-space: pre-wrap; font-family: monospace; font-size: 13px; color: #fff; background: #0d1117; padding: 20px; border-radius: 4px; border: 1px solid var(--border); }
 
-        /* TRESTY */
-        .law-list { max-height: 150px; overflow-y: auto; background: #05070a; border: 1px solid var(--border); margin-top: 5px; }
-        .law-item { padding: 8px; cursor: pointer; border-bottom: 1px solid #161b22; font-size: 12px; }
         .law-tag { display: inline-block; background: #1f6feb; color: white; padding: 4px 8px; border-radius: 4px; margin-right: 5px; margin-bottom: 5px; font-size: 12px; }
     </style>
 </head>
@@ -66,9 +57,9 @@
 
     <div id="view-modal">
         <div class="modal-content">
-            <span class="modal-close" onclick="document.getElementById('view-modal').style.display='none'">ZAVŘÍT [X]</span>
-            <h3 style="color:var(--accent); margin-top:0">NÁHLED SPISU</h3>
+            <h3 style="color:var(--accent); margin-top:0">NÁHLED ŽÁDOSTI</h3>
             <div id="modal-text" class="pre-text"></div>
+            <button onclick="document.getElementById('view-modal').style.display='none'" style="margin-top:20px; padding:10px; width:100%; cursor:pointer; background:var(--secondary); color:white; border:1px solid var(--border); border-radius:4px;">ZAVŘÍT</button>
         </div>
     </div>
 
@@ -83,21 +74,19 @@
     <div class="main-content">
         <div id="dashboard">
             <div class="opp-menu">
-                <div class="opp-card" onclick="openForm('📡', 'Sledování osoby', '', 'Na základě výše uvedených skutečností, žádám o vydání příkazu ke sledování osob a věcí...')"><div>📡</div><span>Sledování</span></div>
-                <div class="opp-card" onclick="openForm('📞', 'Výpis telekomunikace', 'Výpis hovorů a SMS', 'Žádám o vydání příkazu k výpisu z telekomunikačního provozu...')"><div>📞</div><span>Telekomunikace</span></div>
-                <div class="opp-card" onclick="openForm('🔓', 'Prolomení telefonu', 'Mobilní telefon 777-777', 'Žádám o vydání příkazu k prolomení datového nosiče...')"><div>🔓</div><span>Telefon</span></div>
-                <div class="opp-card" onclick="openForm('💰', 'Prověrka majetku', 'Bankovní účty a majetek', 'Žádám o prověrku majetkových poměrů z důvodu podezření na legalizaci výnosů...')"><div>💰</div><span>Majetek</span></div>
-                <div class="opp-card" onclick="openForm('🕵️', 'Zastírající agent', 'Infiltrace do skupiny', 'Žádám o povolení nasazení zastírajícího agenta...')"><div>🕵️</div><span>Agent</span></div>
-                <div class="opp-card" onclick="openForm('🏠', 'Výpis nemovitosti', 'Katastr nemovitostí', 'Žádám o výpis z evidence nemovitostí spojených s podezřelou osobou.')"><div>🏠</div><span>Nemovitost</span></div>
-                <div class="opp-card" onclick="openForm('🏚️', 'Domovní prohlídka', 'Objekt / Rezidence', 'Existuje důvodné podezření, že se v objektu nacházejí věci důležité pro trestní řízení.')"><div>🏚️</div><span>Prohlídka</span></div>
+                <div class="opp-card" onclick="openForm('📡', 'Sledování osoby')"><div>📡</div><span>Sledování</span></div>
+                <div class="opp-card" onclick="openForm('📞', 'Výpis telekomunikace')"><div>📞</div><span>Telekomunikace</span></div>
+                <div class="opp-card" onclick="openForm('🔓', 'Prolomení telefonu')"><div>🔓</div><span>Telefon</span></div>
+                <div class="opp-card" onclick="openForm('💰', 'Prověrka majetku')"><div>💰</div><span>Majetek</span></div>
+                <div class="opp-card" onclick="openForm('🕵️', 'Zastírající agent')"><div>🕵️</div><span>Agent</span></div>
+                <div class="opp-card" onclick="openForm('🏠', 'Výpis nemovitosti')"><div>🏠</div><span>Nemovitost</span></div>
+                <div class="opp-card" onclick="openForm('🏚️', 'Domovní prohlídka')"><div>🏚️</div><span>Prohlídka</span></div>
             </div>
 
             <div class="section-title">📊 Moje OPP</div>
             <div class="table-container">
                 <table>
-                    <thead>
-                        <tr><th>Datum</th><th>Typ</th><th>Case ID</th><th>Osoba</th><th>Akce</th></tr>
-                    </thead>
+                    <thead><tr><th>Datum</th><th>Typ</th><th>Case ID</th><th>Osoba</th><th>Akce</th></tr></thead>
                     <tbody id="opp-table-body"></tbody>
                 </table>
             </div>
@@ -110,11 +99,11 @@
             <div class="section-title">👮 Vyžadující příslušník</div>
             <div class="grid-pd">
                 <div><label>Příslušník</label><input type="text" id="off-name" placeholder="Jméno Příjmení"></div>
-                <div><label>BN (4 čísla)</label><input type="text" id="off-bn" maxlength="4" placeholder="0000"></div>
+                <div><label>BN</label><input type="text" id="off-bn" maxlength="4" placeholder="0000"></div>
                 <div><label>Hodnost</label>
                     <select id="off-rank">
                         <option>Detective I</option><option>Detective II</option><option>Detective III</option>
-                        <option>Sergeant I</option><option>Sergeant II</option><option>Lieutenant</option>
+                        <option>Captian</option>
                     </select>
                 </div>
                 <div><label>Case ID</label><input type="text" id="case-id" value="DBI-2026-XXXX"></div>
@@ -124,24 +113,24 @@
             <div class="grid-3">
                 <div><label>Jméno</label><input type="text" id="p-name" placeholder="Jméno Příjmení"></div>
                 <div><label>Narození</label><input type="text" id="p-dob" placeholder="DD.MM.RRRR"></div>
-                <div><label>MDT ID</label><input type="text" id="p-id" placeholder="YL5478"></div>
+                <div><label>MDT ID</label><input type="text" id="p-id" placeholder="YZ1458"></div>
             </div>
 
             <div class="section-title">📦 Předmět / Zařízení / Adresa</div>
-            <input type="text" id="spec-val" placeholder="Např. Mobilní telefon 555-0123 nebo Adresa objektu">
+            <input type="text" id="spec-val" placeholder="Např. Mobilní telefon 555-000 nebo Adresa domu">
 
-            <div class="section-title">⚖️ Kvalifikace (Paragrafy)</div>
+            <div class="section-title">⚖️ Kvalifikace</div>
             <div id="selected-laws" style="background:#000; padding:10px; border:1px solid var(--border); min-height:40px; border-radius:4px;"></div>
             <input type="text" id="law-search" placeholder="Hledat v zákoníku..." oninput="renderLaws(this.value)" style="margin-top:10px;">
-            <div id="law-list-box" class="law-list"></div>
+            <div id="law-list-box" style="max-height:150px; overflow-y:auto; background:#05070a; border:1px solid var(--border);"></div>
 
             <div class="section-title">📑 Zjištěné skutečnosti</div>
-            <textarea id="oduvodneni" rows="6" placeholder="Zde vypište důvody žádosti a zjištěné poznatky z vyšetřování..."></textarea>
+            <textarea id="oduvodneni" rows="6" placeholder="Žádám o vydání příkazu na základě důvodného podezření z trestné činnosti... (Zde vypište vaše poznatky)"></textarea>
 
             <div class="section-title">📎 Přílohy</div>
-            <textarea id="prilohy" rows="2" placeholder="Odkazy na záznamy, FiveManage, dokumentaci..."></textarea>
+            <textarea id="prilohy" rows="2" placeholder="Odkazy na důkazy..."></textarea>
 
-            <button class="btn-gen" onclick="saveOPP()" style="background:var(--success); color:white; border:none; padding:15px; width:100%; font-weight:bold; cursor:pointer; margin-top:20px; border-radius:6px;">🚀 GENEROVAT A ULOŽIT SPIS</button>
+            <button class="btn-gen" onclick="saveOPP()" style="background:var(--success); color:white; border:none; padding:15px; width:100%; font-weight:bold; cursor:pointer; margin-top:20px; border-radius:6px;">🚀 ULOŽIT ŽÁDOST</button>
         </div>
     </div>
 
@@ -163,7 +152,7 @@
                     law.subs.forEach(sub => {
                         if (`${law.title} ${sub.text}`.toLowerCase().includes(filter.toLowerCase())) {
                             const item = document.createElement('div');
-                            item.className = 'law-item';
+                            item.style.padding = '8px'; item.style.cursor = 'pointer'; item.style.borderBottom = '1px solid #161b22';
                             item.innerHTML = `<strong>${law.title}</strong> <small>${sub.text}</small>`;
                             item.onclick = () => addLaw(`${law.title} ${sub.label}`);
                             box.appendChild(item);
@@ -181,12 +170,19 @@
             container.appendChild(span);
         }
 
-        function openForm(icon, title, spec, atText) {
+        function openForm(icon, title) {
             document.getElementById('dashboard').style.display = 'none';
             document.getElementById('form-container').style.display = 'block';
-            document.getElementById('form-title').innerText = title;
-            document.getElementById('oduvodneni').value = atText; // AT text se vloží, pokud chceš prázdné, smaž tuhle řádku
-            document.getElementById('spec-val').value = spec;
+            document.getElementById('form-title').innerText = `${icon} ${title}`;
+            
+            // VYMAZÁNÍ OSOBY PRO NOVÉ OPP
+            document.getElementById('p-name').value = '';
+            document.getElementById('p-dob').value = '';
+            document.getElementById('p-id').value = '';
+            document.getElementById('spec-val').value = '';
+            document.getElementById('oduvodneni').value = ''; // Pole zůstane prázdné
+            document.getElementById('selected-laws').innerHTML = '';
+            document.getElementById('prilohy').value = '';
         }
 
         function hideForm() {
@@ -206,7 +202,7 @@
                 person: document.getElementById('p-name').value,
                 spec: document.getElementById('spec-val').value,
                 laws: [...document.querySelectorAll('#selected-laws .txt')].map(el => el.innerText).join(', '),
-                text: document.getElementById('oduvodneni').value,
+                text: document.getElementById('oduvodneni').value || "Bez odůvodnění",
                 att: document.getElementById('prilohy').value
             };
             savedOPPs.push(opp);
@@ -230,7 +226,7 @@
             });
         }
 
-        function generateFinalText(o) {
+        function formatText(o) {
             const isDP = o.type.includes("Prohlídka");
             const header = isDP ? "**PODNĚT K VYDÁNÍ SOUHLASU STÁTNÍHO ZÁSTUPCE K PROVEDENÍ PROHLÍDKY DLE § 38 Z.Č. 006-19**" : "**ŽÁDOST O UŽITÍ OPP DLE § 37 Z.Č. 006-19**";
             return `${header}\n\n` +
@@ -250,14 +246,14 @@
 
         function viewOPP(id) {
             const o = savedOPPs.find(x => x.id === id);
-            document.getElementById('modal-text').innerText = generateFinalText(o);
+            document.getElementById('modal-text').innerText = formatText(o);
             document.getElementById('view-modal').style.display = 'flex';
         }
 
         function copyOPP(id) {
             const o = savedOPPs.find(x => x.id === id);
-            navigator.clipboard.writeText(generateFinalText(o));
-            alert("Zkopírováno pro Discord!");
+            navigator.clipboard.writeText(formatText(o));
+            alert("Zkopírováno!");
         }
 
         function deleteOPP(id) {
