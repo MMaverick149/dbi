@@ -42,7 +42,6 @@
         .person-row { display: grid; grid-template-columns: 2fr 1fr 1fr 40px; gap: 10px; margin-bottom: 8px; background: #0d1117; padding: 10px; border-radius: 4px; border: 1px solid var(--border); }
         input, select, textarea { width: 100%; padding: 10px; background: #05070a; border: 1px solid var(--border); color: white; border-radius: 4px; box-sizing: border-box; font-size: 13px; }
         
-        /* Zákaz psaní a vizuál pro AT */
         .at-textarea { 
             border: 1px solid var(--warning) !important; 
             background: rgba(255, 157, 0, 0.05) !important; 
@@ -142,7 +141,7 @@
             <textarea id="oduvodneni" rows="4" placeholder="Zde vypište IC odůvodnění žádosti..."></textarea>
 
             <div class="section-title at-header">🟧 Automatická zpráva pro Forenzní tým / AZ (OOC)</div>
-            <textarea id="at-message" class="at-textarea" rows="15" readonly placeholder="Tato zpráva se generuje automaticky..."></textarea>
+            <textarea id="at-message" class="at-textarea" rows="16" readonly placeholder="Tato zpráva se generuje automaticky..."></textarea>
 
             <div class="section-title">📎 Přílohy</div>
             <textarea id="prilohy" rows="2" placeholder="Odkazy na záznamy, Imgur..."></textarea>
@@ -168,7 +167,7 @@
             div.className = 'person-row';
             div.innerHTML = `
                 <input type="text" class="p-name" placeholder="Jméno Příjmení" oninput="updateAT()">
-                <input type="text" class="p-dob" placeholder="DD.MM.RRRR">
+                <input type="text" class="p-dob" placeholder="DD.MM.RRRR" oninput="updateAT()">
                 <input type="text" class="p-id" placeholder="MDT ID">
                 <button onclick="this.parentElement.remove(); updateAT();" style="background:none; border:none; color:red; cursor:pointer;">×</button>
             `;
@@ -180,11 +179,16 @@
             const atBox = document.getElementById('at-message');
             const officerName = document.getElementById('off-name').value || "[Jméno Příjmení]";
             
-            // Získání všech jmen osob
-            const personInputs = document.querySelectorAll('.p-name');
-            let personsList = Array.from(personInputs)
-                .map(i => i.value)
-                .filter(v => v.trim() !== "")
+            // Získání osob ve formátu: Jméno Příjmení, DOB
+            const personRows = document.querySelectorAll('.person-row');
+            let personsList = Array.from(personRows)
+                .map(row => {
+                    const name = row.querySelector('.p-name').value.trim();
+                    const dob = row.querySelector('.p-dob').value.trim();
+                    if (name === "") return null;
+                    return dob !== "" ? `${name}, ${dob}` : name;
+                })
+                .filter(v => v !== null)
                 .join('\n');
             
             if (personsList === "") personsList = "[Podezřelá Osoba]";
@@ -198,7 +202,7 @@
             } else if (currentType === "Majetek") {
                 template = `Dobrý den,\n\nna základě souhlasu státního zástupce žádám v rámci probíhajícího vyšetřování o výpis a prověrku majetku následujících osob:\n\nŽádost se týká těchto osob:\n\n${personsList}\n\nŽádám o prověření a poskytnutí informací zejména o:\n\n- bankovních účtech a finančních prostředcích,\n- movitém majetku vyšší hodnoty,\n- případných závazcích nebo dluzích,\n- dalších evidovaných majetkových položkách.\n\nSouhlas státního zástupce k použití operativně pátracích prostředků je přiložen v příloze.\n\nDěkuji za spolupráci.\n\n${officerName}\n*San Andreas State Police*`;
             } else {
-                template = "Pro tento typ OPP není definována automatická Forenzní zpráva.";
+                template = "Pro tento typ OPP není definována automatická zpráva.";
             }
 
             atBox.value = template;
