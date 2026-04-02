@@ -4,32 +4,154 @@
     <meta charset="UTF-8">
     <title>SASP Terminal - Dashboard</title>
     <style>
-        :root { --bg: #0d1117; --accent: #2f81f7; --border: #30363d; --text: #c9d1d9; --panel: #161b22; --at-color: #ffa657; --danger: #da3633; --success: #238636; }
-        body { background: var(--bg); color: var(--text); font-family: -apple-system, sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden; }
-        
-        /* SIDEBAR - POUZE JEDEN SVĚTLÝ */
-        .sidebar { width: 240px; background: #0d1117; border-right: 1px solid var(--border); padding: 25px 15px; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
-        .sidebar-brand { color: var(--at-color); font-weight: 800; font-size: 14px; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 2px; }
-        
-        .nav-item { background: none; border: 1px solid var(--border); color: var(--text); padding: 12px 15px; border-radius: 8px; text-align: left; cursor: pointer; text-decoration: none; font-size: 13px; display: flex; align-items: center; gap: 12px; transition: 0.2s; }
-        .nav-item:hover { background: #21262d; }
-        .nav-item.active { background: var(--accent); color: white; border-color: var(--accent); font-weight: 600; }
-        
-        /* ODHLÁSIT SE - DOLE V SIDEBARU */
-        .logout-container { margin-top: auto; padding-top: 20px; }
-        .btn-logout { background: none; border: none; color: #da3633; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 13px; padding: 10px; width: 100%; transition: opacity 0.2s; }
-        .btn-logout:hover { opacity: 0.7; }
-        .logout-icon { width: 8px; height: 16px; background: #da3633; border-radius: 2px; }
+        :root { 
+            --bg: #0d1117; 
+            --accent: #2f81f7; 
+            --border: #30363d; 
+            --text: #c9d1d9; 
+            --panel: #161b22; 
+            --at-color: #ffa657; 
+            --danger: #da3633; 
+            --success: #238636; 
+        }
 
+        body { 
+            background: var(--bg); 
+            color: var(--text); 
+            font-family: -apple-system, sans-serif; 
+            margin: 0; 
+            display: flex; 
+            height: 100vh; 
+            overflow: hidden; 
+        }
+        
+        /* JEDNOTNÝ SIDEBAR */
+        .sidebar { 
+            width: 260px; 
+            background: #0d1117; 
+            border-right: 1px solid var(--border); 
+            padding: 20px 15px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; 
+            flex-shrink: 0; 
+        }
+
+        .sidebar-brand { 
+            color: var(--at-color); 
+            font-weight: 800; 
+            font-size: 14px; 
+            margin-bottom: 25px; 
+            padding-left: 10px;
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+        }
+        
+        .nav-item { 
+            background: rgba(48, 54, 61, 0.2); 
+            border: 1px solid var(--border); 
+            color: var(--text); 
+            padding: 12px 15px; 
+            border-radius: 8px; 
+            text-align: left; 
+            cursor: pointer; 
+            text-decoration: none; 
+            font-size: 13px; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            transition: 0.2s; 
+        }
+
+        .nav-item:hover { 
+            background: #21262d; 
+            border-color: #8b949e;
+        }
+
+        .nav-item.active { 
+            background: var(--accent); 
+            color: white; 
+            border-color: var(--accent); 
+            font-weight: 600; 
+        }
+        
+        /* TLAČÍTKO ODHLÁSIT SE DOLE */
+        .logout-container { 
+            margin-top: auto; 
+            padding-bottom: 10px;
+        }
+
+        .btn-logout { 
+            background: none; 
+            border: none; 
+            color: var(--danger); 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            font-size: 13px; 
+            padding: 10px; 
+            width: 100%; 
+            opacity: 0.8;
+            transition: 0.2s;
+        }
+
+        .btn-logout:hover { opacity: 1; transform: translateX(5px); }
+        .logout-box { width: 4px; height: 14px; background: var(--danger); border-radius: 2px; }
+
+        /* HLAVNÍ PLOCHA */
         .main { flex: 1; padding: 40px; overflow-y: auto; }
-        .db-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; max-width: 1100px; margin: 0 auto; }
-        .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
-        .panel-h h3 { margin: 0; font-size: 11px; text-transform: uppercase; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 15px; letter-spacing: 1px; }
+        .db-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; max-width: 1200px; margin: 0 auto; }
+        
+        .panel { 
+            background: var(--panel); 
+            border: 1px solid var(--border); 
+            border-radius: 12px; 
+            padding: 20px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
 
+        .panel-h h3 { 
+            margin: 0; 
+            font-size: 11px; 
+            text-transform: uppercase; 
+            color: var(--accent); 
+            border-bottom: 1px solid var(--border); 
+            padding-bottom: 12px; 
+            margin-bottom: 18px; 
+            letter-spacing: 1px; 
+        }
+
+        /* TABULKA A PRVKY */
         table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th { text-align: left; color: #8b949e; font-size: 10px; text-transform: uppercase; padding-bottom: 10px; }
         td { padding: 12px 0; border-bottom: 1px solid #21262d; }
-        input[type="text"] { background: #010409; border: 1px solid var(--border); color: white; padding: 8px; border-radius: 6px; width: 100%; box-sizing: border-box; }
-        .notes-area { width: 100%; height: 250px; background: #010409; border: 1px solid var(--border); color: white; padding: 15px; border-radius: 8px; resize: none; box-sizing: border-box; outline: none; }
+        
+        input[type="text"] { 
+            background: #010409; 
+            border: 1px solid var(--border); 
+            color: white; 
+            padding: 8px 12px; 
+            border-radius: 6px; 
+            width: 100%; 
+            box-sizing: border-box; 
+        }
+
+        .notes-area { 
+            width: 100%; 
+            height: 280px; 
+            background: #010409; 
+            border: 1px solid var(--border); 
+            color: white; 
+            padding: 15px; 
+            border-radius: 8px; 
+            resize: none; 
+            box-sizing: border-box; 
+            outline: none; 
+            font-family: inherit;
+            line-height: 1.5;
+        }
+
         .notes-area:focus { border-color: var(--accent); }
         .status-dot { display: inline-block; width: 8px; height: 8px; background: var(--success); border-radius: 50%; margin-right: 10px; box-shadow: 0 0 8px var(--success); }
     </style>
@@ -38,14 +160,15 @@
 
     <div class="sidebar">
         <div class="sidebar-brand">SASP COMMAND</div>
+        
         <a href="dashboard.html" class="nav-item active">🏠 Přehled systému</a>
-        <a href="evidence.html" class="nav-item">🛡️ Seznam spisů</a>
-        <a href="opp.html" class="nav-item">➕ Nový spis / OPP</a>
+        <a href="spisy.html" class="nav-item">🛡️ Seznam spisů</a>
+        <a href="zadost.html" class="nav-item">➕ Nový spis / OPP</a>
         <a href="https://genk.cz/hry/gta5/zakony-fivem/the-penal-code-of-the-state-of-san-andreas-002-19-r17/" target="_blank" class="nav-item">📑 Zákoník</a>
         
         <div class="logout-container">
             <button onclick="logout()" class="btn-logout">
-                <div class="logout-icon"></div> Odhlásit se
+                <div class="logout-box"></div> Odhlásit se
             </button>
         </div>
     </div>
@@ -53,57 +176,75 @@
     <div class="main">
         <div class="db-grid">
             <div class="db-col">
-                <div class="panel" style="margin-bottom:20px;">
-                    <div class="panel-h"><h3>📝 Rychlé poznámky</h3></div>
-                    <textarea id="dashNotes" class="notes-area" placeholder="Zde můžete psát poznámky k případům..."></textarea>
+                <div class="panel" style="margin-bottom:25px;">
+                    <div class="panel-h"><h3>📝 Rychlé poznámky (Automatické ukládání)</h3></div>
+                    <textarea id="dashNotes" class="notes-area" placeholder="Sem si pište průběžné poznámky k hlášením..."></textarea>
                 </div>
+
                 <div class="panel">
                     <div class="panel-h"><h3>👥 Kolegové z DBI</h3></div>
                     <table>
                         <thead>
-                            <tr style="text-align: left; font-size: 10px; color: #8b949e; text-transform: uppercase;">
-                                <th style="padding-bottom: 10px;">Volačka</th>
-                                <th style="padding-bottom: 10px;">Jméno</th>
-                                <th style="padding-bottom: 10px;">Telefon</th>
+                            <tr>
+                                <th>Volačka</th>
+                                <th>Jméno a Příjmení</th>
+                                <th>Telefonní číslo</th>
                             </tr>
                         </thead>
                         <tbody id="col-list"></tbody>
                     </table>
                 </div>
             </div>
+
             <div class="db-col">
-                <div class="panel" style="margin-bottom: 20px;">
-                    <div class="panel-h"><h3>🕵️ Detektivové (Online)</h3></div>
-                    <div id="active-user"></div>
+                <div class="panel" style="margin-bottom: 25px;">
+                    <div class="panel-h"><h3>🕵️ Detektivové (Aktivní)</h3></div>
+                    <div id="active-user-display"></div>
                 </div>
+
                 <div class="panel" style="text-align: center;">
-                    <div class="panel-h"><h3>⏰ Systémový čas</h3></div>
-                    <div id="clock" style="font-size: 24px; font-weight: bold; color: var(--accent);">00:00:00</div>
+                    <div class="panel-h"><h3>⏰ Aktuální čas</h3></div>
+                    <div id="clock" style="font-size: 28px; font-weight: 800; color: var(--accent); letter-spacing: 2px;">00:00:00</div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        const userData = localStorage.getItem('sasp_user');
-        if (!userData) { window.location.href = 'login.html'; }
-        const user = JSON.parse(userData);
+        // Ověření přihlášení
+        const rawData = localStorage.getItem('sasp_user');
+        if (!rawData) { window.location.href = 'login.html'; }
+        const user = JSON.parse(rawData);
 
-        document.getElementById('active-user').innerHTML = `<div style="font-size:13px; padding:10px 0;"><span class="status-dot"></span> [${user.callsign}] ${user.name}</div>`;
-        document.getElementById('col-list').innerHTML = `<tr><td>${user.callsign}</td><td>${user.name}</td><td><input type="text" value="${user.phone}" onchange="savePhone(this.value)"></td></tr>`;
+        // Naplnění dat
+        document.getElementById('active-user-display').innerHTML = `
+            <div style="font-size:13px; padding:5px 0; display:flex; align-items:center;">
+                <span class="status-dot"></span> 
+                <strong>[${user.callsign}]</strong> &nbsp; ${user.name} &nbsp; <span style="color:#8b949e; font-size:11px;">(${user.rank})</span>
+            </div>`;
 
-        function savePhone(val) { user.phone = val; localStorage.setItem('sasp_user', JSON.stringify(user)); }
+        document.getElementById('col-list').innerHTML = `
+            <tr>
+                <td><strong>${user.callsign}</strong></td>
+                <td>${user.name}</td>
+                <td><input type="text" value="${user.phone}" placeholder="Zadejte tel..." onchange="updatePhone(this.value)"></td>
+            </tr>`;
+
+        // Funkce
+        function updatePhone(val) { user.phone = val; localStorage.setItem('sasp_user', JSON.stringify(user)); }
         function logout() { localStorage.removeItem('sasp_user'); window.location.href = 'login.html'; }
 
-        const notes = document.getElementById('dashNotes');
-        notes.value = localStorage.getItem('sasp_dash_notes') || "";
-        notes.addEventListener('input', () => { localStorage.setItem('sasp_dash_notes', notes.value); });
+        // Poznámky
+        const notePad = document.getElementById('dashNotes');
+        notePad.value = localStorage.getItem('sasp_dash_notes') || "";
+        notePad.addEventListener('input', () => { localStorage.setItem('sasp_dash_notes', notePad.value); });
 
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('clock').innerText = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0') + ":" + now.getSeconds().toString().padStart(2, '0');
+        // Hodiny
+        function tick() {
+            const d = new Date();
+            document.getElementById('clock').textContent = d.toLocaleTimeString('cs-CZ');
         }
-        setInterval(updateClock, 1000); updateClock();
+        setInterval(tick, 1000); tick();
     </script>
 </body>
 </html>
