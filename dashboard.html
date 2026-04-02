@@ -8,141 +8,95 @@
         :root { --bg: #0d1117; --accent: #2f81f7; --border: #30363d; --text: #c9d1d9; --panel: #161b22; --at-color: #ffa657; --success: #238636; --danger: #da3633; }
         body { background: var(--bg); color: var(--text); font-family: -apple-system, sans-serif; margin: 0; display: flex; height: 100vh; overflow: hidden; }
         
-        /* OPRAVENÝ SIDEBAR (POUZE JEDEN) */
+        /* SIDEBAR */
         .sidebar { width: 240px; background: #010409; border-right: 1px solid var(--border); padding: 25px 15px; display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }
         .sidebar-brand { color: var(--at-color); font-weight: 800; font-size: 14px; margin-bottom: 30px; padding-left: 10px; text-transform: uppercase; letter-spacing: 2px; }
-        
-        .nav-item { 
-            background: none; border: 1px solid transparent; color: var(--text); 
-            padding: 12px 15px; border-radius: 8px; text-align: left; cursor: pointer; 
-            display: flex; align-items: center; gap: 12px; font-size: 13px; 
-            text-decoration: none; transition: all 0.2s; 
-        }
+        .nav-item { background: none; border: 1px solid transparent; color: var(--text); padding: 12px 15px; border-radius: 8px; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 13px; text-decoration: none; transition: 0.2s; }
         .nav-item:hover { background: #21262d; border-color: var(--border); }
         .nav-item.active { background: var(--accent); color: white; font-weight: 600; }
-        .nav-logout { margin-top: auto; color: var(--danger); }
 
-        /* HLAVNÍ OBSAH */
+        /* MAIN CONTENT */
         .main { flex: 1; padding: 40px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; }
-        .content-width { width: 100%; max-width: 1000px; }
+        .content-width { width: 100%; max-width: 1100px; }
 
-        /* NOVÝ PŘEHLED SYSTÉMU */
-        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 40px; }
-        .stat-box { 
-            background: var(--panel); border: 1px solid var(--border); 
-            padding: 25px; border-radius: 12px; text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-        .stat-box h4 { margin: 0; color: #8b949e; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
-        .stat-box .number { font-size: 36px; font-weight: 800; margin-top: 10px; color: var(--at-color); }
+        /* DASHBOARD GRID */
+        .db-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-top: 20px; }
+        .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+        .panel-h { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .panel-h h3 { margin: 0; font-size: 12px; text-transform: uppercase; color: var(--accent); letter-spacing: 1px; }
 
-        /* KARTY TYPŮ OPP */
-        .opp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
-        .opp-card { 
-            background: var(--panel); border: 1px solid var(--border); 
-            padding: 20px; border-radius: 10px; text-align: center; cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .opp-card:hover { border-color: var(--accent); transform: translateY(-5px); background: #1c2128; box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
-        .opp-card .icon { font-size: 32px; margin-bottom: 12px; display: block; }
-        .opp-card span { font-size: 10px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; }
+        /* STATS BOXES */
+        .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 25px; }
+        .stat-card { background: var(--panel); border: 1px solid var(--border); padding: 20px; border-radius: 12px; text-align: center; }
+        .stat-card div:first-child { font-size: 10px; text-transform: uppercase; color: #8b949e; margin-bottom: 8px; }
+        .stat-card div:last-child { font-size: 28px; font-weight: 800; color: var(--at-color); }
 
-        /* FORMULÁŘOVÁ ČÁST */
-        #generator-view { display: none; background: var(--panel); border: 1px solid var(--border); padding: 35px; border-radius: 12px; width: 100%; }
-        .form-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 25px; }
-        .input-group { display: flex; flex-direction: column; gap: 8px; }
-        label { font-size: 10px; color: #8b949e; font-weight: 700; text-transform: uppercase; }
-        input, select, textarea { 
-            background: #010409; border: 1px solid var(--border); color: white; 
-            padding: 12px; border-radius: 6px; font-size: 14px; outline: none;
-        }
-        input:focus { border-color: var(--accent); }
-        .btn-submit { 
-            background: var(--success); color: white; border: none; padding: 20px; 
-            border-radius: 8px; font-weight: 800; cursor: pointer; text-transform: uppercase; 
-            width: 100%; font-size: 14px; margin-top: 30px; letter-spacing: 1px;
-        }
+        /* SERVICE LIST (Pravá strana) */
+        .duty-list { list-style: none; padding: 0; margin: 0; }
+        .duty-item { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #21262d; font-size: 13px; }
+        .status-dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; box-shadow: 0 0 8px var(--success); }
 
-        /* VÝSTUPNÍ SEKCE */
-        .output-box { display: none; margin-top: 50px; border-top: 3px solid var(--border); padding-top: 30px; width: 100%; }
-        .copy-card { 
-            background: #010409; border: 1px solid var(--border); padding: 30px; 
-            border-radius: 12px; margin-top: 20px; font-family: 'Consolas', monospace; 
-            white-space: pre-wrap; font-size: 13px; line-height: 1.8; position: relative;
-        }
-        .copy-btn { 
-            position: absolute; top: 20px; right: 20px; background: #30363d; 
-            color: white; border: none; padding: 10px 18px; border-radius: 6px; 
-            cursor: pointer; font-size: 11px; text-transform: uppercase; font-weight: bold;
-        }
+        /* NOTES AREA */
+        .notes-area { background: #010409; border: 1px solid var(--border); color: #c9d1d9; width: 100%; height: 150px; padding: 15px; border-radius: 8px; font-size: 13px; resize: none; outline: none; }
+        .notes-area:focus { border-color: var(--accent); }
+
+        /* QUICK LINKS */
+        .links-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .q-link { background: #21262d; padding: 10px; border-radius: 6px; text-align: center; font-size: 12px; color: var(--text); text-decoration: none; border: 1px solid var(--border); }
+        .q-link:hover { background: var(--accent); color: white; }
     </style>
 </head>
 <body>
 
     <div class="sidebar">
         <div class="sidebar-brand">SASP COMMAND</div>
-        <a href="#" class="nav-item active" onclick="showDashboard(true)">🏠 Přehled systému</a>
-        <a href="#" class="nav-item" onclick="alert('Budete přesměrováni do databáze.')">🛡️ Databáze</a>
-        <a href="https://genk.cz/hry/gta5/zakony-fivem/the-penal-code-of-the-state-of-san-andreas-002-19-r17/" target="_blank" class="nav-item" style="color: var(--accent);">📑 Zákoník</a>
-        
-        <a href="#" class="nav-item nav-logout" onclick="alert('Odhlášení proběhlo úspěšně.')">🚪 Odhlásit se</a>
+        <a href="#" class="nav-item active">🏠 Přehled systému</a>
+        <a href="#" class="nav-item">🛡️ Seznam spisů</a>
+        <a href="#" class="nav-item">➕ Nový spis / OPP</a>
+        <a href="https://genk.cz/hry/gta5/zakony-fivem/the-penal-code-of-the-state-of-san-andreas-002-19-r17/" target="_blank" class="nav-item">📑 Zákoník</a>
     </div>
 
     <div class="main">
         <div class="content-width">
             
-            <div id="dashboard-view">
-                <div class="stats-grid">
-                    <div class="stat-box"><h4>Odslouženo tento týden</h4><div class="number">14.5 h</div></div>
-                    <div class="stat-box"><h4>Aktivní hlášení</h4><div class="number" style="color: var(--success);">8</div></div>
-                </div>
-
-                <h3 style="color: var(--accent); text-transform: uppercase; font-size: 12px; font-weight: 900; margin-bottom: 20px;">Vytvořit novou žádost</h3>
-                <div class="opp-grid">
-                    <div class="opp-card" onclick="openForm('Sledování osoby')"><span class="icon">📡</span><span>Sledování</span></div>
-                    <div class="opp-card" onclick="openForm('Výpis telekomunikace')"><span class="icon">📞</span><span>Výpis</span></div>
-                    <div class="opp-card" onclick="openForm('Prolomení telefonu')"><span class="icon">🔓</span><span>Prolomení</span></div>
-                    <div class="opp-card" onclick="openForm('Prověrka majetku')"><span class="icon">💰</span><span>Majetek</span></div>
-                    <div class="opp-card" onclick="openForm('Zastírající agent')"><span class="icon">🕵️</span><span>Agent</span></div>
-                    <div class="opp-card" onclick="openForm('Výpis nemovitosti')"><span class="icon">🏠</span><span>Nemovitost</span></div>
-                    <div class="opp-card" onclick="openForm('Domovní prohlídka')"><span class="icon">🏚️</span><span>Prohlídka</span></div>
-                </div>
+            <div class="stats-row">
+                <div class="stat-card"><div>Aktivní hlášení</div><div>08</div></div>
+                <div class="stat-card"><div>Dnes odslouženo</div><div>04:20h</div></div>
+                <div class="stat-card"><div>Stav jednotek</div><div style="color:var(--success)">10-8</div></div>
             </div>
 
-            <div id="generator-view">
-                <button onclick="showDashboard(true)" style="background:none; border:1px solid var(--border); color:#8b949e; padding:8px 15px; cursor:pointer; border-radius:6px; font-size:11px;">← Zpět na přehled</button>
-                <h2 id="form-title" style="margin:25px 0; color:white; text-transform: uppercase; letter-spacing: 2px;">VÝPIS TELEKOMUNIKACE</h2>
+            <div class="db-grid">
+                <div class="db-col">
+                    <div class="panel" style="margin-bottom: 20px;">
+                        <div class="panel-h"><h3>📝 Rychlé velitelské poznámky</h3></div>
+                        <textarea class="notes-area" id="mainNotes" placeholder="Zde si můžete nechat rozdělané poznámky k případům..."></textarea>
+                    </div>
 
-                <div class="form-row">
-                    <div class="input-group"><label>👤 Příslušník</label><input type="text" id="detektiv" placeholder="Příjmení"></div>
-                    <div class="input-group"><label>🎖️ Hodnost</label><select id="hodnost"><option>Detective I</option><option>Sergeant</option></select></div>
-                    <div class="input-group"><label>📂 Case ID</label><input type="text" id="caseid" placeholder="#2026-XXXX"></div>
+                    <div class="panel">
+                        <div class="panel-h"><h3>🔗 Užitečné odkazy</h3></div>
+                        <div class="links-grid">
+                            <a href="#" class="q-link">📻 Policejní rádio</a>
+                            <a href="#" class="q-link">🗺️ Mapa okresu</a>
+                            <a href="#" class="q-link">🚔 Evidence vozidel</a>
+                            <a href="#" class="q-link">📞 Telefonní seznam</a>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="form-row">
-                    <div class="input-group"><label>Osoba</label><input type="text" id="osoba"></div>
-                    <div class="input-group"><label>Narození</label><input type="text" id="naroz" placeholder="DD.MM.RRRR"></div>
-                    <div class="input-group"><label>MDT ID</label><input type="text" id="mdtid"></div>
-                </div>
+                <div class="db-col">
+                    <div class="panel">
+                        <div class="panel-h"><h3>👮 Jednotky ve službě</h3></div>
+                        <ul class="duty-list">
+                            <li class="duty-item"><span class="status-dot"></span> [7D-01] J. Miller (Sgt.)</li>
+                            <li class="duty-item"><span class="status-dot"></span> [7D-24] A. Walker (Det.)</li>
+                            <li class="duty-item"><span class="status-dot"></span> [7D-12] K. Ross (Det.)</li>
+                            <li class="duty-item" style="opacity: 0.5; font-style: italic;">Žádné další jednotky...</li>
+                        </ul>
+                    </div>
 
-                <div class="input-group" style="margin-bottom: 25px;"><label>⚖️ Právní kvalifikace</label><input type="text" id="kvalifikace" placeholder="Např. §12 Vražda, §20 Loupež"></div>
-                <div class="input-group"><label>📝 Odůvodnění žádosti</label><textarea id="duvody" rows="5" placeholder="Vypište zjištěné skutečnosti..."></textarea></div>
-                
-                <button class="btn-submit" onclick="generateOutput()">🚀 Generovat žádost</button>
-            </div>
-
-            <div id="output-view" class="output-box">
-                <h3 style="color: var(--accent); font-size: 11px; text-transform: uppercase;">📄 IC Formát pro Spis</h3>
-                <div class="copy-card" id="output-ic">
-                    <button class="copy-btn" onclick="copy('txt-ic')">Kopírovat</button>
-                    <span id="txt-ic"></span>
-                </div>
-                
-                <div id="at-section" style="display:none; margin-top: 30px;">
-                    <h3 style="color: var(--at-color); font-size: 11px; text-transform: uppercase;">⚙️ Formát pro Forenzní tým (AT)</h3>
-                    <div class="copy-card" id="output-at" style="border-left: 5px solid var(--at-color); color: var(--at-color);">
-                        <button class="copy-btn" onclick="copy('txt-at')">Kopírovat</button>
-                        <span id="txt-at"></span>
+                    <div class="panel" style="margin-top: 20px; text-align: center;">
+                        <div class="panel-h"><h3>⏰ Systémový čas</h3></div>
+                        <div id="clock" style="font-size: 24px; font-weight: bold; color: var(--accent);">00:00:00</div>
                     </div>
                 </div>
             </div>
@@ -151,46 +105,23 @@
     </div>
 
     <script>
-        let currentType = '';
-
-        function showDashboard(isDash) {
-            document.getElementById('dashboard-view').style.display = isDash ? 'block' : 'none';
-            document.getElementById('generator-view').style.display = isDash ? 'none' : 'block';
-            document.getElementById('output-view').style.display = 'none';
+        // Funkce pro hodiny
+        function updateClock() {
+            const now = new Date();
+            const time = now.getHours().toString().padStart(2, '0') + ":" + 
+                         now.getMinutes().toString().padStart(2, '0') + ":" + 
+                         now.getSeconds().toString().padStart(2, '0');
+            document.getElementById('clock').innerText = time;
         }
+        setInterval(updateClock, 1000);
+        updateClock();
 
-        function openForm(type) {
-            currentType = type;
-            showDashboard(false);
-            document.getElementById('form-title').innerText = type.toUpperCase();
-        }
-
-        function generateOutput() {
-            const d = (id) => document.getElementById(id).value;
-            const ping = `||<@654411469953302538>||`;
-            
-            // IC TEXT
-            let ic = `**ŽÁDOST O UŽITÍ OPP**\n\n**Vyžadující:** ${d('hodnost')} ${d('detektiv')}\n**Case ID:** ${d('caseid')}\n\n**Subjekt:** ${d('osoba')} (${d('naroz')}, MDT: ${d('mdtid')})\n**Kvalifikace:** ${d('kvalifikace')}\n\n**Skutečnosti:**\n${d('duvody')}\n\n**Přílohy:** Kompletní spis, Souhlas SZ`;
-            document.getElementById('txt-ic').innerText = ic;
-
-            // AT TEXT (pro specifické úkony)
-            if(['Výpis telekomunikace','Prolomení telefonu','Prověrka majetku'].includes(currentType)) {
-                document.getElementById('at-section').style.display = 'block';
-                let at = `Dobrý den,\nžádám forenzní tým o provedení úkonu u osoby **${d('osoba')}**.\n\nSouhlas je v příloze.\n\n${ping}`;
-                document.getElementById('txt-at').innerText = at;
-            } else {
-                document.getElementById('at-section').style.display = 'none';
-            }
-
-            document.getElementById('output-view').style.display = 'block';
-            document.getElementById('output-view').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function copy(id) {
-            const text = document.getElementById(id).innerText;
-            navigator.clipboard.writeText(text);
-            alert("Zkopírováno do schránky!");
-        }
+        // Ukládání poznámek do lokální paměti prohlížeče
+        const notes = document.getElementById('mainNotes');
+        notes.value = localStorage.getItem('sasp_notes') || '';
+        notes.addEventListener('input', () => {
+            localStorage.setItem('sasp_notes', notes.value);
+        });
     </script>
 </body>
 </html>
