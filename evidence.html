@@ -18,7 +18,7 @@
 
         body { margin: 0; background-color: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; display: flex; height: 100vh; overflow: hidden; }
 
-        /* SIDEBAR PODLE TVÉHO NÁVRHU */
+        /* SIDEBAR */
         .sidebar { width: 250px; border-right: 1px solid var(--border); padding: 20px 10px; display: flex; flex-direction: column; flex-shrink: 0; }
         .sidebar-header { color: var(--warning); font-weight: bold; font-size: 14px; text-transform: uppercase; margin-bottom: 30px; padding-left: 10px; }
         .menu-item { padding: 12px 15px; border-radius: 6px; cursor: pointer; color: #8b949e; font-size: 14px; margin-bottom: 5px; display: flex; align-items: center; gap: 10px; text-decoration: none; }
@@ -27,7 +27,7 @@
 
         .main-content { flex: 1; padding: 30px; overflow-y: auto; }
 
-        /* KARTY OPP */
+        /* KARTY */
         .opp-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 30px; }
         .opp-card { background: var(--card); border: 1px solid var(--border); padding: 15px; text-align: center; border-radius: 8px; cursor: pointer; transition: 0.2s; }
         .opp-card:hover { border-color: var(--accent); transform: translateY(-2px); }
@@ -42,15 +42,21 @@
         .person-row { display: grid; grid-template-columns: 2fr 1fr 1fr 40px; gap: 10px; margin-bottom: 8px; background: #0d1117; padding: 10px; border-radius: 4px; border: 1px solid var(--border); }
         input, select, textarea { width: 100%; padding: 10px; background: #05070a; border: 1px solid var(--border); color: white; border-radius: 4px; box-sizing: border-box; font-size: 13px; }
         
-        .at-textarea { border: 1px solid var(--warning) !important; background: rgba(255, 157, 0, 0.03) !important; font-family: 'Consolas', monospace; line-height: 1.4; color: #ffca28; }
+        /* Zákaz psaní a vizuál pro AT */
+        .at-textarea { 
+            border: 1px solid var(--warning) !important; 
+            background: rgba(255, 157, 0, 0.05) !important; 
+            font-family: 'Consolas', monospace; 
+            line-height: 1.4; 
+            color: #ffca28;
+            cursor: not-allowed;
+        }
 
-        /* TABULKA */
         .table-container { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-top: 20px; }
         table { width: 100%; border-collapse: collapse; font-size: 13px; }
         th { background: #1c2128; padding: 12px; text-align: left; color: #8b949e; text-transform: uppercase; font-size: 10px; border-bottom: 1px solid var(--border); }
         td { padding: 12px; border-bottom: 1px solid var(--border); }
 
-        /* MODAL */
         #view-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; justify-content: center; align-items: center; }
         .modal-content { background: var(--card); border: 1px solid var(--border); padding: 30px; border-radius: 8px; width: 750px; max-height: 90vh; overflow-y: auto; }
         .pre-text { white-space: pre-wrap; font-family: 'Consolas', monospace; font-size: 13px; color: #fff; background: #0d1117; padding: 25px; border-radius: 4px; border: 1px solid var(--border); line-height: 1.5; }
@@ -135,8 +141,8 @@
             <div class="section-title">📑 Zjištěné skutečnosti (IC)</div>
             <textarea id="oduvodneni" rows="4" placeholder="Zde vypište IC odůvodnění žádosti..."></textarea>
 
-            <div class="section-title at-header">🟧 Zpráva pro Forenzní tým / AZ (OOC)</div>
-            <textarea id="at-message" class="at-textarea" rows="14"></textarea>
+            <div class="section-title at-header">🟧 Automatická zpráva pro Forenzní tým / AZ (OOC)</div>
+            <textarea id="at-message" class="at-textarea" rows="15" readonly placeholder="Tato zpráva se generuje automaticky..."></textarea>
 
             <div class="section-title">📎 Přílohy</div>
             <textarea id="prilohy" rows="2" placeholder="Odkazy na záznamy, Imgur..."></textarea>
@@ -150,7 +156,6 @@
         let savedOPPs = JSON.parse(localStorage.getItem('myOPPs')) || [];
         let currentType = "";
 
-        // Načtení zákonů
         fetch('laws.json').then(res => res.json()).then(data => {
             allLawsData = data.categories;
             renderLaws();
@@ -168,22 +173,35 @@
                 <button onclick="this.parentElement.remove(); updateAT();" style="background:none; border:none; color:red; cursor:pointer;">×</button>
             `;
             container.appendChild(div);
+            updateAT();
         }
 
         function updateAT() {
             const atBox = document.getElementById('at-message');
-            const name = document.getElementById('off-name').value || "[Jméno Příjmení]";
-            const persons = Array.from(document.querySelectorAll('.p-name')).map(i => i.value).filter(v => v !== "").join(', ') || "[Podezřelá Osoba]";
+            const officerName = document.getElementById('off-name').value || "[Jméno Příjmení]";
+            
+            // Získání všech jmen osob
+            const personInputs = document.querySelectorAll('.p-name');
+            let personsList = Array.from(personInputs)
+                .map(i => i.value)
+                .filter(v => v.trim() !== "")
+                .join('\n');
+            
+            if (personsList === "") personsList = "[Podezřelá Osoba]";
+
+            let template = "";
 
             if (currentType === "Výpis Telekomunikace") {
-                atBox.value = `Dobrý den,\n\nna základě souhlasu státního zástupce žádám o poskytnutí výpisu telekomunikačního provozu v rámci probíhajícího vyšetřování.\n\nŽádost se týká těchto osob:\n${persons}\n\nŽádám o:\n- výpis telekomunikačního provozu,\n- historii hovorů a SMS,\n- identifikaci kontaktovaných čísel,\n- případné lokalizační údaje zařízení, pokud jsou k dispozici.\n\nSouhlas státního zástupce je přiložen v příloze.\n\nDěkuji za spolupráci.\n\n${name}\n*San Andreas State Police*`;
+                template = `Dobrý den,\n\nna základě souhlasu státního zástupce žádám o poskytnutí výpisu telekomunikačního provozu v rámci probíhajícího vyšetřování.\n\nŽádost se týká těchto osob:\n${personsList}\n\nŽádám o:\n\n- výpis telekomunikačního provozu,\n- historii hovorů a SMS,\n- identifikaci kontaktovaných čísel,\n- případné lokalizační údaje zařízení, pokud jsou k dispozici.\n\nSouhlas státního zástupce je přiložen v příloze.\n\nDěkuji za spolupráci.\n\n${officerName}\n*San Andreas State Police*`;
             } else if (currentType === "Prolomení Telefonu") {
-                atBox.value = `Dobrý den,\n\nna základě souhlasu státního zástupce žádám forenzní tým o prolomení mobilních telefonů a analýzu zajištěných dat v rámci probíhajícího vyšetřování.\n\nŽádost se týká těchto osob:\n${persons}\n\nŽádám o:\n- prolomení zajištěných mobilních telefonů,\n- analýzu uložených dat,\n- zajištění komunikace, kontaktů, zpráv a dalších relevantních dat,\n- vyhodnocení případných souvislostí s vyšetřovaným případem.\n\nSouhlas státního zástupce je přiložen v příloze.\n\nDěkuji za spolupráci.\n\n${name}\n*San Andreas State Police*`;
+                template = `Dobrý den,\n\nna základě souhlasu státního zástupce žádám forenzní tým o prolomení mobilních telefonů a analýzu zajištěných dat v rámci probíhajícího vyšetřování.\n\nŽádost se týká těchto osob:\n\n${personsList}\n\nŽádám o:\n\n- prolomení zajištěných mobilních telefonů,\n- analýzu uložených dat,\n- zajištění komunikace, kontaktů, zpráv a dalších relevantních dat,\n- vyhodnocení případných souvislostí s vyšetřovaným případem.\n\nSouhlas státního zástupce je přiložen v příloze.\n\nDěkuji za spolupráci.\n\n${officerName}\n*San Andreas State Police*`;
             } else if (currentType === "Majetek") {
-                atBox.value = `Dobrý den,\n\nna základě souhlasu státního zástupce žádám v rámci probíhajícího vyšetřování o výpis a prověrku majetku následujících osob:\n\nŽádost se týká těchto osob:\n${persons}\n\nŽádám o prověření a poskytnutí informací zejména o:\n- bankovních účtech a finančních prostředcích,\n- movitém majetku vyšší hodnoty,\n- případných závazcích nebo dluzích,\n- dalších evidovaných majetkových položkách.\n\nSouhlas státního zástupce k použití operativně pátracích prostředků je přiložen v příloze.\n\nDěkuji za spolupráci.\n\n${name}\n*San Andreas State Police*`;
+                template = `Dobrý den,\n\nna základě souhlasu státního zástupce žádám v rámci probíhajícího vyšetřování o výpis a prověrku majetku následujících osob:\n\nŽádost se týká těchto osob:\n\n${personsList}\n\nŽádám o prověření a poskytnutí informací zejména o:\n\n- bankovních účtech a finančních prostředcích,\n- movitém majetku vyšší hodnoty,\n- případných závazcích nebo dluzích,\n- dalších evidovaných majetkových položkách.\n\nSouhlas státního zástupce k použití operativně pátracích prostředků je přiložen v příloze.\n\nDěkuji za spolupráci.\n\n${officerName}\n*San Andreas State Police*`;
             } else {
-                atBox.value = "";
+                template = "Pro tento typ OPP není definována automatická Forenzní zpráva.";
             }
+
+            atBox.value = template;
         }
 
         function openForm(icon, title) {
@@ -274,11 +292,9 @@
         }
 
         function formatDiscord(o) {
-            const isDP = o.type.includes("Prohlídka");
             const isFT = o.type.includes("Telefon") || o.type.includes("Telekomunikace");
-            
-            let header = isDP ? "**PODNĚT K VYDÁNÍ SOUHLASU STÁTNÍHO ZÁSTUPCE K PROVEDENÍ PROHLÍDKY DLE § 38 Z.Č. 006-19**" : "**ŽÁDOST O UŽITÍ OPP DLE § 37 Z.Č. 006-19**";
             let ping = isFT ? "@Forenzní Tým" : "@State-Prosecutor";
+            let header = "**ŽÁDOST O UŽITÍ OPP DLE § 37 Z.Č. 006-19**";
 
             let output = `${ping}\n${header}\n\n` +
                 `**Vyžadující příslušník:** ${o.officer} [${o.bn}]\n` +
@@ -286,9 +302,9 @@
                 `**Podezřelá osoba / osoby:**\n${o.personList}\n` +
                 `**Trestný čin:** ${o.laws}\n` +
                 `**Předmět / Zařízení / Adresa:** ${o.spec}\n` +
-                `**Zjištěné skutečnosti:** ${o.text || "Doplněno v rámci vyšetřování."}\n\n`;
+                `**Zjištěné skutečnosti:** ${o.text || "V rámci vyšetřování."}\n\n`;
 
-            if(o.atText) {
+            if(o.atText && o.atText.length > 50) {
                 output += `--- 🟧 **ZPRÁVA PRO FORENZNÍ TÝM / AZ** 🟧 ---\n${o.atText}\n------------------------------------------\n\n`;
             }
 
