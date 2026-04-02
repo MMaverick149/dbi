@@ -179,6 +179,7 @@
         function updateAT() {
             const atBox = document.getElementById('at-message');
             const officerName = document.getElementById('off-name').value || "[Jméno Příjmení]";
+            const officerRank = document.getElementById('off-rank').value;
             
             const personRows = document.querySelectorAll('.person-row');
             let personsList = Array.from(personRows)
@@ -194,7 +195,7 @@
             if (personsList === "") personsList = "[Podezřelá Osoba]";
 
             let template = "";
-            const atSignature = `\n\nPodle toho kdo tu žádost vypisuje\n*San Andreas State Police*`;
+            const atSignature = `\n\n${officerName}\n${officerRank}\n*San Andreas State Police*`;
 
             if (currentType === "Výpis Telekomunikace") {
                 template = `Dobrý den,\n\nna základě souhlasu státního zástupce žádám o poskytnutí výpisu telekomunikačního provozu v rámci probíhajícího vyšetřování.\n\nŽádost se týká těchto osob:\n${personsList}\n\nŽádám o:\n\n- výpis telekomunikačního provozu,\n- historii hovorů a SMS,\n- identifikaci kontaktovaných čísel,\n- případné lokalizační údaje zařízení, pokud jsou k dispozici.\n\nSouhlas státního zástupce je přiložen v příloze.\n\nDěkuji za spolupráci.${atSignature}`;
@@ -309,8 +310,8 @@
                 `**Trestný čin:** ${o.laws}\n` +
                 `**Předmět / Zařízení / Adresa:** ${o.spec}\n` +
                 `**Zjištěné skutečnosti:** ${o.text || "V rámci vyšetřování."}\n\n` +
-                `S pozdravem,\n${o.officer}\n${o.rank}\n*San Andreas State Police*\n\n` +
-                `**PŘILOHY:**\n${o.att || "Nebyly doloženy"}`;
+                `**PŘILOHY:**\n${o.att || "Nebyly doloženy"}\n\n` +
+                `S pozdravem,\n${o.officer}\n${o.rank}\n*San Andreas State Police*`;
             
             return output;
         }
