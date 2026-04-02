@@ -9,17 +9,17 @@
         body { background: var(--bg); color: var(--text); font-family: -apple-system, sans-serif; padding: 20px; font-size: 13px; margin: 0; }
         .container { max-width: 1000px; margin: 0 auto; }
         
-        /* LOGIN SECTION */
+        /* LOGIN & PRIVATE SECTION */
         .login-section { background: var(--panel); border: 1px solid var(--accent); padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 20px; }
         .login-section label { display: block; font-size: 10px; font-weight: bold; margin-bottom: 10px; color: var(--at-color); text-transform: uppercase; }
-        input#user-key { background: #010409; border: 1px solid var(--border); color: white; padding: 10px; border-radius: 4px; width: 250px; text-align: center; }
+        input#user-key { background: #010409; border: 1px solid var(--border); color: white; padding: 10px; border-radius: 4px; width: 250px; text-align: center; outline: none; }
 
-        /* MENU CARDS */
-        .opp-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 30px; }
+        /* MENU CARDS (BEZ NADPISU) */
+        .opp-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 30px; }
         .opp-card { background: var(--panel); border: 1px solid var(--border); padding: 20px; border-radius: 8px; text-align: center; cursor: pointer; transition: 0.2s; }
-        .opp-card:hover { border-color: var(--accent); background: #21262d; }
-        .opp-card div { font-size: 30px; margin-bottom: 10px; }
-        .opp-card span { font-weight: bold; font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; }
+        .opp-card:hover { border-color: var(--accent); background: #21262d; transform: translateY(-2px); }
+        .opp-card div { font-size: 28px; margin-bottom: 10px; }
+        .opp-card span { font-weight: bold; font-size: 9px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; }
 
         /* FORMULÁŘ */
         #form-container { display: none; background: var(--panel); border: 1px solid var(--border); padding: 25px; border-radius: 8px; margin-bottom: 30px; }
@@ -29,25 +29,25 @@
         label { color: #8b949e; font-size: 10px; font-weight: bold; margin-bottom: 6px; text-transform: uppercase; display: flex; align-items: center; gap: 5px; }
         input, select, textarea { background: #010409; border: 1px solid var(--border); color: var(--text); padding: 12px; border-radius: 4px; outline: none; font-size: 13px; }
 
-        /* TRESTY / KATALOG */
+        /* KVALIFIKACE (TRESTY) */
         .tags-container { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; min-height: 45px; border: 1px solid var(--border); padding: 10px; border-radius: 4px; background: #010409; }
-        .tag { background: var(--success); color: white; padding: 6px 14px; border-radius: 20px; font-size: 12px; display: flex; align-items: center; gap: 8px; font-weight: bold; }
+        .tag { background: var(--success); color: white; padding: 6px 14px; border-radius: 20px; font-size: 11px; display: flex; align-items: center; gap: 8px; font-weight: bold; }
         .tag span { cursor: pointer; opacity: 0.7; font-size: 14px; }
         .law-list { max-height: 160px; overflow-y: auto; border: 1px solid var(--border); background: #010409; border-radius: 4px; margin-top: 5px; }
-        .law-item { padding: 10px 15px; border-bottom: 1px solid var(--border); cursor: pointer; transition: 0.15s; }
+        .law-item { padding: 10px 15px; border-bottom: 1px solid var(--border); cursor: pointer; }
         .law-item:hover { background: #161b22; color: var(--accent); }
 
-        /* VÝSTUPY */
-        .output-box { background: #010409; border: 1px solid var(--border); padding: 20px; color: #c9d1d9; font-family: 'Consolas', monospace; white-space: pre-wrap; margin-top: 10px; border-radius: 4px; line-height: 1.7; position: relative; font-size: 12px; }
-        .copy-btn { position: absolute; top: 10px; right: 10px; background: #30363d; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 10px; text-transform: uppercase; }
+        /* VÝSTUPY (AT SEKCE) */
+        .output-box { background: #010409; border: 1px solid var(--border); padding: 20px; color: #c9d1d9; font-family: 'Consolas', monospace; white-space: pre-wrap; margin-top: 10px; border-radius: 4px; line-height: 1.6; position: relative; }
+        .copy-btn { position: absolute; top: 10px; right: 10px; background: #30363d; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 9px; text-transform: uppercase; }
         
         .btn-gen { background: var(--success); color: white; border: none; padding: 16px; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 25px; text-transform: uppercase; letter-spacing: 1px; }
         .btn-save { background: var(--accent); color: white; border: none; padding: 14px; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 12px; text-transform: uppercase; }
 
-        .subjekt-row { border: 1px solid var(--border); padding: 15px; margin-bottom: 12px; border-radius: 4px; background: #0d1117; position: relative; }
+        .subjekt-row { border: 1px solid var(--border); padding: 15px; margin-bottom: 12px; border-radius: 4px; background: #0d1117; }
         .list-section { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-top: 20px; }
         .spis-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .spis-table th { text-align: left; color: #8b949e; font-size: 10px; padding: 10px; border-bottom: 1px solid var(--border); }
+        .spis-table th { text-align: left; color: #8b949e; font-size: 10px; padding: 10px; border-bottom: 1px solid var(--border); text-transform: uppercase; }
         .spis-table td { padding: 12px 10px; border-bottom: 1px solid var(--border); font-size: 12px; }
     </style>
 </head>
@@ -70,8 +70,8 @@
     </div>
 
     <div id="form-container">
-        <button onclick="closeForm()" style="background:none; border:1px solid var(--border); color:#8b949e; padding:6px 12px; cursor:pointer; margin-bottom:20px; border-radius:4px;">← ZPĚT</button>
-        <h2 id="form-title" style="margin:0; color:white; text-transform: uppercase;"></h2>
+        <button onclick="closeForm()" style="background:none; border:1px solid var(--border); color:#8b949e; padding:6px 12px; cursor:pointer; margin-bottom:20px; border-radius:4px;">← ZPĚT DO MENU</button>
+        <h2 id="form-title" style="margin:0; color:white; text-transform: uppercase; font-size: 20px;"></h2>
         
         <div class="section-title">👮 Vyžadující příslušník</div>
         <div class="grid">
@@ -91,13 +91,13 @@
 
         <div id="extra-fields"></div>
 
-        <div class="section-title">⚖️ Trestní katalog</div>
+        <div class="section-title">⚖️ Kvalifikace (Tresty)</div>
         <div class="tags-container" id="selected-laws"></div>
-        <input type="text" class="law-search" id="law-input" placeholder="Hledat trest..." onkeyup="filterLaws()" style="width:100%; box-sizing: border-box;">
+        <input type="text" class="law-search" id="law-input" placeholder="Hledat v zákoníku..." onkeyup="filterLaws()" style="width:100%; box-sizing: border-box;">
         <div class="law-list" id="law-list-box"></div>
 
         <div class="section-title">📝 Skutečnosti / Odůvodnění</div>
-        <div class="field"><textarea id="skutecnosti" rows="6" placeholder="Na základě vyšetřování..."></textarea></div>
+        <div class="field"><textarea id="skutecnosti" rows="6" placeholder="Vypište důvody žádosti a zjištěné skutečnosti..."></textarea></div>
         <div class="field"><label>📂 Přílohy</label><input type="text" id="prilohy" value="Kompletní spis, Souhlas státního zástupce"></div>
         
         <button class="btn-gen" onclick="generate()">🚀 Generovat formáty</button>
@@ -108,7 +108,7 @@
             <div class="output-box" id="output-ic"><button class="copy-btn" onclick="copyText('output-ic')">Kopírovat</button></div>
             
             <div id="at-wrap" style="display:none;">
-                <div class="section-title" style="color:var(--at-color); margin-top:40px;">⚙️ AT / FORENZNÍ TÝM</div>
+                <div class="section-title" style="color:var(--at-color); margin-top:40px;">⚙️ AT / FORENZNÍ TÝM (DISCORD)</div>
                 <div class="output-box" id="output-at" style="border-left:4px solid var(--at-color); color: var(--at-color);"><button class="copy-btn" onclick="copyText('output-at')">Kopírovat</button></div>
             </div>
         </div>
@@ -127,8 +127,8 @@
 
 <script>
     const zakony = [
-        "§7 Ubližování na zdraví", "§8 Napadení", "§9 Mučení", "§10 Zabití", "§11 Pokus o vraždu", 
-        "§12 Vražda", "§20 Loupež", "§30 Krádež", "§45 Drogy", "§50 Zbraně"
+        "§7 Ubližování na zdraví", "§8 Napadení", "§9 Mučení a nelidské zacházení", "§10 Zabití", 
+        "§11 Pokus o vraždu", "§12 Vražda", "§20 Loupež", "§30 Krádež", "§45 Drogy", "§50 Zbraně"
     ];
     
     let selectedLaws = [];
@@ -176,11 +176,13 @@
 
     function generate() {
         const d = (id) => document.getElementById(id) ? document.getElementById(id).value : '';
-        const rows = Array.from(document.querySelectorAll('.subjekt-row'));
-        const subs = rows.map(r => ({ n: r.querySelector('.sj').value, d: r.querySelector('.sd').value, i: r.querySelector('.si').value }));
+        const subs = Array.from(document.querySelectorAll('.subjekt-row')).map(r => ({
+            n: r.querySelector('.sj').value, d: r.querySelector('.sd').value, i: r.querySelector('.si').value
+        }));
         const sIC = subs.map(s => `${s.n} (${s.d}, MDT: ${s.i})`).join(', ');
         const ping = `||<@654411469953302538>||`;
 
+        // IC SPIS FORMÁT
         let ic = `**ŽÁDOST O UŽITÍ OPP DLE § 37 Z.Č. 006-19**\n\n`;
         ic += `**Vyžadující příslušník:**\n${d('hodnost')} ${d('detektiv')}\n\n`;
         ic += `**Case ID:**\n${d('caseid')}\n\n`;
@@ -192,16 +194,19 @@
         document.getElementById('output-ic').innerText = ic;
         document.getElementById('output-area').style.display = 'block';
 
+        // AT / FORENZNÍ SEKCE
         if(['vypis','prolomeni','majetek'].includes(currentType)) {
-            let at = `Dobrý den,\n\nna základě souhlasu SZ žádám o provedení úkonů u osob:\n${subs.map(s=>"**"+s.n+"**").join('\n')}\n\nSouhlas je v příloze.\n\n${ping}`;
+            let at = `Dobrý den,\n\nna základě souhlasu SZ žádám forenzní tým o provedení úkonů u osob:\n${subs.map(s=>"**"+s.n+"**").join('\n')}\n\nSouhlas státního zástupce je přiložen.\n\n${ping}`;
             document.getElementById('output-at').innerText = at;
             document.getElementById('at-wrap').style.display = 'block';
-        } else { document.getElementById('at-wrap').style.display = 'none'; }
+        } else {
+            document.getElementById('at-wrap').style.display = 'none';
+        }
     }
 
     function saveSpis() {
         const key = document.getElementById('user-key').value;
-        if(!key) return alert("Zadej klíč!");
+        if(!key) return alert("Zadej klíč pro uložení!");
         const data = { id: Date.now(), case: document.getElementById('caseid').value, type: currentType, date: new Date().toLocaleDateString() };
         let spisy = JSON.parse(localStorage.getItem("spisy_" + key)) || [];
         spisy.push(data); localStorage.setItem("spisy_" + key, JSON.stringify(spisy));
