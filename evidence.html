@@ -12,11 +12,11 @@
             --success: #2ea043;
             --text: #c9d1d9;
             --warning: #ff9d00;
+            --secondary: #21262d;
         }
 
-        body { margin: 0; background-color: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; display: flex; height: 100vh; }
+        body { margin: 0; background-color: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; display: flex; height: 100vh; overflow: hidden; }
 
-        /* SIDEBAR */
         .sidebar { width: 250px; border-right: 1px solid var(--border); padding: 20px 10px; display: flex; flex-direction: column; flex-shrink: 0; }
         .sidebar-header { color: var(--warning); font-weight: bold; font-size: 14px; text-transform: uppercase; margin-bottom: 30px; padding-left: 10px; }
         .menu-item { padding: 12px 15px; border-radius: 6px; cursor: pointer; color: #8b949e; font-size: 14px; margin-bottom: 5px; display: flex; align-items: center; gap: 10px; }
@@ -24,7 +24,7 @@
 
         .main-content { flex: 1; padding: 30px; overflow-y: auto; }
 
-        /* MENU KARTY */
+        /* KARTY */
         .opp-menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
         .opp-card { background: var(--card); border: 1px solid var(--border); padding: 25px; text-align: center; border-radius: 8px; cursor: pointer; transition: 0.2s; }
         .opp-card:hover { border-color: var(--accent); transform: translateY(-3px); }
@@ -32,33 +32,37 @@
         .opp-card span { font-size: 11px; font-weight: bold; text-transform: uppercase; color: var(--accent); }
 
         /* FORMULÁŘ */
-        #form-container { display: none; background: var(--card); border: 1px solid var(--border); padding: 30px; border-radius: 8px; }
-        .section-title { color: var(--accent); margin: 25px 0 15px; font-weight: bold; font-size: 11px; text-transform: uppercase; border-left: 3px solid var(--accent); padding-left: 10px; }
+        #form-container { display: none; background: var(--card); border: 1px solid var(--border); padding: 30px; border-radius: 8px; max-width: 1000px; margin: 0 auto; }
+        .section-title { color: var(--accent); margin: 25px 0 15px; font-weight: bold; font-size: 11px; text-transform: uppercase; border-left: 3px solid var(--accent); padding-left: 10px; display: flex; align-items: center; gap: 8px; }
         
-        .grid-3 { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        .grid-officer { display: grid; grid-template-columns: 2fr 1.5fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .grid-person { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 15px; margin-bottom: 10px; padding: 15px; background: #0d1117; border-radius: 4px; border: 1px solid var(--border); }
+        
         label { display: block; font-size: 10px; color: #8b949e; margin-bottom: 8px; text-transform: uppercase; font-weight: bold; }
-        input, textarea { width: 100%; padding: 12px; background: #05070a; border: 1px solid var(--border); color: white; border-radius: 4px; box-sizing: border-box; }
+        input, select, textarea { width: 100%; padding: 12px; background: #05070a; border: 1px solid var(--border); color: white; border-radius: 4px; box-sizing: border-box; font-size: 13px; }
 
-        /* VYBRANÉ TRESTY - ČISTÝ TEXT */
+        /* TLAČÍTKA */
+        .btn-add { background: none; border: 1px dashed var(--success); color: var(--success); padding: 10px; width: 100%; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold; text-transform: uppercase; margin: 10px 0; }
+        .btn-gen { background: var(--success); color: white; border: none; padding: 14px; width: 100%; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; margin-top: 25px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-save { background: var(--secondary); color: #8b949e; border: 1px solid var(--border); padding: 10px; width: 100%; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; margin-top: 10px; font-size: 11px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+
+        /* TRESTY (NEDOTÝKAT SE) */
         .selected-list { background: #000; border: 1px solid var(--border); border-radius: 4px; padding: 15px; margin-bottom: 15px; min-height: 40px; }
         .selected-item { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #161b22; font-size: 13px; color: #fff; }
         .item-remove { color: #f85149; cursor: pointer; font-weight: bold; padding: 0 10px; }
-
-        /* ZÁKONÍK */
-        .law-list { max-height: 300px; overflow-y: auto; background: #05070a; border: 1px solid var(--border); border-radius: 4px; }
+        .law-list { max-height: 250px; overflow-y: auto; background: #05070a; border: 1px solid var(--border); border-radius: 4px; }
         .law-item { padding: 12px; cursor: pointer; border-bottom: 1px solid #161b22; font-size: 13px; }
         .law-item:hover { background: #1c2128; color: var(--accent); }
-        .law-cat { background: #161b22; padding: 5px 12px; font-size: 10px; color: var(--warning); text-transform: uppercase; font-weight: bold; }
-
-        .btn-gen { background: var(--success); color: white; border: none; padding: 16px; width: 100%; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; margin-top: 25px; }
     </style>
 </head>
 <body>
 
     <div class="sidebar">
         <div class="sidebar-header">SASP COMMAND</div>
-        <div class="menu-item" onclick="location.reload()">🏠 Přehled systému</div>
-        <div class="menu-item active">📂 Seznam spisů / OPP</div>
+        <a href="dashboard.html" class="menu-item">🏠 Přehled systému</a>
+        <a href="evidence.html" class="menu-item active">📂 Seznam spisů / OPP</a>
+        <a href="https://genk.cz/hry/gta5/zakony-fivem/the-penal-code-of-the-state-of-san-andreas-002-19-r17/" class="menu-item">📜 Zákoník</a>
+        <a href="login.html" style="margin-top:auto; color:#f85149; text-decoration:none; font-size:12px; padding: 10px;">Odhlásit se</a>
     </div>
 
     <div class="main-content">
@@ -73,57 +77,70 @@
         </div>
 
         <div id="form-container">
-            <button onclick="location.reload()" style="background:#21262d; border:1px solid var(--border); color:#8b949e; cursor:pointer; padding:8px 15px; border-radius:6px; margin-bottom:20px;">← ZPĚT DO MENU</button>
-            <h2 id="form-title" style="margin:0; text-transform:uppercase;"></h2>
+            <button onclick="location.reload()" style="background:var(--secondary); border:1px solid var(--border); color:#8b949e; cursor:pointer; padding:6px 12px; border-radius:4px; margin-bottom:20px; font-size:11px;">← ZPĚT DO MENU</button>
+            <h2 id="form-title" style="margin:0 0 20px 0; text-transform:uppercase; font-size: 22px;"></h2>
             
-            <div class="section-title">Prověřované osoby</div>
-            <div class="grid-3">
-                <div class="field"><label>👤 Osoba</label><input type="text" placeholder="Jméno a příjmení"></div>
-                <div class="field"><label>🗓️ Narození</label><input type="text" placeholder="DD.MM.RRRR"></div>
-                <div class="field"><label>🆔 MDT ID</label><input type="text" placeholder="XXXXXX"></div>
+            <div class="section-title">👮 Vyžadující příslušník</div>
+            <div class="grid-officer">
+                <div><label>👤 Příslušník</label><input type="text" placeholder="Jméno Příjmení"></div>
+                <div><label>🏅 Hodnost</label>
+                    <select>
+                        <option>Detective I</option>
+                        <option>Detective II</option>
+                        <option>Detective III</option>
+                        <option>Sergeant</option>
+                        <option>Lieutenant</option>
+                    </select>
+                </div>
+                <div><label>📂 Case ID</label><input type="text" value="#2026-XXXX"></div>
             </div>
+
+            <div class="section-title">👥 Prověřované osoby</div>
+            <div id="persons-list">
+                <div class="grid-person">
+                    <div><label>👤 Osoba</label><input type="text" placeholder="Jméno a příjmení subjektu"></div>
+                    <div><label>🗓️ Narození</label><input type="text" placeholder="DD.MM.RRRR"></div>
+                    <div><label>🆔 MDT ID</label><input type="text" placeholder="XXXXXX"></div>
+                </div>
+            </div>
+            <button class="btn-add">+ PŘIDAT OSOBU</button>
 
             <div id="extra-fields"></div>
 
-            <div class="section-title">Kvalifikace (Tresty)</div>
+            <div class="section-title">⚖️ Kvalifikace (Tresty)</div>
             <div class="selected-list" id="selected-laws"></div>
             <input type="text" id="law-search" placeholder="Hledat v zákoníku..." style="margin-bottom:10px;">
-            <div class="law-list" id="law-list-box">Načítám zákoník...</div>
+            <div class="law-list" id="law-list-box"></div>
+
+            <div class="section-title">📑 Skutečnosti / Odůvodnění</div>
+            <textarea rows="4" placeholder="Vypište důvody žádosti a zjištěné skutečnosti..."></textarea>
 
             <button class="btn-gen">🚀 Generovat formáty</button>
+            <button class="btn-save">💾 Uložit do mojí databáze</button>
         </div>
     </div>
 
     <script>
         let allLawsData = [];
 
-        // Načtení tvého laws.json
         fetch('laws.json')
             .then(res => res.json())
             .then(data => {
-                allLawsData = data.categories; // Přístup do tvé struktury
+                allLawsData = data.categories;
                 renderLawList(allLawsData);
-            })
-            .catch(err => {
-                document.getElementById('law-list-box').innerHTML = '<div style="color:red">Chyba: laws.json musí být ve stejné složce.</div>';
+            }).catch(() => {
+                document.getElementById('law-list-box').innerHTML = '<div style="color:red; padding:10px;">Chyba: laws.json nenalezen.</div>';
             });
 
         function renderLawList(categories, filter = '') {
             const box = document.getElementById('law-list-box');
+            if(!box) return;
             box.innerHTML = '';
-            
             categories.forEach(cat => {
-                let hasMatch = false;
-                const catHeader = document.createElement('div');
-                catHeader.className = 'law-cat';
-                catHeader.innerText = cat.name;
-                
                 cat.laws.forEach(law => {
                     law.subs.forEach(sub => {
                         const fullText = `${law.title} ${sub.label} ${sub.text}`.toLowerCase();
                         if (fullText.includes(filter.toLowerCase())) {
-                            if (!hasMatch) { box.appendChild(catHeader); hasMatch = true; }
-                            
                             const item = document.createElement('div');
                             item.className = 'law-item';
                             item.innerHTML = `<strong>${law.title}</strong> ${sub.label} <small style="color:#8b949e">${sub.text}</small>`;
@@ -138,7 +155,6 @@
         function addLaw(text) {
             const container = document.getElementById('selected-laws');
             if ([...container.querySelectorAll('.txt')].some(el => el.innerText === text)) return;
-            
             const div = document.createElement('div');
             div.className = 'selected-item';
             div.innerHTML = `<span class="txt">${text}</span><span class="item-remove" onclick="this.parentElement.remove()">×</span>`;
@@ -149,10 +165,8 @@
             document.getElementById('main-menu').style.display = 'none';
             document.getElementById('form-container').style.display = 'block';
             document.getElementById('form-title').innerText = `${icon} ${title}`;
-            
             const extra = document.getElementById('extra-fields');
-            extra.innerHTML = autoText ? `<div class="section-title">Specifikace</div><label>Předmět výpisu</label><input type="text" value="${autoText}">` : '';
-            renderLawList(allLawsData);
+            extra.innerHTML = autoText ? `<div class="section-title">📞 Specifikace výpisu</div><label>Předmět výpisu</label><input type="text" value="${autoText}">` : '';
         }
 
         document.getElementById('law-search').oninput = function() {
